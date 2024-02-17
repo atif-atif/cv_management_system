@@ -9,7 +9,7 @@ Author: Hammad Nazir
 // Enqueue necessary scripts and styles
 function csv_management_enqueue_scripts() {
     wp_enqueue_style('csv-management-style', plugins_url('/css/style.css', __FILE__));
-    // wp_enqueue_script('csv-management-script', plugins_url('/js/script.js', _FILE_), array('jquery'), null, true);
+    wp_enqueue_script('csv-management-script', plugins_url('/js/script.js', __FILE__), array('jquery'), null, true);
 }
 add_action('admin_enqueue_scripts', 'csv_management_enqueue_scripts');
 
@@ -20,10 +20,77 @@ function csv_management_menu() {
     add_submenu_page('csv-management', 'HR Management', 'HR Dashboard', 'manage_options', 'hr-management', 'hr_management_page');
     add_submenu_page('csv-management', 'Received CVs', 'Received CVs', 'manage_options', 'received-cvs', 'received_cvs_page');
     add_submenu_page('csv-management', 'PDF Generation', 'PDF Generation', 'manage_options', 'pdf-generation', 'pdfgenreration_management_page');
+    add_submenu_page('csv-management', 'Shortlisted Candidates', 'Shortlisted Candidates', 'manage_options', 'shortlisted-candidates', 'shortlisted_candidates_page');
 }
 add_action('admin_menu', 'csv_management_menu');
 
 // Function to display the Received CVs page
+function shortlisted_candidates_page() {
+    global $wpdb;
+
+    $table_name = 'wp_shortlisted_candidates';
+
+    // Check if the table exists
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        echo "<p>Table '$table_name' not found!</p>";
+        return;
+    }
+
+    // Retrieve data from the table
+    $shortlisted_candidates_data = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+
+    ?>
+    <div class="wrap">
+        <h1>Shortlisted Candidates</h1>
+
+        <table class="wp-list-table widefat fixed striped" id="shortlisted-candidates-table">
+            <!-- Table Header -->
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Degree</th>
+                    <th>University</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Employment History</th>
+                    <th>Skills</th>
+                    <th>LinkedIn</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>PDF URL</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($shortlisted_candidates_data as $candidate) {
+                    echo '<tr>';
+                    echo '<td>' . esc_html($candidate['id']) . '</td>';
+                    echo '<td>' . esc_html($candidate['full_name']) . '</td>';
+                    echo '<td>' . esc_html($candidate['email']) . '</td>';
+                    echo '<td>' . esc_html($candidate['degree']) . '</td>';
+                    echo '<td>' . esc_html($candidate['university']) . '</td>';
+                    echo '<td>' . esc_html($candidate['job_title']) . '</td>';
+                    echo '<td>' . esc_html($candidate['company']) . '</td>';
+                    echo '<td>' . esc_html($candidate['employment_history']) . '</td>';
+                    echo '<td>' . esc_html($candidate['skills']) . '</td>';
+                    echo '<td>' . esc_html($candidate['linkedin']) . '</td>';
+                    echo '<td>' . esc_html($candidate['phno']) . '</td>';
+                    echo '<td>' . esc_html($candidate['address']) . '</td>';
+                    echo '<td>' . esc_html($candidate['pdf_url']) . '</td>';
+                    echo '<td>' . esc_html($candidate['comments']) . '</td>';
+                    echo '</tr>';
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+}
+
+
 function received_cvs_page() {
     global $wpdb;
 
@@ -35,14 +102,31 @@ function received_cvs_page() {
         return;
     }
 
+    // Check if search is initiated
+    $search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
+
+    // Retrieve data from the table with optional search filter
+    $sql = "SELECT * FROM $table_name";
+    if (!empty($search_query)) {
+        $sql = $wpdb->prepare("SELECT * FROM $table_name WHERE skills LIKE %s", '%' . $search_query . '%');
+    }
+
     // Retrieve data from the table
-    $resumes_data = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+    $resumes_data = $wpdb->get_results($sql, ARRAY_A);
 
     ?>
     <div class="wrap">
         <h1>Received CVs</h1>
 
-        <table class="wp-list-table widefat fixed striped">
+        <!-- Search Form -->
+        <form id="search-form">
+            <label for="search">Search by Skills:</label>
+            <input type="text" name="search" id="search" value="<?php echo esc_attr($search_query); ?>" />
+            <input type="submit" value="Search" class="button" />
+        </form>
+
+        <table class="wp-list-table widefat fixed striped" id="cv-table">
+            <!-- Table Header -->
             <thead>
                 <tr>
                     <th>ID</th>
@@ -58,7 +142,7 @@ function received_cvs_page() {
                     <th>Phone Number</th>
                     <th>Address</th>
                     <th>CV Name</th>
-                    <th>Action</th> <!-- Added Action column -->
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -87,10 +171,10 @@ function received_cvs_page() {
                         echo 'No PDF available';
                     }
                     echo '</td>';
-                    
+
                     // Action buttons
                     echo '<td>';
-                    echo '<button onclick="shortlistCandidate(' . $resume['id'] . ')">Shortlist</button>';
+                    echo '<button onclick="shortlistCandidate(' . json_encode($resume) . ')">Shortlist</button>';
                     echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
                     echo '</td>';
 
@@ -100,35 +184,250 @@ function received_cvs_page() {
             </tbody>
         </table>
     </div>
+
+    <!-- Shortlist Overlay -->
+    <div id="shortlist-overlay" class="overlay">
+        <div class="modal">
+            <span class="close" onclick="closeShortlistForm()">&times;</span>
+            <h2>Shortlist Candidate</h2>
+            <form id="shortlist-form">
+                <!-- Display all the fields with their values -->
+                <?php foreach ($resume as $field => $value) : ?>
+                    <label for="<?php echo esc_attr($field); ?>"><?php echo esc_html($field); ?>:</label>
+                    <input type="text" name="<?php echo esc_attr($field); ?>" value="<?php echo esc_attr($value); ?>" readonly />
+                <?php endforeach; ?>
+
+                <label for="comments">Comments:</label>
+                <textarea name="comments" id="comments" rows="4" cols="50"></textarea>
+
+                <input type="submit" value="Shortlist" class="button" />
+            </form>
+        </div>
+    </div>
+
     <script>
-        function shortlistCandidate(id)
- {
-            // Add your logic for shortlisting the candidate with the given ID
-            alert('Shortlisting candidate with ID ' + id);
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchForm = document.getElementById('search-form');
+            const cvTable = document.getElementById('cv-table');
+
+            searchForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const searchQuery = document.getElementById('search').value;
+
+                // Use AJAX to fetch filtered data based on search query
+                fetch('<?php echo admin_url('admin-ajax.php'); ?>?action=get_filtered_data&search=' + searchQuery)
+                    .then(response => response.text())
+                    .then(data => {
+                        // Update the table with the fetched data
+                        cvTable.innerHTML = data;
+                    });
+            });
+        });
+        function shortlistCandidate(id) {
+    // Fetch the resume data based on the ID
+    const resumeData = <?php echo json_encode($resumes_data); ?>;
+
+    // Find the resume with the matching ID
+    const selectedResume = resumeData.find(resume => resume.id === id);
+
+    if (selectedResume) {
+        // Display the overlay with the shortlist form
+        const shortlistOverlay = document.getElementById('shortlist-overlay');
+        shortlistOverlay.style.display = 'block';
+
+        // Create a form element
+        const shortlistForm = document.createElement('form');
+        shortlistForm.id = 'shortlist-form';
+
+        // Populate the form fields with the resume data
+        for (const field in selectedResume) {
+            if (selectedResume.hasOwnProperty(field)) {
+                const label = document.createElement('label');
+                label.htmlFor = field;
+                label.textContent = field + ':';
+
+                const inputField = document.createElement('input');
+                inputField.type = 'text';
+                inputField.name = field;
+                inputField.value = selectedResume[field];
+                inputField.readOnly = true;
+
+                shortlistForm.appendChild(label);
+                shortlistForm.appendChild(inputField);
+            }
         }
 
-        function forwardToPM(id)
- {
+        // Add a comments field
+        const commentsField = document.createElement('textarea');
+        commentsField.name = 'comments';
+        commentsField.id = 'comments';
+        commentsField.rows = '4';
+        commentsField.cols = '50';
+        shortlistForm.appendChild(commentsField);
+
+        // Add a submit button
+        const submitButton = document.createElement('input');
+        submitButton.type = 'submit';
+        submitButton.value = 'Shortlist';
+        submitButton.className = 'button';
+        shortlistForm.appendChild(submitButton);
+
+        // Add a submit event listener to the form
+        shortlistForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Use AJAX to send the form data to a server-side script for storage
+            const formData = new FormData(shortlistForm);
+            formData.append('resume_id', id);
+
+            fetch('<?php echo admin_url('admin-ajax.php'); ?>?action=shortlist_candidate', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                // Hide the overlay after submission
+                shortlistOverlay.style.display = 'none';
+            });
+        });
+
+        // Append the form to the overlay
+        shortlistOverlay.innerHTML = ''; // Clear previous content
+        shortlistOverlay.appendChild(shortlistForm);
+    } else {
+         const id = resumeData.id;
+    const data = resumeData.resume;
+
+    // Rest of the code remains unchanged
+
+    for (const field in data) {
+        if (data.hasOwnProperty(field)) {
+            const label = document.createElement('label');
+            label.htmlFor = field;
+            label.textContent = field + ':';
+
+            const inputField = document.createElement('input');
+            inputField.type = 'text';
+            inputField.name = field;
+            inputField.value = data[field];
+            inputField.readOnly = true;
+
+            shortlistForm.appendChild(label);
+            shortlistForm.appendChild(inputField);
+        }
+    }
+        alert('Resume not found for ID ' + id);
+    }
+}
+
+
+        function forwardToPM(id) {
             // Add your logic for forwarding the candidate to PM with the given ID
             alert('Forwarding candidate with ID ' + id + ' to PM');
         }
+
+        function closeShortlistForm() {
+            // Close the overlay
+            document.getElementById('shortlist-overlay').style.display = 'none';
+        }
     </script>
-    <?php
+<?php }
+
+// AJAX handler
+add_action('wp_ajax_get_filtered_data', 'get_filtered_data');
+add_action('wp_ajax_nopriv_get_filtered_data', 'get_filtered_data');
+
+function get_filtered_data() {
+    global $wpdb;
+
+    $search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
+
+    $sql = $wpdb->prepare("SELECT * FROM resumes WHERE skills LIKE %s", '%' . $search_query . '%');
+    $resumes_data = $wpdb->get_results($sql, ARRAY_A);
+
+    ob_start();
+
+    foreach ($resumes_data as $resume) {
+        echo '<tr>';
+        echo '<td>' . esc_html($resume['id']) . '</td>';
+        echo '<td>' . esc_html($resume['full_name']) . '</td>';
+        echo '<td>' . esc_html($resume['email']) . '</td>';
+        echo '<td>' . esc_html($resume['degree']) . '</td>';
+        echo '<td>' . esc_html($resume['university']) . '</td>';
+        echo '<td>' . esc_html($resume['job_title']) . '</td>';
+        echo '<td>' . esc_html($resume['company']) . '</td>';
+        echo '<td>' . esc_html($resume['employment_history']) . '</td>';
+        echo '<td>' . esc_html($resume['skills']) . '</td>';
+        echo '<td>' . esc_html($resume['linkedin']) . '</td>';
+        echo '<td>' . esc_html($resume['phno']) . '</td>';
+        echo '<td>' . esc_html($resume['address']) . '</td>';
+        echo '<td>';
+        $cv_name = esc_html($resume['pdf_url']);
+        $pdf_url = get_cv_pdf_url($cv_name); // Function to get PDF URL
+
+        if ($pdf_url) {
+            echo '<a href="'. esc_url($pdf_url) . '" target="_blank">Open PDF</a>';
+        } else {
+            echo 'No PDF available';
+        }
+        echo '</td>';
+
+        // Action buttons
+        echo '<td>';
+        echo '<button onclick="shortlistCandidate(' . json_encode($resume) . ')">Shortlist</button>';
+        echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
+        echo '</td>';
+
+        echo '</tr>';
+    }
+
+    $output = ob_get_clean();
+    echo $output;
+
+    wp_die();
 }
+
+// AJAX handler for shortlisting candidate
+add_action('wp_ajax_shortlist_candidate', 'shortlist_candidate');
+add_action('wp_ajax_nopriv_shortlist_candidate', 'shortlist_candidate');
+
+function shortlist_candidate() {
+    // Process the shortlist form submission and store the data in the database
+    $resume_id = isset($_POST['resume_id']) ? intval($_POST['resume_id']) : 0;
+    $comments = isset($_POST['comments']) ? sanitize_text_field($_POST['comments']) : '';
+
+    // Perform necessary database operations here
+    // For example, insert data into the shortlisted candidates table
+
+    $response = array('message' => 'Candidate shortlisted successfully!');
+    wp_send_json($response);
+}
+
 
 function get_cv_pdf_url($cv_name) {
     global $wpdb;
     $table_name = 'resumes';
 
-    $pdf_url = $wpdb->get_var(
-        $wpdb->prepare("SELECT pdf_url FROM $table_name WHERE cv_name = %s", $cv_name)
+    $pdf_filename = $wpdb->get_var(
+        $wpdb->prepare("SELECT pdf_filename FROM $table_name WHERE cv_name = %s", $cv_name)
     );
 
-    // Debugging statement
-    error_log('CV Name: ' . $cv_name . ', PDF URL: ' . $pdf_url);
+    if ($pdf_filename) {
+        // Assuming the uploads folder is located in the WordPress content directory
+        $pdf_path = WP_CONTENT_DIR . '/uploads/' . $pdf_filename;
 
-    return $pdf_url ? $pdf_url : false;
+        if (file_exists($pdf_path)) {
+            $pdf_url = content_url("/uploads/$pdf_filename");
+            return esc_url($pdf_url);
+        } else {
+            return false; // PDF file not found in the expected location
+        }
+    }
+
+    return false;
 }
+
 
 // Function to display the CSV management page
 function csv_management_page() {
@@ -136,7 +435,7 @@ function csv_management_page() {
     <div class="wrap">
         <h1>CV Management System</h1>
         
-        <!-- Add your HTML and PHP code for CSV management here -->
+      
 
     </div>
     <?php
@@ -163,22 +462,22 @@ function hr_management_page() {
 
             <!-- HR Dashboard Section 1 -->
             <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/profile.png" width="70" height="52" alt="Icon 1"></a>
+                <a href="?page=hr_management_page&action=review_cvs"><img src="http://cvmanagementsystem.local/wp-content/uploads/2024/02/profile.png" width="70" height="52" alt="Icon 1"></a>
                 <h2><?php echo esc_html($user_display_name); ?></h2>
                 <p>Helping Hand for HRs</p>
             </div>
             <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents-2.png" width="70" height="52" alt="Icon 1"></a>
+                <a href="?page=hr_management_page&action=review_cvs"><img src="http://cvmanagementsystem.local/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
                 <h2>Received CVs</h2>
                 <p>134</p>
             </div>
             <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents-2.png" width="70" height="52" alt="Icon 1"></a>
+                <a href="?page=hr_management_page&action=review_cvs"><img src="http://cvmanagementsystem.local/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
                 <h2>Forwarded Candidates</h2>
                 <p>56</p>
             </div>
             <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents-2.png" width="70" height="52" alt="Icon 1"></a>
+                <a href="?page=hr_management_page&action=review_cvs"><img src="http://cvmanagementsystem.local/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
                 <h2>Shortlisted Candidates</h2>
                 <p>20</p>
             </div>
@@ -220,9 +519,57 @@ function pdfgenreration_management_page() {
     ?>
     <div class="wrap">
         <h1>PDF Generation</h1>
-        <!-- Add your Personnels-related HTML and PHP code here -->
+        
+        <form method="post" action="">
+            <label for="hr_name">Enter HR Name:</label>
+            <input type="text" name="hr_name" id="hr_name" required><br>
+
+            <label for="select_data">Select Data:</label>
+            <input type="date" name="reviewed_cvs" id="reviewed_cvs" required><br>
+            <br>
+
+            <label for="reviewed_cvs">Reviewed CVs:</label>
+            <input type="number" name="reviewed_cvs" id="reviewed_cvs" required><br>
+
+            <label for="shortlisted_cvs">Shortlisted CVs:</label>
+            <input type="number" name="shortlisted_cvs" id="shortlisted_cvs" required><br>
+
+            <label for="hired_interns">Hired Interns:</label>
+            <input type="number" name="hired_interns" id="hired_interns" required><br>
+
+            <label for="hired_employees">Hired Employees:</label>
+            <input type="number" name="hired_employees" id="hired_employees" required><br>
+
+            <label for="workforce_required">Workforce Required:</label>
+            <input type="number" name="workforce_required" id="workforce_required" required><br>
+
+            <button type="submit" name="generate_pdf">Generate PDF</button>
+        </form>
+        <?php
+        if (isset($_POST['generate_pdf'])) {
+            // Process form data and generate PDF here
+            // Use the entered data to generate the HR report in PDF format
+            // You may want to use a PDF generation library like TCPDF or FPDF
+            // Example: include the library and write code to create a PDF
+            // ...
+
+            // For demonstration purposes, let's assume a function generate_pdf() is used
+            generate_pdf($_POST);
+        }
+        ?>
     </div>
     <?php
+}
+function generate_pdf($data) {
+    // Placeholder function
+    // Implement the actual PDF generation code here using a library like TCPDF or FPDF
+    // Example: TCPDF code
+    // ...
+  
+    // For demonstration purposes, let's just print the data
+    echo '<pre>';
+    print_r($data);
+    echo '</pre>';
 }
 function custom_shortcode_function() {
     ob_start(); // Start output buffering
@@ -265,6 +612,11 @@ function custom_shortcode_function() {
             <h5><strong>Skills</strong></h5>
             <label><input type="checkbox" name="skills[]" value="Theme Development"> Theme Development</label>
             <label><input type="checkbox" name="skills[]" value="Plugin Development"> Plugin Development</label>
+            <label><input type="checkbox" name="skills[]" value="Theme Development"> PSD to Email</label><br>
+            <label><input type="checkbox" name="skills[]" value="Plugin Development">PSD to Wordpress</label>
+            <label><input type="checkbox" name="skills[]" value="Plugin Development">Python</label>
+            <label><input type="checkbox" name="skills[]" value="Plugin Development">Human Resources Skills</label>
+            <label><input type="checkbox" name="skills[]" value="Plugin Development">Java</label><br>
             <label><input type="checkbox" name="skills[]" value="PSD to HTML&CSS"> PSD to HTML&CSS</label> <br>
             <label>Other :</label><input type="text" name="skills[]" value="" placeholder="java,c++"><br>
 
@@ -304,7 +656,7 @@ function custom_shortcode_function() {
     }
 
     // Process Form Submission
-    if (isset($_POST['resume_submission_submit'])) {
+     if (isset($_POST['resume_submission_submit'])) {
         // Process File Upload
         if (isset($_FILES['cv_upload']) && $_FILES['cv_upload']['error'] == 0) {
             $target_directory = "uploads/";
@@ -446,25 +798,3 @@ add_filter('the_content', 'email_shortcode_function');
 
 
 
-function handle_csv_upload() {
-    if (isset($_FILES['csv_file']) && !empty($_FILES['csv_file']['name'])) {
-        $uploaded_file = wp_handle_upload($_FILES['csv_file'], array('test_form' => false));
-        
-        if (!isset($uploaded_file['error'])) {
-            $file_path = $uploaded_file['file'];
-            // Process the CSV file as needed
-            // You can use functions like fgetcsv to read the CSV content
-            // Example: $csv_data = array_map('str_getcsv', file($file_path));
-        } else {
-            // Handle the error
-            echo 'Error uploading file: ' . $uploaded_file['error'];
-        }
-    }
-}
-
-// Hook to handle CSV file upload when the form is submitted
-if (isset($_POST['csv_upload_submit'])) {
-    handle_csv_upload();
-}
-
-// Add your additional functionality or hooks as needed

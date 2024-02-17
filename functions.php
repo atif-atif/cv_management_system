@@ -1,10 +1,9 @@
-Atif, 3:50 PM
 <?php
 /*
 Plugin Name: CV Management System
 Description: A simple CV management system for WordPress.
 Version: 1.0
-Author: Atif
+Author: Hammad Nazir
 */
 
 // Enqueue necessary scripts and styles
@@ -59,7 +58,7 @@ function received_cvs_page() {
                     <th>Phone Number</th>
                     <th>Address</th>
                     <th>CV Name</th>
-                    <!-- Add more columns based on your table structure -->
+                    <th>Action</th> <!-- Added Action column -->
                 </tr>
             </thead>
             <tbody>
@@ -78,17 +77,58 @@ function received_cvs_page() {
                     echo '<td>' . esc_html($resume['linkedin']) . '</td>';
                     echo '<td>' . esc_html($resume['phno']) . '</td>';
                     echo '<td>' . esc_html($resume['address']) . '</td>';
-                    // echo '<td>' . esc_html($resume['cv_name']) . '</td>';
-                    // Add more columns based on your table structure
+                    echo '<td>';
+                    $cv_name = esc_html($resume['pdf_url']);
+                    $pdf_url = get_cv_pdf_url($cv_name); // Function to get PDF URL
+
+                    if ($pdf_url) {
+                        echo '<a href="'. esc_url($pdf_url) . '" target="_blank">Open PDF</a>';
+                    } else {
+                        echo 'No PDF available';
+                    }
+                    echo '</td>';
+                    
+                    // Action buttons
+                    echo '<td>';
+                    echo '<button onclick="shortlistCandidate(' . $resume['id'] . ')">Shortlist</button>';
+                    echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
+                    echo '</td>';
+
                     echo '</tr>';
                 }
                 ?>
             </tbody>
         </table>
     </div>
+    <script>
+        function shortlistCandidate(id)
+ {
+            // Add your logic for shortlisting the candidate with the given ID
+            alert('Shortlisting candidate with ID ' + id);
+        }
+
+        function forwardToPM(id)
+ {
+            // Add your logic for forwarding the candidate to PM with the given ID
+            alert('Forwarding candidate with ID ' + id + ' to PM');
+        }
+    </script>
     <?php
 }
 
+function get_cv_pdf_url($cv_name) {
+    global $wpdb;
+    $table_name = 'resumes';
+
+    $pdf_url = $wpdb->get_var(
+        $wpdb->prepare("SELECT pdf_url FROM $table_name WHERE cv_name = %s", $cv_name)
+    );
+
+    // Debugging statement
+    error_log('CV Name: ' . $cv_name . ', PDF URL: ' . $pdf_url);
+
+    return $pdf_url ? $pdf_url : false;
+}
 
 // Function to display the CSV management page
 function csv_management_page() {
@@ -129,12 +169,12 @@ function hr_management_page() {
             </div>
             <div class="hr-dashboard-section">
                 <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents-2.png" width="70" height="52" alt="Icon 1"></a>
-                <h2>Received Profiles</h2>
+                <h2>Received CVs</h2>
                 <p>134</p>
             </div>
             <div class="hr-dashboard-section">
                 <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents-2.png" width="70" height="52" alt="Icon 1"></a>
-                <h2>CVs Received</h2>
+                <h2>Forwarded Candidates</h2>
                 <p>56</p>
             </div>
             <div class="hr-dashboard-section">
@@ -191,7 +231,7 @@ function custom_shortcode_function() {
         <h4>CV Submission Form</h4>
 
         <form method="post" enctype="multipart/form-data">
-            <h5><strong>Personal Details</strong></h5>
+         <h5><strong>Personal Details</strong></h5>
             <label for="full_name">Full Name:</label>
             <input type="text" name="full_name" required>
 
@@ -243,10 +283,11 @@ function custom_shortcode_function() {
             <input type="submit" name="resume_submission_submit" value="Submit">
         </form>
 
-        <!-- <form method="post" action="?page=pdf-generation">
+        <form method="post" action="?page=pdf-generation">
+            <!-- Assuming 'pdfgenreration_management_page' is the correct page slug for PDF Generation -->
             <input type="hidden" name="pdf_generation_data" value="1">
-            <input type="submit" name="pdf_generation_submit" value="Generate PDF">
-        </form> -->
+           
+        </form>
     </div>
     <?php
 
@@ -271,17 +312,15 @@ function custom_shortcode_function() {
 
             if (move_uploaded_file($_FILES['cv_upload']['tmp_name'], $target_file)) {
                 echo "File uploaded successfully.";
-                $cv_name = basename($_FILES['cv_upload']['name']);
+                $cv_url = $target_file;
             } else {
                 echo "Error uploading file.";
-                $cv_name = "";
+                $cv_url = "";
             }
         } else {
             echo "No file uploaded.";
-            $cv_name = "";
+            $cv_url = "";
         }
-
-        // Process Form Data
         $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $degree = mysqli_real_escape_string($conn, $_POST['degree']);
@@ -292,13 +331,11 @@ function custom_shortcode_function() {
         $linkedin = mysqli_real_escape_string($conn, $_POST['linkedin']);
         $phno = mysqli_real_escape_string($conn, $_POST['phno']);
         $address = mysqli_real_escape_string($conn, $_POST['address']);
-       
-        // Skills handling
-        $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
-
+   // Skills handling
+   $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
         // Insert data into the database
-        $sql = "INSERT INTO resumes (full_name, email, degree, university, job_title, company, employment_history, skills, linkedin, phno, address, cv_name) 
-                VALUES ('$full_name', '$email', '$degree', '$university', '$job_title', '$company', '$employment_history', '$skills', '$linkedin', '$phno', '$address', '$cv_name')";
+        $sql = "INSERT INTO resumes (full_name, email, degree, university, job_title, company, employment_history, skills, linkedin, phno, address,pdf_url) 
+                VALUES ('$full_name', '$email', '$degree', '$university', '$job_title', '$company', '$employment_history', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
 
         if ($conn->query($sql) === TRUE) {
             echo "CV Submitted successfully";
@@ -315,8 +352,6 @@ function custom_shortcode_function() {
 }
 
 add_shortcode('custom_shortcode', 'custom_shortcode_function');
-
-
 // Handle CV file upload
 
 function pdfcv_shortcode_function() {

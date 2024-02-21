@@ -5,6 +5,7 @@ Description: A simple CV management system for WordPress.
 Version: 1.0
 Author: Hammad Nazir
 */
+ob_start();
 
 // Enqueue necessary scripts and styles
 function csv_management_enqueue_scripts() {
@@ -40,56 +41,88 @@ function shortlisted_candidates_page() {
     $shortlisted_candidates_data = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
 
     ?>
+
+<!-- shortlist_candidate -->
+<!-- shortlist_candidate -->
+
     <div class="wrap">
         <h1>Shortlisted Candidates</h1>
 
         <table class="wp-list-table widefat fixed striped" id="shortlisted-candidates-table">
-            <!-- Table Header -->
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Degree</th>
-                    <th>University</th>
-                    <th>Job Title</th>
-                    <th>Company</th>
-                    <th>Employment History</th>
-                    <th>Skills</th>
-                    <th>LinkedIn</th>
-                    <th>Phone Number</th>
-                    <th>Address</th>
-                    <th>PDF URL</th>
-                    <th>Comments</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($shortlisted_candidates_data as $candidate) {
-                    echo '<tr>';
-                    echo '<td>' . esc_html($candidate['id']) . '</td>';
-                    echo '<td>' . esc_html($candidate['full_name']) . '</td>';
-                    echo '<td>' . esc_html($candidate['email']) . '</td>';
-                    echo '<td>' . esc_html($candidate['degree']) . '</td>';
-                    echo '<td>' . esc_html($candidate['university']) . '</td>';
-                    echo '<td>' . esc_html($candidate['job_title']) . '</td>';
-                    echo '<td>' . esc_html($candidate['company']) . '</td>';
-                    echo '<td>' . esc_html($candidate['employment_history']) . '</td>';
-                    echo '<td>' . esc_html($candidate['skills']) . '</td>';
-                    echo '<td>' . esc_html($candidate['linkedin']) . '</td>';
-                    echo '<td>' . esc_html($candidate['phno']) . '</td>';
-                    echo '<td>' . esc_html($candidate['address']) . '</td>';
-                    echo '<td>' . esc_html($candidate['pdf_url']) . '</td>';
-                    echo '<td>' . esc_html($candidate['comments']) . '</td>';
-                    echo '</tr>';
-                }
-                ?>
-            </tbody>
-        </table>
+    <!-- Table Header -->
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Degree</th>
+            <th>University</th>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Employment History</th>
+            <th>Skills</th>
+            <th>LinkedIn</th>
+            <th>Phone Number</th>
+            <th>Address</th>
+            <th>PDF URL</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php
+    foreach ($shortlisted_candidates_data as $candidate) {
+        echo '<tr>';
+        echo '<td>' . esc_html($candidate['id']) . '</td>';
+        echo '<td>' . esc_html($candidate['full_name']) . '</td>';
+        echo '<td>' . esc_html($candidate['email']) . '</td>';
+        echo '<td>' . esc_html($candidate['degree']) . '</td>';
+        echo '<td>' . esc_html($candidate['university']) . '</td>';
+        echo '<td>' . esc_html($candidate['job_title']) . '</td>';
+        echo '<td>' . esc_html($candidate['company']) . '</td>';
+        echo '<td>' . esc_html($candidate['employment_history']) . '</td>';
+        echo '<td>' . esc_html($candidate['skills']) . '</td>';
+        echo '<td>' . esc_html($candidate['linkedin']) . '</td>';
+        echo '<td>' . esc_html($candidate['phno']) . '</td>';
+        echo '<td>' . esc_html($candidate['address']) . '</td>';
+        
+        // Button to download PDF
+        echo '<td><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '">Download PDF</button></form></td>';
+        
+        echo '<td>' . esc_html($candidate['comments']) . '</td>';
+        echo '</tr>';
+    }
+    ?>
+</tbody>
+<?php
+// Handle form submission
+if (isset($_POST['download_pdf'])) {
+    // Get the PDF URL from the form submission
+    $pdf_url = $_POST['download_pdf'];
+    
+    // Validate the PDF URL and extract the file name
+    $file_name = basename($pdf_url);
+    
+    // Set headers for file download
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: attachment; filename="' . $file_name . '"');
+    
+    // Read the file and output its contents
+    readfile($pdf_url);
+    
+    // Exit to prevent further output
+    exit;
+}
+?>
+
+
+
+</table>
+
     </div>
     <?php
 }
 
+//shortlist candidate end
 
 function received_cvs_page() {
     global $wpdb;
@@ -146,62 +179,125 @@ function received_cvs_page() {
                 </tr>
             </thead>
             <tbody>
-                <?php
-                foreach ($resumes_data as $resume) {
-                    echo '<tr>';
-                    echo '<td>' . esc_html($resume['id']) . '</td>';
-                    echo '<td>' . esc_html($resume['full_name']) . '</td>';
-                    echo '<td>' . esc_html($resume['email']) . '</td>';
-                    echo '<td>' . esc_html($resume['degree']) . '</td>';
-                    echo '<td>' . esc_html($resume['university']) . '</td>';
-                    echo '<td>' . esc_html($resume['job_title']) . '</td>';
-                    echo '<td>' . esc_html($resume['company']) . '</td>';
-                    echo '<td>' . esc_html($resume['employment_history']) . '</td>';
-                    echo '<td>' . esc_html($resume['skills']) . '</td>';
-                    echo '<td>' . esc_html($resume['linkedin']) . '</td>';
-                    echo '<td>' . esc_html($resume['phno']) . '</td>';
-                    echo '<td>' . esc_html($resume['address']) . '</td>';
-                    echo '<td>';
-                    $cv_name = esc_html($resume['pdf_url']);
-                    $pdf_url = get_cv_pdf_url($cv_name); // Function to get PDF URL
+            <tbody>
+    <?php
+    foreach ($resumes_data as $resume) {
+        echo '<tr>';
+        echo '<td>' . esc_html($resume['id']) . '</td>';
+        echo '<td>' . esc_html($resume['full_name']) . '</td>';
+        echo '<td>' . esc_html($resume['email']) . '</td>';
+        echo '<td>' . esc_html($resume['degree']) . '</td>';
+        echo '<td>' . esc_html($resume['university']) . '</td>';
+        echo '<td>' . esc_html($resume['job_title']) . '</td>';
+        echo '<td>' . esc_html($resume['company']) . '</td>';
+        echo '<td>' . esc_html($resume['employment_history']) . '</td>';
+        echo '<td>' . esc_html($resume['skills']) . '</td>';
+        echo '<td>' . esc_html($resume['linkedin']) . '</td>';
+        echo '<td>' . esc_html($resume['phno']) . '</td>';
+        echo '<td>' . esc_html($resume['address']) . '</td>';
+        echo '<td>';
+        $cv_name = esc_html($resume['pdf_url']);
+        $pdf_url = get_cv_pdf_url($cv_name); // Function to get PDF URL
 
-                    if ($pdf_url) {
-                        echo '<a href="'. esc_url($pdf_url) . '" target="_blank">Open PDF</a>';
-                    } else {
-                        echo 'No PDF available';
-                    }
-                    echo '</td>';
+        if ($pdf_url) {
+            echo '<a href="'. esc_url($pdf_url) . '" target="_blank">Open PDF</a>';
+        } else {
+            echo 'No PDF available';
+        }
+        echo '</td>';
 
-                    // Action buttons
-                    echo '<td>';
-                    echo '<button onclick="shortlistCandidate(' . json_encode($resume) . ')">Shortlist</button>';
-                    echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
-                    echo '</td>';
+        // Action buttons
+        echo '<td>';
+        echo '<form method="post" action="">';
+        echo '<input type="hidden" name="resume_id" value="' . esc_html($resume['id']) . '">';
+        echo '<button type="submit" name="insert" title="' . esc_html($resume['id']) . '">Shortlist</button>';
+        echo '</form>';
+        echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
+        echo '</td>';
 
-                    echo '</tr>';
-                }
-                ?>
-            </tbody>
+        echo '</tr>';
+    }
+    ?>
+
+</tbody>
+
+
+<script>
+function printTable() {
+    window.print();
+}
+</script>
+
+<!-- Button to trigger printing -->
+<button onclick="printTable()">Print Table</button>
+<?php
+if (isset($_POST['insert'])) {
+    // Get the resume ID from the form submission
+    $resume_id = isset($_POST['resume_id']) ? intval($_POST['resume_id']) : 0;
+
+    // Check if the ID is valid
+    if ($resume_id > 0) {
+        global $wpdb;
+
+        // Prepare the data to be inserted
+        $resume_data = $wpdb->get_row("SELECT * FROM resumes WHERE id = $resume_id", ARRAY_A);
+
+        // Check if resume data is retrieved successfully
+        if ($resume_data) {
+            // Insert the data into wp_shortlisted_candidates table
+            $insert_result = $wpdb->insert(
+                'wp_shortlisted_candidates',
+                array(
+                    'id' => $resume_data['id'],
+                    'full_name' => $resume_data['full_name'],
+                    'email' => $resume_data['email'],
+                    'degree' => $resume_data['degree'],
+                    'university' => $resume_data['university'],
+                    'job_title' => $resume_data['job_title'],
+                    'company' => $resume_data['company'],
+                    'employment_history' => $resume_data['employment_history'],
+                    'skills' => $resume_data['skills'],
+                    'linkedin' => $resume_data['linkedin'],
+                    'phno' => $resume_data['phno'],
+                    'address' => $resume_data['address'],
+                    'pdf_url' => $resume_data['pdf_url'],
+                    'comments' => null // Assuming comments field is nullable
+                )
+            );
+
+            if ($insert_result !== false) {
+                echo "Record inserted successfully.";
+            } else {
+                echo "Error inserting record.";
+            }
+        } else {
+            echo "Error retrieving resume data.";
+        }
+    }
+}
+?>
+
         </table>
     </div>
 
-    <!-- Shortlist Overlay -->
+    Shortlist Overlay
     <div id="shortlist-overlay" class="overlay">
         <div class="modal">
             <span class="close" onclick="closeShortlistForm()">&times;</span>
             <h2>Shortlist Candidate</h2>
             <form id="shortlist-form">
-                <!-- Display all the fields with their values -->
-                <?php foreach ($resume as $field => $value) : ?>
-                    <label for="<?php echo esc_attr($field); ?>"><?php echo esc_html($field); ?>:</label>
-                    <input type="text" name="<?php echo esc_attr($field); ?>" value="<?php echo esc_attr($value); ?>" readonly />
-                <?php endforeach; ?>
+    <!-- Display all the fields with their values -->
+    <?php foreach ($resume as $field => $value) : ?>
+        <label for="<?php echo esc_attr($field); ?>"><?php echo esc_html($field); ?>:</label>
+        <input type="text" name="<?php echo esc_attr($field); ?>" value="<?php echo esc_attr($value); ?>" readonly />
+    <?php endforeach; ?>
 
-                <label for="comments">Comments:</label>
-                <textarea name="comments" id="comments" rows="4" cols="50"></textarea>
+    <label for="comments">Comments:</label>
+    <textarea name="comments" id="comments" rows="4" cols="50"></textarea>
 
-                <input type="submit" value="Shortlist" class="button" />
-            </form>
+    <input type="submit" value="Shortlist" class="button" />
+</form>
+
         </div>
     </div>
 
@@ -462,22 +558,22 @@ function hr_management_page() {
 
             <!-- HR Dashboard Section 1 -->
             <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://cvmanagementsystem.local/wp-content/uploads/2024/02/profile.png" width="70" height="52" alt="Icon 1"></a>
+                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/profile.png" width="70" height="52" alt="Icon 1"></a>
                 <h2><?php echo esc_html($user_display_name); ?></h2>
                 <p>Helping Hand for HRs</p>
             </div>
             <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://cvmanagementsystem.local/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
+                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
                 <h2>Received CVs</h2>
                 <p>134</p>
             </div>
             <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://cvmanagementsystem.local/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
+                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
                 <h2>Forwarded Candidates</h2>
                 <p>56</p>
             </div>
             <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://cvmanagementsystem.local/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
+                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
                 <h2>Shortlisted Candidates</h2>
                 <p>20</p>
             </div>
@@ -570,10 +666,21 @@ function generate_pdf($data) {
     echo '<pre>';
     print_r($data);
     echo '</pre>';
+?>
+    <script>
+    function printTable() {
+        window.print();
+    }
+    </script>
+
+    <!-- Button to trigger printing -->
+    <button onclick="printTable()">Print Table</button>
+    <?php
 }
 function custom_shortcode_function() {
     ob_start(); // Start output buffering
     ?>
+
     <div class="wrap">
         <h4>CV Submission Form</h4>
 
@@ -641,6 +748,10 @@ function custom_shortcode_function() {
            
         </form>
     </div>
+
+   
+
+
     <?php
 
     // Establish Database Connection
@@ -673,20 +784,20 @@ function custom_shortcode_function() {
             echo "No file uploaded.";
             $cv_url = "";
         }
-        $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
-        $email = mysqli_real_escape_string($conn, $_POST['email']);
-        $degree = mysqli_real_escape_string($conn, $_POST['degree']);
-        $university = mysqli_real_escape_string($conn, $_POST['university']);
-        $job_title = mysqli_real_escape_string($conn, $_POST['job_title']);
-        $company = mysqli_real_escape_string($conn, $_POST['company']);
-        $employment_history = mysqli_real_escape_string($conn, $_POST['employment_history']);
-        $linkedin = mysqli_real_escape_string($conn, $_POST['linkedin']);
-        $phno = mysqli_real_escape_string($conn, $_POST['phno']);
-        $address = mysqli_real_escape_string($conn, $_POST['address']);
+        $full_name = $_POST['full_name'];
+        $email = $_POST['email'];
+        $degree = $_POST['degree'];
+        $university = $_POST['university'];
+        $job_title = $_POST['job_title'];
+        $company = $_POST['company'];
+        $employment_history = $_POST['employment_history'];
+        $linkedin = $_POST['linkedin'];
+        $phno = $_POST['phno'];
+        $address = $_POST['address'];
    // Skills handling
    $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
         // Insert data into the database
-        $sql = "INSERT INTO resumes (full_name, email, degree, university, job_title, company, employment_history, skills, linkedin, phno, address,pdf_url) 
+        $sql = "INSERT INTO resumes (full_name, email, degree, university, job_title, company, employment_history, skills, linkedin, phno, address ,pdf_url) 
                 VALUES ('$full_name', '$email', '$degree', '$university', '$job_title', '$company', '$employment_history', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
 
         if ($conn->query($sql) === TRUE) {

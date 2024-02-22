@@ -319,6 +319,10 @@ if (isset($_POST['insert'])) {
                     });
             });
         });
+
+
+
+
         function shortlistCandidate(id) {
     // Fetch the resume data based on the ID
     const resumeData = <?php echo json_encode($resumes_data); ?>;
@@ -720,6 +724,14 @@ function custom_shortcode_function() {
 
             <h5><strong>Skills</strong></h5>
             <label><input type="checkbox" name="skills[]" value="Theme Development"> Theme Development</label>
+            <label><input type="checkbox" name="skills[]" value="Plugin Development"> Plugin Development</label>
+            <label><input type="checkbox" name="skills[]" value="Theme Development"> PSD to Email</label><br>
+            <label><input type="checkbox" name="skills[]" value="Plugin Development">PSD to Wordpress</label>
+            <label><input type="checkbox" name="skills[]" value="Plugin Development">Python</label>
+            <label><input type="checkbox" name="skills[]" value="Plugin Development">Human Resources Skills</label>
+            <label><input type="checkbox" name="skills[]" value="Plugin Development">Java</label><br>
+            <label><input type="checkbox" name="skills[]" value="PSD to HTML&CSS"> PSD to HTML&CSS</label> <br>
+            <label>Other :</label><input type="text" name="skills[]" value="" placeholder="java,c++"><br>
             <!-- Add more skill checkboxes as needed -->
 
             <h5><strong>Contact Details</strong></h5>
@@ -806,7 +818,7 @@ function custom_shortcode_function() {
         $message = 'Dear ' . $full_name . ',\n\n';
         $message .= 'Thank you for submitting your CV. We have received your submission successfully.';
         $headers = 'From: atifwpbrigade@gmail.com' . "\r\n";
-        $headers .= 'Cc: atif.44e@gmail.com' . "\r\n"; // CC to admin email
+      
 
         // Send email
         $sent_to_user = mail($to, $subject, $message, $headers);
@@ -919,7 +931,68 @@ function email_shortcode_function($content) {
 add_filter('the_content', 'email_shortcode_function');
 
 
+// databas tabls
+// shortlist_candidate
+function create_table_for_shortlistcandidates() {
+    global $wpdb;
+
+    // Define the table name with the WordPress prefix
+    $table_name = $wpdb->prefix . 'Shortlistcandidates';
+
+    $sql = "CREATE TABLE $table_name (
+		id int(11) NOT NULL AUTO_INCREMENT,
+		fullname varchar(50) NOT NULL,
+        phone varchar(100) NOT NULL,
+        degree varchar(100) NOT NULL,
+        university varchar(100) NOT NULL,
+        skills varchar(100) NOT NULL,
+        jobtittle varchar(100) NOT NULL,
+        company varchar(100) NOT NULL,
+        employmenthistory varchar(100) NOT NULL,
+        linkedinprofile varchar(100) NOT NULL,
+        address varchar(100) NOT NULL,
+		PRIMARY KEY (id)
 
 
+
+	  );";
+
+    
+    $wpdb->query($sql);
+}
+
+register_activation_hook(__FILE__, 'create_table_for_shortlistcandidates');
+
+
+// resume table
+
+function create_table_for_resume() {
+    global $wpdb;
+
+    // Define the table name with the WordPress prefix
+    $table_name = $wpdb->prefix . 'resume';
+
+    $sql = "CREATE TABLE $table_name (
+		id int(11) NOT NULL AUTO_INCREMENT,
+		fullname varchar(50) NOT NULL,
+        phone varchar(100) NOT NULL,
+        degree varchar(100) NOT NULL,
+        university varchar(100) NOT NULL,
+        jobtittle varchar(100) NOT NULL,
+        company varchar(100) NOT NULL,
+        employmenthistory varchar(100) NOT NULL,
+        linkedinprofile varchar(100) NOT NULL,
+        address varchar(100) NOT NULL,
+		PRIMARY KEY (id)
+
+
+
+	  );";
+
+    
+    $wpdb->query($sql);
+}
+
+register_activation_hook(__FILE__, 'create_table_for_resume');
 
 

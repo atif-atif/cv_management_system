@@ -677,6 +677,7 @@ function generate_pdf($data) {
     <button onclick="printTable()">Print Table</button>
     <?php
 }
+// Add the custom shortcode function
 function custom_shortcode_function() {
     ob_start(); // Start output buffering
     ?>
@@ -685,7 +686,8 @@ function custom_shortcode_function() {
         <h4>CV Submission Form</h4>
 
         <form method="post" enctype="multipart/form-data">
-         <h5><strong>Personal Details</strong></h5>
+            <!-- Form fields -->
+            <h5><strong>Personal Details</strong></h5>
             <label for="full_name">Full Name:</label>
             <input type="text" name="full_name" required>
 
@@ -718,14 +720,7 @@ function custom_shortcode_function() {
 
             <h5><strong>Skills</strong></h5>
             <label><input type="checkbox" name="skills[]" value="Theme Development"> Theme Development</label>
-            <label><input type="checkbox" name="skills[]" value="Plugin Development"> Plugin Development</label>
-            <label><input type="checkbox" name="skills[]" value="Theme Development"> PSD to Email</label><br>
-            <label><input type="checkbox" name="skills[]" value="Plugin Development">PSD to Wordpress</label>
-            <label><input type="checkbox" name="skills[]" value="Plugin Development">Python</label>
-            <label><input type="checkbox" name="skills[]" value="Plugin Development">Human Resources Skills</label>
-            <label><input type="checkbox" name="skills[]" value="Plugin Development">Java</label><br>
-            <label><input type="checkbox" name="skills[]" value="PSD to HTML&CSS"> PSD to HTML&CSS</label> <br>
-            <label>Other :</label><input type="text" name="skills[]" value="" placeholder="java,c++"><br>
+            <!-- Add more skill checkboxes as needed -->
 
             <h5><strong>Contact Details</strong></h5>
             <label for="linkedin">Linkedin Profile:</label>
@@ -736,38 +731,33 @@ function custom_shortcode_function() {
             
             <label for="address">Address:</label>
             <textarea name="address" rows="4" cols="50"></textarea><br>
+
             <h5>Upload CV (PDF)</h5>
             <label for="cv_upload">Upload CV:</label>
             <input type="file" name="cv_upload" accept=".pdf">
-            <input type="submit" name="resume_submission_submit" value="Submit">
-        </form>
 
-        <form method="post" action="?page=pdf-generation">
-            <!-- Assuming 'pdfgenreration_management_page' is the correct page slug for PDF Generation -->
-            <input type="hidden" name="pdf_generation_data" value="1">
-           
+            <input type="submit" name="resume_submission_submit" value="Submit">
         </form>
     </div>
 
-   
-
-
     <?php
 
-    // Establish Database Connection
-    $db_host = 'localhost';
-    $db_user = 'root';
-    $db_pass = 'root';
-    $db_name = 'local';
-
-    $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
     // Process Form Submission
-     if (isset($_POST['resume_submission_submit'])) {
+    if (isset($_POST['resume_submission_submit'])) {
+        // Establish Database Connection
+        $db_host = 'localhost';
+        $db_user = 'root';
+        $db_pass = 'root';
+        $db_name = 'local';
+
+        global $wpdb;
+
+        $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
+
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
         // Process File Upload
         if (isset($_FILES['cv_upload']) && $_FILES['cv_upload']['error'] == 0) {
             $target_directory = "uploads/";
@@ -784,6 +774,8 @@ function custom_shortcode_function() {
             echo "No file uploaded.";
             $cv_url = "";
         }
+
+        // Collect form data
         $full_name = $_POST['full_name'];
         $email = $_POST['email'];
         $degree = $_POST['degree'];
@@ -794,10 +786,12 @@ function custom_shortcode_function() {
         $linkedin = $_POST['linkedin'];
         $phno = $_POST['phno'];
         $address = $_POST['address'];
-   // Skills handling
-   $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
+
+        // Skills handling
+        $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
+
         // Insert data into the database
-        $sql = "INSERT INTO resumes (full_name, email, degree, university, job_title, company, employment_history, skills, linkedin, phno, address ,pdf_url) 
+        $sql = "INSERT INTO resumes (full_name, email, degree, university, job_title, company, employment_history, skills, linkedin, phno, address, pdf_url) 
                 VALUES ('$full_name', '$email', '$degree', '$university', '$job_title', '$company', '$employment_history', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
 
         if ($conn->query($sql) === TRUE) {
@@ -805,16 +799,36 @@ function custom_shortcode_function() {
         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
         }
-    }
 
-    // Close Database Connection
-    $conn->close();
+        // Send email to user
+        $to = $email;
+        $subject = 'CV Submission Confirmation';
+        $message = 'Dear ' . $full_name . ',\n\n';
+        $message .= 'Thank you for submitting your CV. We have received your submission successfully.';
+        $headers = 'From: atifwpbrigade@gmail.com' . "\r\n";
+        $headers .= 'Cc: atif.44e@gmail.com' . "\r\n"; // CC to admin email
+
+        // Send email
+        $sent_to_user = mail($to, $subject, $message, $headers);
+
+        // Check if email sent successfully to user
+        if ($sent_to_user) {
+            // header("location: http://localhost:10016/resume-submission-portal/");
+            echo '<p>Email sent successfully!</p>';
+        } else {
+            echo '<p>Failed to send email.</p>';
+        }
+
+        // Close Database Connection
+        $conn->close();
+    }
 
     $output = ob_get_clean(); // Get the output and clean the buffer
     return $output; // Return the buffered output
 }
 
 add_shortcode('custom_shortcode', 'custom_shortcode_function');
+
 // Handle CV file upload
 
 function pdfcv_shortcode_function() {

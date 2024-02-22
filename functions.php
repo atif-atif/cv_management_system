@@ -432,7 +432,8 @@ if (isset($_POST['insert'])) {
             document.getElementById('shortlist-overlay').style.display = 'none';
         }
     </script>
-<?php }
+<?php
+ }
 
 // AJAX handler
 add_action('wp_ajax_get_filtered_data', 'get_filtered_data');
@@ -931,25 +932,25 @@ function email_shortcode_function($content) {
 add_filter('the_content', 'email_shortcode_function');
 
 
-// databas tabls
+// database tables
 // shortlist_candidate
-function create_table_for_shortlistcandidates() {
+function create_table_for_shortlist_candidates() {
     global $wpdb;
 
     // Define the table name with the WordPress prefix
-    $table_name = $wpdb->prefix . 'Shortlistcandidates';
+    $table_name = $wpdb->prefix . 'Shortlist_candidates';
 
     $sql = "CREATE TABLE $table_name (
 		id int(11) NOT NULL AUTO_INCREMENT,
-		fullname varchar(50) NOT NULL,
-        phone varchar(100) NOT NULL,
+		full_name varchar(50) NOT NULL,
+        phno varchar(100) NOT NULL,
         degree varchar(100) NOT NULL,
         university varchar(100) NOT NULL,
         skills varchar(100) NOT NULL,
-        jobtittle varchar(100) NOT NULL,
+        job_tittle varchar(100) NOT NULL,
         company varchar(100) NOT NULL,
-        employmenthistory varchar(100) NOT NULL,
-        linkedinprofile varchar(100) NOT NULL,
+        employment_history varchar(100) NOT NULL,
+        linkedin varchar(100) NOT NULL,
         address varchar(100) NOT NULL,
 		PRIMARY KEY (id)
 
@@ -961,7 +962,7 @@ function create_table_for_shortlistcandidates() {
     $wpdb->query($sql);
 }
 
-register_activation_hook(__FILE__, 'create_table_for_shortlistcandidates');
+register_activation_hook(__FILE__, 'create_table_for_shortlist_candidates');
 
 
 // resume table
@@ -974,14 +975,14 @@ function create_table_for_resume() {
 
     $sql = "CREATE TABLE $table_name (
 		id int(11) NOT NULL AUTO_INCREMENT,
-		fullname varchar(50) NOT NULL,
-        phone varchar(100) NOT NULL,
+		full_name varchar(50) NOT NULL,
+        phno varchar(100) NOT NULL,
         degree varchar(100) NOT NULL,
         university varchar(100) NOT NULL,
-        jobtittle varchar(100) NOT NULL,
+        job_tittle varchar(100) NOT NULL,
         company varchar(100) NOT NULL,
-        employmenthistory varchar(100) NOT NULL,
-        linkedinprofile varchar(100) NOT NULL,
+        employment_history varchar(100) NOT NULL,
+        linkedin varchar(100) NOT NULL,
         address varchar(100) NOT NULL,
 		PRIMARY KEY (id)
 

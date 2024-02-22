@@ -52,20 +52,21 @@ function shortlisted_candidates_page() {
     <!-- Table Header -->
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Degree</th>
-            <th>University</th>
-            <th>Job Title</th>
-            <th>Company</th>
-            <th>Employment History</th>
-            <th>Skills</th>
-            <th>LinkedIn</th>
-            <th>Phone Number</th>
-            <th>Address</th>
-            <th>PDF URL</th>
-            <th>Comments</th>
+            <th style="width: 15px;">ID</th>
+            <th style="width: 100px;">Full Name</th>
+            <th style="width: 100px;">Email</th>
+            <th style="width: 50px;" >Degree</th>
+            <th style="width: 100px;">University</th>
+            <th style="width: 100px;">Job Title</th>
+            <th style="width: 100px;">Company</th>
+            <th style="width: 100px;">Employment History</th>
+            <th style="width: 100px;">Skills</th>
+            <th style="width: 100px;">LinkedIn</th>
+            <th style="width: 100px;">Phone Number</th>
+            <th style="width: 100px;">Address</th>
+            <th style="width: 100px;">PDF URL</th>
+            <th style="width: 100px;">Comments</th>
+            <th style="width: 100px;">Operations</th>
         </tr>
     </thead>
     <tbody>
@@ -89,8 +90,39 @@ function shortlisted_candidates_page() {
         echo '<td><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '">Download PDF</button></form></td>';
         
         echo '<td>' . esc_html($candidate['comments']) . '</td>';
+        echo '<td>
+        <form action="" method="post">
+            <input type="hidden" name="idsl" value="' . esc_html($candidate['id']) . '">
+            <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="background-color: red; outline: none; border: none; padding:4px 7px; border-radius: 5px; color: #fff; cursor: pointer;">
+        </form>
+    </td>';
+
         echo '</tr>';
     }
+
+    // delete shortlisted candidate 
+    if (isset($_POST['deleteShortlisted'])) {
+        global $wpdb;
+        $id_to_deletee = isset($_POST['idsl']) ? intval($_POST['idsl']) : 0;
+    
+        
+        if ($id_to_deletee > 0) {
+            $delete_result = $wpdb->delete(
+                'wp_shortlisted_candidates',
+                array('id' => $id_to_deletee),
+                array('%d') // ID is an integer
+            );
+            if ($delete_result !== false) {
+                echo "Record deleted successfully.";
+                header("location: #"); 
+                exit; // Make sure to exit after redirecting
+            }
+            else {
+                echo "Error deleting record.";
+            }
+        }
+    }
+
     ?>
 </tbody>
 <?php
@@ -127,7 +159,7 @@ if (isset($_POST['download_pdf'])) {
 function received_cvs_page() {
     global $wpdb;
 
-    $table_name = 'resumes';
+    $table_name = 'wp_resumes';
 
     // Check if the table exists
     if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
@@ -162,20 +194,21 @@ function received_cvs_page() {
             <!-- Table Header -->
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Degree</th>
-                    <th>University</th>
-                    <th>Job Title</th>
-                    <th>Company</th>
-                    <th>Employment History</th>
-                    <th>Skills</th>
-                    <th>LinkedIn</th>
-                    <th>Phone Number</th>
-                    <th>Address</th>
-                    <th>CV Name</th>
-                    <th>Action</th>
+                    <th style="width: 15px;">ID</th>
+                    <th style="width: 100px;">Full Name</th>
+                    <th style="width: 140px;">Email</th>
+                    <th style="width: 100px;">Degree</th>
+                    <th style="width: 61px;">University</th>
+                    <th style="width: 70px;">Job Title</th>
+                    <th style="width: 60px;">Company</th>
+                    <th style="width: 100px;">Employment History</th>
+                    <th style="width: 100px;">Skills</th>
+                    <th style="width: 100px;">LinkedIn</th>
+                    <th style="width: 100px;">Phone Number</th>
+                    <th style="width: 100px;">Address</th>
+                    <th style="width: 100px;">CV Name</th>
+                    <th style="width: 200px;">Action</th>
+                    <th style="width: 100px;" >Operations</th>
                 </tr>
             </thead>
             <tbody>
@@ -205,21 +238,65 @@ function received_cvs_page() {
             echo 'No PDF available';
         }
         echo '</td>';
+        
 
         // Action buttons
         echo '<td>';
         echo '<form method="post" action="">';
         echo '<input type="hidden" name="resume_id" value="' . esc_html($resume['id']) . '">';
+        echo '<input type="text" name="commentss" placeholder="Add comment" required> <br>';
         echo '<button type="submit" name="insert" title="' . esc_html($resume['id']) . '">Shortlist</button>';
         echo '</form>';
         echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
         echo '</td>';
 
+        echo '<td>
+                <form action="" method="post">
+                    <input type="hidden" name="id" value="' . esc_html($resume['id']) . '">
+                    <input type="submit" name="delete" value="Delete" style="background-color: red; outline: none; border: none; padding:4px 7px; border-radius: 5px; color: #fff; cursor: pointer;">
+                </form>
+            </td>';
+
+
         echo '</tr>';
     }
-    ?>
 
+    // delete record from 
+    if (isset($_POST['delete'])) {
+        global $wpdb;
+    
+        // Get the ID from the hidden input field
+        $id_to_delete = isset($_POST['id']) ? intval($_POST['id']) : 0;
+    
+        // Check if the ID is valid
+        if ($id_to_delete > 0) {
+            // Delete the record from the wp_shortlisted_candidates table
+            $delete_result = $wpdb->delete(
+                'wp_resumes',
+                array('id' => $id_to_delete),
+                array('%d') // ID is an integer
+            );
+    
+            // Check if the record is successfully deleted
+            if ($delete_result !== false) {
+                echo "Record deleted successfully.";
+                header("location: #"); // Redirect to the current page
+                exit; // Make sure to exit after redirecting
+            }
+            else {
+                echo "Error deleting record.";
+            }
+        }
+    } 
+
+   
+    ?>
+    
+    
+    
+    
 </tbody>
+
 
 
 <script>
@@ -240,7 +317,10 @@ if (isset($_POST['insert'])) {
         global $wpdb;
 
         // Prepare the data to be inserted
-        $resume_data = $wpdb->get_row("SELECT * FROM resumes WHERE id = $resume_id", ARRAY_A);
+        $resume_data = $wpdb->get_row("SELECT * FROM wp_resumes WHERE id = $resume_id", ARRAY_A);
+        $comment = $_POST['commentss'];
+        $insert_id = $_POST['resume_id'];
+       
 
         // Check if resume data is retrieved successfully
         if ($resume_data) {
@@ -248,7 +328,6 @@ if (isset($_POST['insert'])) {
             $insert_result = $wpdb->insert(
                 'wp_shortlisted_candidates',
                 array(
-                    'id' => $resume_data['id'],
                     'full_name' => $resume_data['full_name'],
                     'email' => $resume_data['email'],
                     'degree' => $resume_data['degree'],
@@ -261,177 +340,29 @@ if (isset($_POST['insert'])) {
                     'phno' => $resume_data['phno'],
                     'address' => $resume_data['address'],
                     'pdf_url' => $resume_data['pdf_url'],
-                    'comments' => null // Assuming comments field is nullable
+                    'comments' => $comment
                 )
             );
 
             if ($insert_result !== false) {
                 echo "Record inserted successfully.";
             } else {
-                echo "Error inserting record.";
+                echo "Error inserting record." . $wpdb->last_error;
             }
         } else {
             echo "Error retrieving resume data.";
         }
     }
 }
+
+// if(isset($_POST['delete'])){
+//     $id = ;
+
+// }
 ?>
 
         </table>
     </div>
-
-    Shortlist Overlay
-    <div id="shortlist-overlay" class="overlay">
-        <div class="modal">
-            <span class="close" onclick="closeShortlistForm()">&times;</span>
-            <h2>Shortlist Candidate</h2>
-            <form id="shortlist-form">
-    <!-- Display all the fields with their values -->
-    <?php foreach ($resume as $field => $value) : ?>
-        <label for="<?php echo esc_attr($field); ?>"><?php echo esc_html($field); ?>:</label>
-        <input type="text" name="<?php echo esc_attr($field); ?>" value="<?php echo esc_attr($value); ?>" readonly />
-    <?php endforeach; ?>
-
-    <label for="comments">Comments:</label>
-    <textarea name="comments" id="comments" rows="4" cols="50"></textarea>
-
-    <input type="submit" value="Shortlist" class="button" />
-</form>
-
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchForm = document.getElementById('search-form');
-            const cvTable = document.getElementById('cv-table');
-
-            searchForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-                const searchQuery = document.getElementById('search').value;
-
-                // Use AJAX to fetch filtered data based on search query
-                fetch('<?php echo admin_url('admin-ajax.php'); ?>?action=get_filtered_data&search=' + searchQuery)
-                    .then(response => response.text())
-                    .then(data => {
-                        // Update the table with the fetched data
-                        cvTable.innerHTML = data;
-                    });
-            });
-        });
-
-
-
-
-        function shortlistCandidate(id) {
-    // Fetch the resume data based on the ID
-    const resumeData = <?php echo json_encode($resumes_data); ?>;
-
-    // Find the resume with the matching ID
-    const selectedResume = resumeData.find(resume => resume.id === id);
-
-    if (selectedResume) {
-        // Display the overlay with the shortlist form
-        const shortlistOverlay = document.getElementById('shortlist-overlay');
-        shortlistOverlay.style.display = 'block';
-
-        // Create a form element
-        const shortlistForm = document.createElement('form');
-        shortlistForm.id = 'shortlist-form';
-
-        // Populate the form fields with the resume data
-        for (const field in selectedResume) {
-            if (selectedResume.hasOwnProperty(field)) {
-                const label = document.createElement('label');
-                label.htmlFor = field;
-                label.textContent = field + ':';
-
-                const inputField = document.createElement('input');
-                inputField.type = 'text';
-                inputField.name = field;
-                inputField.value = selectedResume[field];
-                inputField.readOnly = true;
-
-                shortlistForm.appendChild(label);
-                shortlistForm.appendChild(inputField);
-            }
-        }
-
-        // Add a comments field
-        const commentsField = document.createElement('textarea');
-        commentsField.name = 'comments';
-        commentsField.id = 'comments';
-        commentsField.rows = '4';
-        commentsField.cols = '50';
-        shortlistForm.appendChild(commentsField);
-
-        // Add a submit button
-        const submitButton = document.createElement('input');
-        submitButton.type = 'submit';
-        submitButton.value = 'Shortlist';
-        submitButton.className = 'button';
-        shortlistForm.appendChild(submitButton);
-
-        // Add a submit event listener to the form
-        shortlistForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            // Use AJAX to send the form data to a server-side script for storage
-            const formData = new FormData(shortlistForm);
-            formData.append('resume_id', id);
-
-            fetch('<?php echo admin_url('admin-ajax.php'); ?>?action=shortlist_candidate', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                // Hide the overlay after submission
-                shortlistOverlay.style.display = 'none';
-            });
-        });
-
-        // Append the form to the overlay
-        shortlistOverlay.innerHTML = ''; // Clear previous content
-        shortlistOverlay.appendChild(shortlistForm);
-    } else {
-         const id = resumeData.id;
-    const data = resumeData.resume;
-
-    // Rest of the code remains unchanged
-
-    for (const field in data) {
-        if (data.hasOwnProperty(field)) {
-            const label = document.createElement('label');
-            label.htmlFor = field;
-            label.textContent = field + ':';
-
-            const inputField = document.createElement('input');
-            inputField.type = 'text';
-            inputField.name = field;
-            inputField.value = data[field];
-            inputField.readOnly = true;
-
-            shortlistForm.appendChild(label);
-            shortlistForm.appendChild(inputField);
-        }
-    }
-        alert('Resume not found for ID ' + id);
-    }
-}
-
-
-        function forwardToPM(id) {
-            // Add your logic for forwarding the candidate to PM with the given ID
-            alert('Forwarding candidate with ID ' + id + ' to PM');
-        }
-
-        function closeShortlistForm() {
-            // Close the overlay
-            document.getElementById('shortlist-overlay').style.display = 'none';
-        }
-    </script>
 <?php
  }
 
@@ -444,7 +375,7 @@ function get_filtered_data() {
 
     $search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
 
-    $sql = $wpdb->prepare("SELECT * FROM resumes WHERE skills LIKE %s", '%' . $search_query . '%');
+    $sql = $wpdb->prepare("SELECT * FROM wp_resumes WHERE skills LIKE %s", '%' . $search_query . '%');
     $resumes_data = $wpdb->get_results($sql, ARRAY_A);
 
     ob_start();
@@ -508,7 +439,7 @@ function shortlist_candidate() {
 
 function get_cv_pdf_url($cv_name) {
     global $wpdb;
-    $table_name = 'resumes';
+    $table_name = 'wp_resumes';
 
     $pdf_filename = $wpdb->get_var(
         $wpdb->prepare("SELECT pdf_filename FROM $table_name WHERE cv_name = %s", $cv_name)
@@ -804,7 +735,7 @@ function custom_shortcode_function() {
         $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
 
         // Insert data into the database
-        $sql = "INSERT INTO resumes (full_name, email, degree, university, job_title, company, employment_history, skills, linkedin, phno, address, pdf_url) 
+        $sql = "INSERT INTO wp_resumes (full_name, email, degree, university, job_title, company, employment_history, skills, linkedin, phno, address, pdf_url) 
                 VALUES ('$full_name', '$email', '$degree', '$university', '$job_title', '$company', '$employment_history', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
 
         if ($conn->query($sql) === TRUE) {
@@ -985,9 +916,6 @@ function create_table_for_resume() {
         linkedin varchar(100) NOT NULL,
         address varchar(100) NOT NULL,
 		PRIMARY KEY (id)
-
-
-
 	  );";
 
     

@@ -3,7 +3,7 @@
 Plugin Name: CV Management System
 Description: A simple CV management system for WordPress.
 Version: 1.0
-Author: Hammad Nazir
+Author: atif
 */
 ob_start();
 
@@ -47,6 +47,8 @@ function shortlisted_candidates_page() {
 
     <div class="wrap">
         <h1>Shortlisted Candidates</h1>
+        <button type="submit" name="forward_email" value="<?php echo esc_attr($hr_email); ?>">Email Forward to PM</button>
+        
 
         <table class="wp-list-table widefat fixed striped" id="shortlisted-candidates-table">
     <!-- Table Header -->
@@ -97,6 +99,7 @@ function shortlisted_candidates_page() {
         </form>
     </td>';
 
+    
         echo '</tr>';
     }
 
@@ -247,8 +250,8 @@ function received_cvs_page() {
         echo '<input type="text" name="commentss" placeholder="Add comment" required> <br>';
         echo '<button type="submit" name="insert" title="' . esc_html($resume['id']) . '">Shortlist</button>';
         echo '</form>';
-        echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
-        echo '</td>';
+        // echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
+        // echo '</td>';
 
         echo '<td>
                 <form action="" method="post">
@@ -865,60 +868,54 @@ add_filter('the_content', 'email_shortcode_function');
 
 // database tables
 // shortlist_candidate
+// Shortlist_candidates table
 function create_table_for_shortlist_candidates() {
     global $wpdb;
 
     // Define the table name with the WordPress prefix
-    $table_name = $wpdb->prefix . 'Shortlist_candidates';
+    $table_name = $wpdb->prefix . 'shortlist_candidates'; // Corrected table name
 
     $sql = "CREATE TABLE $table_name (
-		id int(11) NOT NULL AUTO_INCREMENT,
-		full_name varchar(50) NOT NULL,
+        id int(11) NOT NULL AUTO_INCREMENT,
+        full_name varchar(50) NOT NULL,
         phno varchar(100) NOT NULL,
         degree varchar(100) NOT NULL,
         university varchar(100) NOT NULL,
         skills varchar(100) NOT NULL,
-        job_tittle varchar(100) NOT NULL,
+        job_title varchar(100) NOT NULL, // Corrected field name
         company varchar(100) NOT NULL,
         employment_history varchar(100) NOT NULL,
         linkedin varchar(100) NOT NULL,
         address varchar(100) NOT NULL,
-		PRIMARY KEY (id)
+        PRIMARY KEY (id)
+    )";
 
-
-
-	  );";
-
-    
     $wpdb->query($sql);
 }
 
 register_activation_hook(__FILE__, 'create_table_for_shortlist_candidates');
 
-
-// resume table
-
+// Resume table
 function create_table_for_resume() {
     global $wpdb;
 
     // Define the table name with the WordPress prefix
-    $table_name = $wpdb->prefix . 'resume';
+    $table_name = $wpdb->prefix . 'resumes';
 
     $sql = "CREATE TABLE $table_name (
-		id int(11) NOT NULL AUTO_INCREMENT,
-		full_name varchar(50) NOT NULL,
+        id int(11) NOT NULL AUTO_INCREMENT,
+        full_name varchar(50) NOT NULL,
         phno varchar(100) NOT NULL,
         degree varchar(100) NOT NULL,
         university varchar(100) NOT NULL,
-        job_tittle varchar(100) NOT NULL,
+        job_title varchar(100) NOT NULL,
         company varchar(100) NOT NULL,
         employment_history varchar(100) NOT NULL,
         linkedin varchar(100) NOT NULL,
         address varchar(100) NOT NULL,
-		PRIMARY KEY (id)
-	  );";
+        PRIMARY KEY (id)
+    )";
 
-    
     $wpdb->query($sql);
 }
 

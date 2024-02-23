@@ -873,27 +873,30 @@ function create_table_for_shortlist_candidates() {
     global $wpdb;
 
     // Define the table name with the WordPress prefix
-    $table_name = $wpdb->prefix . 'shortlist_candidates'; // Corrected table name
+    $table_name = $wpdb->prefix . 'shortlisted_candidates'; // Corrected table name
 
     $sql = "CREATE TABLE $table_name (
-        id int(11) NOT NULL AUTO_INCREMENT,
-        full_name varchar(50) NOT NULL,
-        phno varchar(100) NOT NULL,
-        degree varchar(100) NOT NULL,
-        university varchar(100) NOT NULL,
-        skills varchar(100) NOT NULL,
-        job_title varchar(100) NOT NULL, // Corrected field name
-        company varchar(100) NOT NULL,
-        employment_history varchar(100) NOT NULL,
-        linkedin varchar(100) NOT NULL,
-        address varchar(100) NOT NULL,
-        PRIMARY KEY (id)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `degree` varchar(255) DEFAULT NULL,
+  `university` varchar(255) DEFAULT NULL,
+  `job_title` varchar(255) DEFAULT NULL,
+  `company` varchar(255) DEFAULT NULL,
+  `employment_history` varchar(255) DEFAULT NULL,
+  `skills` varchar(255) DEFAULT NULL,
+  `linkedin` varchar(255) DEFAULT NULL,
+  `phno` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `pdf_url` varchar(255) DEFAULT NULL,
+  `comments` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
     )";
 
     $wpdb->query($sql);
 }
 
-register_activation_hook(__FILE__, 'create_table_for_shortlist_candidates');
+register_activation_hook(__FILE__, 'create_table_for_shortlisted_candidates');
 
 // Resume table
 function create_table_for_resume() {
@@ -903,18 +906,23 @@ function create_table_for_resume() {
     $table_name = $wpdb->prefix . 'resumes';
 
     $sql = "CREATE TABLE $table_name (
-        id int(11) NOT NULL AUTO_INCREMENT,
-        full_name varchar(50) NOT NULL,
-        phno varchar(100) NOT NULL,
-        degree varchar(100) NOT NULL,
-        university varchar(100) NOT NULL,
-        job_title varchar(100) NOT NULL,
-        company varchar(100) NOT NULL,
-        employment_history varchar(100) NOT NULL,
-        linkedin varchar(100) NOT NULL,
-        address varchar(100) NOT NULL,
-        PRIMARY KEY (id)
+         `id` int(55) NOT NULL AUTO_INCREMENT,
+        `full_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+        `email` varchar(255) NOT NULL,
+        `degree` varchar(255) NOT NULL,
+        `university` varchar(255) NOT NULL,
+        `job_title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+        `company` varchar(255) NOT NULL,
+        `employment_history` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+        `skills` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+        `linkedin` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+        `phno` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+        `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+        `pdf_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+        PRIMARY KEY (`id`)
     )";
+    
+    
 
     $wpdb->query($sql);
 }

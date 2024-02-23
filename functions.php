@@ -47,8 +47,29 @@ function shortlisted_candidates_page() {
 
     <div class="wrap">
         <h1>Shortlisted Candidates</h1>
-        <button type="submit" name="forward_email" value="<?php echo esc_attr($hr_email); ?>">Email Forward to PM</button>
-        
+        <!-- mail to PM start -->
+        <form method="post">
+    <button type="submit" name="emailpm">Email Forward to PM</button>
+</form>
+
+<?php
+if(isset($_POST['emailpm'])){
+    $to = 'nouman.wpbrigade@gmail.com'; // jis ko send krne ha
+    $subject = 'Check the short listed candidate list';
+    $message = 'Please check the short listed candidate list.';
+    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); // jis email sa message huna ha
+
+    $sent = wp_mail($to, $subject, $message, $headers);
+
+    if($sent){
+        echo '<p>Email sent successfully!</p>';
+    } else {
+        echo '<p>Failed to send email.</p>';
+    }
+}
+?>
+
+        <!-- mail to PM end -->
 
         <table class="wp-list-table widefat fixed striped" id="shortlisted-candidates-table">
     <!-- Table Header -->
@@ -504,17 +525,33 @@ function hr_management_page() {
             <div class="hr-dashboard-section">
                 <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
                 <h2>Received CVs</h2>
-                <p>134</p>
+                <h2><?php
+                global $wpdb;
+                $table_name = $wpdb->prefix . 'resumes';
+                
+                $query = $wpdb->prepare("SELECT COUNT(*) FROM $table_name");
+                $total_rows = $wpdb->get_var($query);
+                
+                echo $total_rows;
+                ?></h2>
             </div>
-            <div class="hr-dashboard-section">
+            <!-- <div class="hr-dashboard-section">
                 <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
                 <h2>Forwarded Candidates</h2>
                 <p>56</p>
-            </div>
+            </div> -->
             <div class="hr-dashboard-section">
                 <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
                 <h2>Shortlisted Candidates</h2>
-                <p>20</p>
+                <h2><?php
+                global $wpdb;
+                $table_sl = $wpdb->prefix . 'shortlisted_candidates';
+                
+                $query = $wpdb->prepare("SELECT COUNT(*) FROM $table_sl");
+                $total_rows = $wpdb->get_var($query);
+                
+                echo $total_rows;
+                ?></h2>
             </div>
 
             <!-- Add more dashboard sections as needed -->

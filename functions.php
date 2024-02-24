@@ -518,12 +518,16 @@ function hr_management_page() {
 
             <!-- HR Dashboard Section 1 -->
             <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/profile.png" width="70" height="52" alt="Icon 1"></a>
+            <a href="?page=hr_management_page&action=review_cvs">
+    <img src="<?php echo plugins_url('/assets/img/profile.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
+</a>
                 <h2><?php echo esc_html($user_display_name); ?></h2>
                 <p>Helping Hand for HRs</p>
             </div>
             <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
+            <a href="?page=hr_management_page&action=review_cvs">
+                <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
+            </a>
                 <h2>Received CVs</h2>
                 <h2><?php
                 global $wpdb;
@@ -541,7 +545,9 @@ function hr_management_page() {
                 <p>56</p>
             </div> -->
             <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
+            <a href="?page=hr_management_page&action=review_cvs">
+                <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
+            </a>
                 <h2>Shortlisted Candidates</h2>
                 <h2><?php
                 global $wpdb;
@@ -906,7 +912,7 @@ add_filter('the_content', 'email_shortcode_function');
 // database tables
 // shortlist_candidate
 // Shortlist_candidates table
-function create_table_for_shortlist_candidates() {
+function create_table_for_shortlisted_candidates() {
     global $wpdb;
 
     // Define the table name with the WordPress prefix

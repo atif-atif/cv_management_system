@@ -7,6 +7,17 @@ Author: atif
 */
 ob_start();
 
+// redirect to user login
+function redirect_non_logged_in_users_to_login() {
+    if ( ! is_user_logged_in() && ! is_page('login') ) {
+        wp_redirect( wp_login_url() );
+        exit();
+    }
+}
+add_action( 'template_redirect', 'redirect_non_logged_in_users_to_login' );
+
+
+
 // Enqueue necessary scripts and styles
 function csv_management_enqueue_scripts() {
     wp_enqueue_style('csv-management-style', plugins_url('/css/style.css', __FILE__));
@@ -203,7 +214,9 @@ function received_cvs_page() {
     // Retrieve data from the table
     $resumes_data = $wpdb->get_results($sql, ARRAY_A);
 
+
     ?>
+
     <div class="wrap">
         <h1>Received CVs</h1>
 
@@ -390,6 +403,8 @@ if (isset($_POST['insert'])) {
 <?php
  }
 
+
+
 // AJAX handler
 add_action('wp_ajax_get_filtered_data', 'get_filtered_data');
 add_action('wp_ajax_nopriv_get_filtered_data', 'get_filtered_data');
@@ -509,7 +524,7 @@ function hr_management_page() {
     $current_user = wp_get_current_user();
     $user_display_name = $current_user->display_name;
 
-    // Display the HR Dashboard
+
     ?>
     <div class="wrap">
         <h1>HR Dashboard</h1>
@@ -567,11 +582,6 @@ function hr_management_page() {
     <?php
 }
 
-
-
-
-
-
 function handle_resume_submission() {
     if (isset($_POST['resume_submission_submit'])) {
         // Collect submitted data
@@ -592,36 +602,50 @@ function handle_resume_submission() {
 
 // Hook to handle resume submission when the form is submitted
 add_action('admin_init', 'handle_resume_submission');
-
+?>
+<?php
 function pdfgenreration_management_page() {
     ?>
-    <div class="wrap">
-        <h1>PDF Generation</h1>
+    <div class="wrap" style="max-width: 600px; margin: 0 auto;">
+        <h1>PDF Generate</h1>
         
         <form method="post" action="">
-            <label for="hr_name">Enter HR Name:</label>
-            <input type="text" name="hr_name" id="hr_name" required><br>
+            <div style="margin-bottom: 20px;">
+                <label for="hr_name" style="display: block; margin-bottom: 5px;">Enter HR Name:</label>
+                <input type="text" name="hr_name" id="hr_name" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
+            </div>
 
-            <label for="select_data">Select Data:</label>
-            <input type="date" name="reviewed_cvs" id="reviewed_cvs" required><br>
-            <br>
+            <div style="margin-bottom: 20px;">
+                <label for="select_data" style="display: block; margin-bottom: 5px;">Select Data:</label>
+                <input type="date" name="reviewed_cvs" id="reviewed_cvs" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
+            </div>
 
-            <label for="reviewed_cvs">Reviewed CVs:</label>
-            <input type="number" name="reviewed_cvs" id="reviewed_cvs" required><br>
+            <div style="margin-bottom: 20px;">
+                <label for="reviewed_cvs" style="display: block; margin-bottom: 5px;">Reviewed CVs:</label>
+                <input type="number" name="reviewed_cvs" id="reviewed_cvs" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
+            </div>
 
-            <label for="shortlisted_cvs">Shortlisted CVs:</label>
-            <input type="number" name="shortlisted_cvs" id="shortlisted_cvs" required><br>
+            <div style="margin-bottom: 20px;">
+                <label for="shortlisted_cvs" style="display: block; margin-bottom: 5px;">Shortlisted CVs:</label>
+                <input type="number" name="shortlisted_cvs" id="shortlisted_cvs" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
+            </div>
 
-            <label for="hired_interns">Hired Interns:</label>
-            <input type="number" name="hired_interns" id="hired_interns" required><br>
+            <div style="margin-bottom: 20px;">
+                <label for="hired_interns" style="display: block; margin-bottom: 5px;">Hired Interns:</label>
+                <input type="number" name="hired_interns" id="hired_interns" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
+            </div>
 
-            <label for="hired_employees">Hired Employees:</label>
-            <input type="number" name="hired_employees" id="hired_employees" required><br>
+            <div style="margin-bottom: 20px;">
+                <label for="hired_employees" style="display: block; margin-bottom: 5px;">Hired Employees:</label>
+                <input type="number" name="hired_employees" id="hired_employees" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
+            </div>
 
-            <label for="workforce_required">Workforce Required:</label>
-            <input type="number" name="workforce_required" id="workforce_required" required><br>
+            <div style="margin-bottom: 20px;">
+                <label for="workforce_required" style="display: block; margin-bottom: 5px;">Workforce Required:</label>
+                <input type="number" name="workforce_required" id="workforce_required" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
+            </div>
 
-            <button type="submit" name="generate_pdf">Generate PDF</button>
+            <button type="submit" name="generate_pdf" style="padding: 10px 20px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer; width: 100%;">Generate PDF</button>
         </form>
         <?php
         if (isset($_POST['generate_pdf'])) {
@@ -656,9 +680,13 @@ function generate_pdf($data) {
     </script>
 
     <!-- Button to trigger printing -->
-    <button onclick="printTable()">Print Table</button>
+    <button onclick="printTable()" style="padding: 10px 20px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer;">Print Table</button>
     <?php
 }
+add_shortcode('pdf_generation', 'pdfgenreration_management_page');
+?>
+
+<?php
 // Add the custom shortcode function
 function custom_shortcode_function() {
     ob_start(); // Start output buffering
@@ -882,9 +910,14 @@ function pdfcv_shortcode_function() {
 
     $output = ob_get_clean(); // Get the output and clean the buffer
     return $output; // Return the buffered output
+
+
+    
 }
 
 add_shortcode('pdfcv_shortcode', 'pdfcv_shortcode_function');
+
+
 
 
 function email_shortcode_function($content) {
@@ -972,4 +1005,482 @@ function create_table_for_resume() {
 
 register_activation_hook(__FILE__, 'create_table_for_resume');
 
+function custom_login_redirect( $redirect_to, $request, $user ) {
+    // Check if $user is a WP_User object
+    if ( is_a( $user, 'WP_User' ) ) {
+        // Get the current user's role
+        $user_role = $user->roles[0];
+ 
+        // Set the URL to redirect users to based on their role
+        if ( $user_role == 'subscriber' ) {
+            $redirect_to = '/testing/';
+        } 
+    } else {
+        // Handle WP_Error
+        error_log( 'Custom login redirect error: User is not a valid WP_User object' );
+        // You can redirect the user to a default location or display an error message
+        // $redirect_to = '/default-redirect-location/';
+    }
+
+    return $redirect_to;
+}
+add_filter( 'login_redirect', 'custom_login_redirect', 10, 3 );
+
+?>
+
+
+
+
+
+
+
+<!-- dubara use kiya hai hrdashboard code for shortcode use -->
+<!-- dubara use kiya hai hrdashboard code for shortcode use -->
+
+<?php
+function follow_us_link()
+{
+    $current_user = wp_get_current_user();
+    $user_display_name = $current_user->display_name;
+    ob_start();
+    ?>
+    <div class="wrap">
+        <h1 style="margin: 0 0 50px; font-size: 20px;">HR Dashboard</h1>
+
+        <div class="hr-dashboard-container" style="gap: 137px;display: flex; justify-content: space-around;">
+
+            <!-- HR Dashboard Section 1 -->
+            <div class="hr-dashboard-section">
+                <a href="?page=hr_management_page&action=review_cvs">
+                    <img src="<?php echo plugins_url('/assets/img/profile.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
+                </a>
+                <h2  style="margin: 0 0 50px; font-size: 20px;"><?php echo esc_html($user_display_name); ?></h2>
+                <p>Helping Hand for HRs</p>
+            </div>
+            <div class="hr-dashboard-section">
+                <a href="?page=hr_management_page&action=review_cvs">
+                    <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
+                </a>
+                <h2  style="margin: 0 0 50px; font-size: 20px;">Received CVs</h2>
+                <h2><?php
+                    global $wpdb;
+                    $table_name = $wpdb->prefix . 'resumes';
+                    
+                    $query = $wpdb->prepare("SELECT COUNT(*) FROM $table_name");
+                    $total_rows = $wpdb->get_var($query);
+                    
+                    echo $total_rows;
+                    ?></h2>
+            </div>
+            <!-- <div class="hr-dashboard-section">
+                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
+                <h2>Forwarded Candidates</h2>
+                <p>56</p>
+            </div> -->
+            <div class="hr-dashboard-section">
+                <a href="?page=hr_management_page&action=review_cvs">
+                    <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
+                </a>
+                <h2 style="margin: 0 0 50px; font-size: 20px;">Shortlisted Candidates</h2>
+                <h2><?php
+                    global $wpdb;
+                    $table_sl = $wpdb->prefix . 'shortlisted_candidates';
+                    
+                    $query = $wpdb->prepare("SELECT COUNT(*) FROM $table_sl");
+                    $total_rows = $wpdb->get_var($query);
+                    
+                    echo $total_rows;
+                    ?></h2>
+            </div>
+
+            <!-- Add more dashboard sections as needed -->
+
+        </div>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('follow_us', 'follow_us_link');
+?>
+
+
+
+<?php
+function received_cvv_page()
+{
+    global $wpdb;
+
+    $table_name = 'wp_resumes';
+
+    // Check if the table exists
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        echo "<p>Table '$table_name' not found!</p>";
+        return;
+    }
+
+    // Check if search is initiated
+    $search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
+
+    // Retrieve data from the table with optional search filter
+    $sql = "SELECT * FROM $table_name";
+    if (!empty($search_query)) {
+        $sql = $wpdb->prepare("SELECT * FROM $table_name WHERE skills LIKE %s", '%' . $search_query . '%');
+    }
+
+    // Retrieve data from the table
+    $resumes_data = $wpdb->get_results($sql, ARRAY_A);
+    ?>
+
+    <style>
+        /* Style for the form */
+        #search-form {
+            margin-bottom: 20px;
+        }
+
+        #search-form input[type="text"] {
+            width: 200px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        #search-form input[type="submit"] {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* Style for the table */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Style for buttons */
+        button {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        .table-wrap{
+            max-width: 1170px;
+            width: 100%;
+            overflow-x: auto;
+            margin: 0 auto;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <div class='table-wrap'>
+        <h1>Received CVs</h1>
+
+        <!-- Search Form -->
+        <form id="search-form" method="GET">
+            <label for="search">Search by Skills:</label>
+            <input type="text" name="search" id="search" value="<?php echo esc_attr($search_query); ?>" />
+            <input type="submit" value="Search" />
+        </form>
+
+        <table>
+            <!-- Table Header -->
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Degree</th>
+                    <th>University</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Employment History</th>
+                    <th>Skills</th>
+                    <th>LinkedIn</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>CV Name</th>
+                    <th>Action</th>
+                    <th>Operations</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($resumes_data as $resume) {
+                echo '<tr>';
+                echo '<td>' . esc_html($resume['id']) . '</td>';
+                echo '<td>' . esc_html($resume['full_name']) . '</td>';
+                echo '<td>' . esc_html($resume['email']) . '</td>';
+                echo '<td>' . esc_html($resume['degree']) . '</td>';
+                echo '<td>' . esc_html($resume['university']) . '</td>';
+                echo '<td>' . esc_html($resume['job_title']) . '</td>';
+                echo '<td>' . esc_html($resume['company']) . '</td>';
+                echo '<td>' . esc_html($resume['employment_history']) . '</td>';
+                echo '<td>' . esc_html($resume['skills']) . '</td>';
+                echo '<td>' . esc_html($resume['linkedin']) . '</td>';
+                echo '<td>' . esc_html($resume['phno']) . '</td>';
+                echo '<td>' . esc_html($resume['address']) . '</td>';
+                echo '<td>';
+                $cv_name = esc_html($resume['pdf_url']);
+                $pdf_url = get_cv_pdf_url($cv_name); // Function to get PDF URL
+
+                if ($pdf_url) {
+                    echo '<a href="'. esc_url($pdf_url) . '" target="_blank">Open PDF</a>';
+                } else {
+                    echo 'No PDF available';
+                }
+                echo '</td>';
+
+                // Action buttons
+                echo '<td>';
+                echo '<form method="post" action="">';
+                echo '<input type="hidden" name="resume_id" value="' . esc_html($resume['id']) . '">';
+                echo '<input type="text" name="commentss" placeholder="Add comment" required>';
+                echo '<button type="submit" name="insert" title="' . esc_html($resume['id']) . '">Shortlist</button>';
+                echo '</form>';
+                // echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
+                // echo '</td>';
+
+                echo '<td>
+                        <form action="" method="post">
+                            <input type="hidden" name="id" value="' . esc_html($resume['id']) . '">
+                            <input type="submit" name="delete" value="Delete">
+                        </form>
+                    </td>';
+
+                echo '</tr>';
+            }
+            ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+}
+add_shortcode('received_cvv', 'received_cvv_page');
+?>
+
+<!-- shortlist_candidate code will use again -->
+<!-- shortlist_candidate code will use again -->
+<!-- shortlist_candidate code will use again -->
+
+<?php
+function display_shortlisted_candidates()
+{     
+    global $wpdb;
+
+    $table_name = 'wp_shortlisted_candidates';
+
+    // Check if the table exists
+    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+        echo "<p>Table '$table_name' not found!</p>";
+        return;
+    }
+
+    // Retrieve data from the table
+    $shortlisted_candidates_data = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A); 
+    
+   
+    ob_start();
+    ?>
+    <div class="table-wrap" style="max-width: 1170px; width: 100%; overflow-x: auto; margin: 0 auto; padding: 10px; margin-bottom: 20px;">
+        <h1 style="text-align: center;">Shortlisted Candidates</h1>
+
+        <table style="width: 100%; border-collapse: collapse;">
+            <!-- Table Header -->
+            <thead>
+                <tr >
+                    <th style="padding: 10px;">ID</th>
+                    <th style="padding: 10px;">Full Name</th>
+                    <th style="padding: 10px;">Email</th>
+                    <th style="padding: 10px;">Degree</th>
+                    <th style="padding: 10px;">University</th>
+                    <th style="padding: 10px;">Job Title</th>
+                    <th style="padding: 10px;">Company</th>
+                    <th style="padding: 10px;">Employment History</th>
+                    <th style="padding: 10px;">Skills</th>
+                    <th style="padding: 10px;">LinkedIn</th>
+                    <th style="padding: 10px;">Phone Number</th>
+                    <th style="padding: 10px;">Address</th>
+                    <th style="padding: 10px;">PDF URL</th>
+                    <th style="padding: 10px;">Comments</th>
+                    <th style="padding: 10px;">Operations</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($shortlisted_candidates_data as $candidate) {
+                echo '<tr>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['id']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['full_name']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['email']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['degree']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['university']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['job_title']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['company']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['employment_history']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['skills']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['linkedin']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['phno']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['address']) . '</td>';
+                
+                // Button to download PDF
+                echo '<td style="padding: 10px; border: 1px solid #ddd;"><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer;">Download PDF</button></form></td>';
+                
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['comments']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">
+                    <form action="" method="post">
+                        <input type="hidden" name="idsl" value="' . esc_html($candidate['id']) . '">
+                        <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: red; color: #fff; cursor: pointer;">
+                    </form>
+                </td>';
+
+                echo '</tr>';
+            }
+
+            // Delete shortlisted candidate 
+            if (isset($_POST['deleteShortlisted'])) {
+                global $wpdb;
+                $id_to_deletee = isset($_POST['idsl']) ? intval($_POST['idsl']) : 0;
+            
+                
+                if ($id_to_deletee > 0) {
+                    $delete_result = $wpdb->delete(
+                        'wp_shortlisted_candidates',
+                        array('id' => $id_to_deletee),
+                        array('%d') // ID is an integer
+                    );
+                    if ($delete_result !== false) {
+                        echo "Record deleted successfully.";
+                        header("location: #"); 
+                        exit; // Make sure to exit after redirecting
+                    }
+                    else {
+                        echo "Error deleting record.";
+                    }
+                }
+            }
+
+            ?>
+        </tbody>
+        <?php
+        // Handle form submission
+        if (isset($_POST['download_pdf'])) {
+            // Get the PDF URL from the form submission
+            $pdf_url = $_POST['download_pdf'];
+            
+            // Validate the PDF URL and extract the file name
+            $file_name = basename($pdf_url);
+            
+            // Set headers for file download
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment; filename="' . $file_name . '"');
+            
+            // Read the file and output its contents
+            readfile($pdf_url);
+            
+            // Exit to prevent further output
+            exit;
+        }
+
+        ?>
+
+
+    </table>
+
+</div>
+<?php
+return ob_get_clean();
+}
+
+add_shortcode('shortlisted_candidate', 'display_shortlisted_candidates');
+?>
+
+
+<!-- styling -->
+<style>
+
+/* .wrap {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+} */
+
+h4 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    margin-top: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="tel"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+input[type="file"] {
+    margin-top: 5px;
+}
+
+input[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+</style>
 

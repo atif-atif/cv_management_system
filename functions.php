@@ -3,7 +3,7 @@
 Plugin Name: CV Management System
 Description: A simple CV management system for WordPress.
 Version: 1.0
-Author: atif
+Author: Atif, Manal.
 */
 ob_start();
 
@@ -65,10 +65,10 @@ function shortlisted_candidates_page() {
 
 <?php
 if(isset($_POST['emailpm'])){
-    $to = 'nouman.wpbrigade@gmail.com'; // jis ko send krne ha
+    $to = 'nouman.wpbrigade@gmail.com'; 
     $subject = 'Check the short listed candidate list';
     $message = 'Please check the short listed candidate list.';
-    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); // jis email sa message huna ha
+    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); 
 
     $sent = wp_mail($to, $subject, $message, $headers);
 
@@ -130,8 +130,7 @@ if(isset($_POST['emailpm'])){
             <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="background-color: red; outline: none; border: none; padding:4px 7px; border-radius: 5px; color: #fff; cursor: pointer;">
         </form>
     </td>';
-
-    
+  
         echo '</tr>';
     }
 
@@ -180,8 +179,6 @@ if (isset($_POST['download_pdf'])) {
     exit;
 }
 ?>
-
-
 
 </table>
 
@@ -284,8 +281,6 @@ function received_cvs_page() {
         echo '<input type="text" name="commentss" placeholder="Add comment" required> <br>';
         echo '<button type="submit" name="insert" title="' . esc_html($resume['id']) . '">Shortlist</button>';
         echo '</form>';
-        // echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
-        // echo '</td>';
 
         echo '<td>
                 <form action="" method="post">
@@ -326,12 +321,7 @@ function received_cvs_page() {
         }
     } 
 
-   
     ?>
-    
-    
-    
-    
 </tbody>
 
 
@@ -357,8 +347,6 @@ if (isset($_POST['insert'])) {
         $resume_data = $wpdb->get_row("SELECT * FROM wp_resumes WHERE id = $resume_id", ARRAY_A);
         $comment = $_POST['commentss'];
         $insert_id = $_POST['resume_id'];
-       
-
         // Check if resume data is retrieved successfully
         if ($resume_data) {
             // Insert the data into wp_shortlisted_candidates table
@@ -392,19 +380,12 @@ if (isset($_POST['insert'])) {
     }
 }
 
-// if(isset($_POST['delete'])){
-//     $id = ;
-
-// }
 ?>
 
         </table>
     </div>
 <?php
  }
-
-
-
 // AJAX handler
 add_action('wp_ajax_get_filtered_data', 'get_filtered_data');
 add_action('wp_ajax_nopriv_get_filtered_data', 'get_filtered_data');
@@ -468,8 +449,6 @@ function shortlist_candidate() {
     $resume_id = isset($_POST['resume_id']) ? intval($_POST['resume_id']) : 0;
     $comments = isset($_POST['comments']) ? sanitize_text_field($_POST['comments']) : '';
 
-    // Perform necessary database operations here
-    // For example, insert data into the shortlisted candidates table
 
     $response = array('message' => 'Candidate shortlisted successfully!');
     wp_send_json($response);
@@ -505,9 +484,6 @@ function csv_management_page() {
     ?>
     <div class="wrap">
         <h1>CV Management System</h1>
-        
-      
-
     </div>
     <?php
 }
@@ -519,12 +495,9 @@ function hr_management_page() {
         wp_redirect(wp_login_url());
         exit;
     }
-
     // Get the current user's information
     $current_user = wp_get_current_user();
     $user_display_name = $current_user->display_name;
-
-
     ?>
     <div class="wrap">
         <h1>HR Dashboard</h1>
@@ -554,11 +527,6 @@ function hr_management_page() {
                 echo $total_rows;
                 ?></h2>
             </div>
-            <!-- <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
-                <h2>Forwarded Candidates</h2>
-                <p>56</p>
-            </div> -->
             <div class="hr-dashboard-section">
             <a href="?page=hr_management_page&action=review_cvs">
                 <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
@@ -649,13 +617,6 @@ function pdfgenreration_management_page() {
         </form>
         <?php
         if (isset($_POST['generate_pdf'])) {
-            // Process form data and generate PDF here
-            // Use the entered data to generate the HR report in PDF format
-            // You may want to use a PDF generation library like TCPDF or FPDF
-            // Example: include the library and write code to create a PDF
-            // ...
-
-            // For demonstration purposes, let's assume a function generate_pdf() is used
             generate_pdf($_POST);
         }
         ?>
@@ -663,12 +624,6 @@ function pdfgenreration_management_page() {
     <?php
 }
 function generate_pdf($data) {
-    // Placeholder function
-    // Implement the actual PDF generation code here using a library like TCPDF or FPDF
-    // Example: TCPDF code
-    // ...
-  
-    // For demonstration purposes, let's just print the data
     echo '<pre>';
     print_r($data);
     echo '</pre>';
@@ -682,6 +637,7 @@ function generate_pdf($data) {
     <!-- Button to trigger printing -->
     <button onclick="printTable()" style="padding: 10px 20px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer;">Print Table</button>
     <?php
+    
 }
 add_shortcode('pdf_generation', 'pdfgenreration_management_page');
 ?>
@@ -738,7 +694,7 @@ function custom_shortcode_function() {
             <label><input type="checkbox" name="skills[]" value="Plugin Development">Java</label><br>
             <label><input type="checkbox" name="skills[]" value="PSD to HTML&CSS"> PSD to HTML&CSS</label> <br>
             <label>Other :</label><input type="text" name="skills[]" value="" placeholder="java,c++"><br>
-            <!-- Add more skill checkboxes as needed -->
+           
 
             <h5><strong>Contact Details</strong></h5>
             <label for="linkedin">Linkedin Profile:</label>
@@ -831,7 +787,6 @@ function custom_shortcode_function() {
 
         // Check if email sent successfully to user
         if ($sent_to_user) {
-            // header("location: http://localhost:10016/resume-submission-portal/");
             echo '<p>Email sent successfully!</p>';
         } else {
             echo '<p>Failed to send email.</p>';
@@ -876,7 +831,7 @@ function pdfcv_shortcode_function() {
                 mkdir('uploads', 0777, true);
             }
 
-            $cv_destination = "uploads/$cv_name"; // Choose your desired destination folder
+            $cv_destination = "uploads/$cv_name"; 
 
             if (move_uploaded_file($cv_tmp_name, $cv_destination)) {
                 // Insert data into the database
@@ -896,7 +851,6 @@ function pdfcv_shortcode_function() {
         $conn->close();
     }
 
-    // Display the HTML form
     ?>
     <div class="wrap">
         <form method="post" enctype="multipart/form-data">
@@ -910,7 +864,6 @@ function pdfcv_shortcode_function() {
 
     $output = ob_get_clean(); // Get the output and clean the buffer
     return $output; // Return the buffered output
-
 
     
 }
@@ -940,8 +893,6 @@ function email_shortcode_function($content) {
     return $content;
 }
 add_filter('the_content', 'email_shortcode_function');
-
-
 // database tables
 // shortlist_candidate
 // Shortlist_candidates table
@@ -997,9 +948,6 @@ function create_table_for_resume() {
         `pdf_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         PRIMARY KEY (`id`)
     )";
-    
-    
-
     $wpdb->query($sql);
 }
 
@@ -1013,13 +961,12 @@ function custom_login_redirect( $redirect_to, $request, $user ) {
  
         // Set the URL to redirect users to based on their role
         if ( $user_role == 'subscriber' ) {
-            $redirect_to = '/testing/';
+            $redirect_to = '/cv-submission/';
         } 
     } else {
         // Handle WP_Error
         error_log( 'Custom login redirect error: User is not a valid WP_User object' );
-        // You can redirect the user to a default location or display an error message
-        // $redirect_to = '/default-redirect-location/';
+        
     }
 
     return $redirect_to;
@@ -1027,16 +974,7 @@ function custom_login_redirect( $redirect_to, $request, $user ) {
 add_filter( 'login_redirect', 'custom_login_redirect', 10, 3 );
 
 ?>
-
-
-
-
-
-
-
-<!-- dubara use kiya hai hrdashboard code for shortcode use -->
-<!-- dubara use kiya hai hrdashboard code for shortcode use -->
-
+<!-- HR DASHBOARD shortcode-->
 <?php
 function follow_us_link()
 {
@@ -1045,7 +983,7 @@ function follow_us_link()
     ob_start();
     ?>
     <div class="wrap">
-        <h1 style="margin: 0 0 50px; font-size: 20px;">HR Dashboard</h1>
+        <h1 style="margin: 0 0 50px; font-size: 50px;">HR Dashboard</h1>
 
         <div class="hr-dashboard-container" style="gap: 137px;display: flex; justify-content: space-around;">
 
@@ -1054,7 +992,7 @@ function follow_us_link()
                 <a href="?page=hr_management_page&action=review_cvs">
                     <img src="<?php echo plugins_url('/assets/img/profile.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
                 </a>
-                <h2  style="margin: 0 0 50px; font-size: 20px;"><?php echo esc_html($user_display_name); ?></h2>
+                <h2  style="margin: 0 0 20px; font-size: 20px;"><?php echo esc_html($user_display_name); ?></h2>
                 <p>Helping Hand for HRs</p>
             </div>
             <div class="hr-dashboard-section">
@@ -1072,11 +1010,6 @@ function follow_us_link()
                     echo $total_rows;
                     ?></h2>
             </div>
-            <!-- <div class="hr-dashboard-section">
-                <a href="?page=hr_management_page&action=review_cvs"><img src="http://localhost:10016/wp-content/uploads/2024/02/documents.png" width="70" height="52" alt="Icon 1"></a>
-                <h2>Forwarded Candidates</h2>
-                <p>56</p>
-            </div> -->
             <div class="hr-dashboard-section">
                 <a href="?page=hr_management_page&action=review_cvs">
                     <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
@@ -1092,9 +1025,6 @@ function follow_us_link()
                     echo $total_rows;
                     ?></h2>
             </div>
-
-            <!-- Add more dashboard sections as needed -->
-
         </div>
     </div>
     <?php
@@ -1103,8 +1033,7 @@ function follow_us_link()
 add_shortcode('follow_us', 'follow_us_link');
 ?>
 
-
-
+<!-- received cv shortcode -->
 <?php
 function received_cvv_page()
 {
@@ -1117,7 +1046,6 @@ function received_cvv_page()
         echo "<p>Table '$table_name' not found!</p>";
         return;
     }
-
     // Check if search is initiated
     $search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
 
@@ -1130,7 +1058,6 @@ function received_cvv_page()
     // Retrieve data from the table
     $resumes_data = $wpdb->get_results($sql, ARRAY_A);
     ?>
-
     <style>
         /* Style for the form */
         #search-form {
@@ -1138,7 +1065,11 @@ function received_cvv_page()
         }
 
         #search-form input[type="text"] {
-            width: 200px;
+
+            width: 205px;
+            width: 260px;
+
+            height: 45px;
             padding: 5px;
             border-radius: 5px;
             border: 1px solid #ccc;
@@ -1152,6 +1083,10 @@ function received_cvv_page()
             background-color: #007bff;
             color: #fff;
             cursor: pointer;
+            width: 100px;
+            height: 45px;
+            height: 44px;
+
         }
 
         /* Style for the table */
@@ -1183,6 +1118,9 @@ function received_cvv_page()
             background-color: #007bff;
             color: #fff;
             cursor: pointer;
+            width: 100px;
+            height: 45px;
+            height: 44px;
         }
         .table-wrap{
             max-width: 1170px;
@@ -1195,13 +1133,16 @@ function received_cvv_page()
     </style>
 
     <div class='table-wrap'>
-        <h1>Received CVs</h1>
+    <h1 style="font-size: 50px; font-weight: bold;">Received CVs</h1>
+
+    <h1 style="font-size: 50px; font-weight: 600;">Received CVs</h1>
 
         <!-- Search Form -->
         <form id="search-form" method="GET">
             <label for="search">Search by Skills:</label>
             <input type="text" name="search" id="search" value="<?php echo esc_attr($search_query); ?>" />
             <input type="submit" value="Search" />
+            <button id="ReloadButton" type="button">Reload</button>
         </form>
 
         <table>
@@ -1259,18 +1200,111 @@ function received_cvv_page()
                 echo '<input type="text" name="commentss" placeholder="Add comment" required>';
                 echo '<button type="submit" name="insert" title="' . esc_html($resume['id']) . '">Shortlist</button>';
                 echo '</form>';
-                // echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
-                // echo '</td>';
-
                 echo '<td>
                         <form action="" method="post">
                             <input type="hidden" name="id" value="' . esc_html($resume['id']) . '">
                             <input type="submit" name="delete" value="Delete">
                         </form>
                     </td>';
-
                 echo '</tr>';
             }
+            // delete record from 
+    if (isset($_POST['delete'])) {
+        global $wpdb;
+    
+        // Get the ID from the hidden input field
+        $id_to_delete = isset($_POST['id']) ? intval($_POST['id']) : 0;
+    
+        // Check if the ID is valid
+        if ($id_to_delete > 0) {
+            // Delete the record from the wp_shortlisted_candidates table
+            $delete_result = $wpdb->delete(
+                'wp_resumes',
+                array('id' => $id_to_delete),
+                array('%d') // ID is an integer
+            );
+    
+            // Check if the record is successfully deleted
+            if ($delete_result !== false) {
+                echo "Record deleted successfully.";
+                header("location: #"); // Redirect to the current page
+                exit; // Make sure to exit after redirecting
+            }
+            else {
+                echo "Error deleting record.";
+            }
+        }
+    } 
+    ?>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener to the reload button
+    var reloadButton = document.getElementById('ReloadButton');
+    if (reloadButton) {
+        reloadButton.addEventListener('click', function() {
+            location.reload(); // Reload the page
+        });
+    }
+});
+</script>
+
+
+
+<script>
+function printTable() {
+    window.print();
+}
+</script>
+
+<!-- Button to trigger printing -->
+<button onclick="printTable()">Print Table</button>
+<?php
+if (isset($_POST['insert'])) {
+    // Get the resume ID from the form submission
+    $resume_id = isset($_POST['resume_id']) ? intval($_POST['resume_id']) : 0;
+
+    // Check if the ID is valid
+    if ($resume_id > 0) {
+        global $wpdb;
+
+        // Prepare the data to be inserted
+        $resume_data = $wpdb->get_row("SELECT * FROM wp_resumes WHERE id = $resume_id", ARRAY_A);
+        $comment = $_POST['commentss'];
+        $insert_id = $_POST['resume_id'];
+        // Check if resume data is retrieved successfully
+        if ($resume_data) {
+            // Insert the data into wp_shortlisted_candidates table
+            $insert_result = $wpdb->insert(
+                'wp_shortlisted_candidates',
+                array(
+                    'full_name' => $resume_data['full_name'],
+                    'email' => $resume_data['email'],
+                    'degree' => $resume_data['degree'],
+                    'university' => $resume_data['university'],
+                    'job_title' => $resume_data['job_title'],
+                    'company' => $resume_data['company'],
+                    'employment_history' => $resume_data['employment_history'],
+                    'skills' => $resume_data['skills'],
+                    'linkedin' => $resume_data['linkedin'],
+                    'phno' => $resume_data['phno'],
+                    'address' => $resume_data['address'],
+                    'pdf_url' => $resume_data['pdf_url'],
+                    'comments' => $comment
+                )
+            );
+
+            if ($insert_result !== false) {
+                echo "Record inserted successfully.";
+            } else {
+                echo "Error inserting record." . $wpdb->last_error;
+            }
+        } else {
+            echo "Error retrieving resume data.";
+        }
+    }
+}
             ?>
             </tbody>
         </table>
@@ -1280,16 +1314,33 @@ function received_cvv_page()
 add_shortcode('received_cvv', 'received_cvv_page');
 ?>
 
-<!-- shortlist_candidate code will use again -->
-<!-- shortlist_candidate code will use again -->
-<!-- shortlist_candidate code will use again -->
 
+<!-- shortlist_candidate shortcode-->
 <?php
 function display_shortlisted_candidates()
-{     
+{
     global $wpdb;
 
     $table_name = 'wp_shortlisted_candidates';
+
+    // Email Forwarding Form
+    if(isset($_POST['emailpm'])){
+        $to = 'nouman.wpbrigade@gmail.com'; // jis ko send krne ha
+        $subject = 'Check the short listed candidate list';
+        $message = 'Please check the short listed candidate list.';
+        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); // jis email sa message huna ha
+
+        $sent = wp_mail($to, $subject, $message, $headers);
+
+        if($sent){
+            echo '<p>Email sent successfully!</p>';
+        } else {
+            echo '<p>Failed to send email.</p>';
+        }
+    }
+    ?>
+
+    <?php
 
     // Check if the table exists
     if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
@@ -1303,28 +1354,37 @@ function display_shortlisted_candidates()
    
     ob_start();
     ?>
+
+
     <div class="table-wrap" style="max-width: 1170px; width: 100%; overflow-x: auto; margin: 0 auto; padding: 10px; margin-bottom: 20px;">
-        <h1 style="text-align: center;">Shortlisted Candidates</h1>
+        <h1 style="font-size: 50px; font-weight: 100px;">Shortlisted Candidates</h1>
+
+           <!-- Email Forwarding Form -->
+           <form method="post">
+    <button type="submit" style="background: #007bff; width: 158px; height: 60px; border: none; color: #fff; font-size: 16px; border-radius: 5px; cursor: pointer;">Email Forward to PM</button>
+</form>
+
+        <h1 style="font-size: 50px; font-weight: 600;">Shortlisted Candidates</h1>
 
         <table style="width: 100%; border-collapse: collapse;">
             <!-- Table Header -->
             <thead>
                 <tr >
-                    <th style="padding: 10px;">ID</th>
-                    <th style="padding: 10px;">Full Name</th>
-                    <th style="padding: 10px;">Email</th>
-                    <th style="padding: 10px;">Degree</th>
-                    <th style="padding: 10px;">University</th>
-                    <th style="padding: 10px;">Job Title</th>
-                    <th style="padding: 10px;">Company</th>
-                    <th style="padding: 10px;">Employment History</th>
-                    <th style="padding: 10px;">Skills</th>
-                    <th style="padding: 10px;">LinkedIn</th>
-                    <th style="padding: 10px;">Phone Number</th>
-                    <th style="padding: 10px;">Address</th>
-                    <th style="padding: 10px;">PDF URL</th>
-                    <th style="padding: 10px;">Comments</th>
-                    <th style="padding: 10px;">Operations</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Full Name</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Email</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Degree</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">University</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Job Title</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Company</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Employment History</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Skills</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">LinkedIn</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Phone Number</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Address</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">PDF URL</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Comments</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Operations</th>
                 </tr>
             </thead>
             <tbody>
@@ -1351,7 +1411,8 @@ function display_shortlisted_candidates()
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">
                     <form action="" method="post">
                         <input type="hidden" name="idsl" value="' . esc_html($candidate['id']) . '">
-                        <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: red; color: #fff; cursor: pointer;">
+                        <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: red; color: #fff; cursor: pointer;">
+                        <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="padding: 5px 10px; width: 100px; height: 44px; border-radius: 5px; border: none; background-color: red; color: #fff; cursor: pointer;">
                     </form>
                 </td>';
 
@@ -1402,12 +1463,8 @@ function display_shortlisted_candidates()
             // Exit to prevent further output
             exit;
         }
-
         ?>
-
-
     </table>
-
 </div>
 <?php
 return ob_get_clean();
@@ -1416,19 +1473,8 @@ return ob_get_clean();
 add_shortcode('shortlisted_candidate', 'display_shortlisted_candidates');
 ?>
 
-
 <!-- styling -->
 <style>
-
-/* .wrap {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-} */
-
 h4 {
     text-align: center;
     color: #333;
@@ -1476,6 +1522,8 @@ input[type="submit"] {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    width: 100px;
+    height: 44px;
 }
 
 input[type="submit"]:hover {

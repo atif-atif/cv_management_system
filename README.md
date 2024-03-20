@@ -1,5 +1,5 @@
 === CV Manager ===
-Contributors: (WPBrigade, Manal Kashif, Hammad Nazir, Muhammad Atif, Zaheer Ghuman)
+Contributors: (WPBrigade, Manal Kashif,  Muhammad Atif)
 Tags: CV Forms , CV Management System, Recruitment, HR management.
 Requires at least: 4.7
 Tested up to: 5.4
@@ -12,7 +12,6 @@ Multisite: No
 CV management system is a plugin that manages the CVs on the HR side and also allows the candidates to upload, build or email the resume. This acts as a platform for HR’s and Candidates in order to manage CVs and apply for jobs respectively. 
 
 == Description ==
-
 
 This plugin simplifies the process of organizing, updating, and accessing CV information, making it an indispensable asset for HR professionals, recruiters, and organizations focused on efficient talent management. The CV Manager Plugin is a dynamic solution for seamlessly organizing and optimizing your curriculum vitae (CV) management. With its user-friendly interface, this plugin simplifies the uploading, and tracking of CV data, making it an invaluable asset for HR professionals and recruiters. Its features include, The CV Form that allows the candidate to build the CV, this also provides the options to send CV via Email or upload the CV.  CVs are displayed on the dashboard to HR, the HR can add the comments, shortlist the CV’s, Generate the Pdf of candidate’s information, send CVs to the project manager, search and filter the CVs on the basis of skills. Elevate your recruitment process with the CV Manager Plugin, ensuring a streamlined and effective approach to talent management.
 
@@ -42,16 +41,20 @@ Here's a link to [Slides] (“ https://docs.google.com/presentation/d/19XJzNu8Tj
 * PM Receives Shortlisted CVs : The PMs receive the CVs that are shortlisted by the HR along with the comments that were added by the HR.
 
 == Frontend==
-The CV management plugin consists of the forms that work on the frontend of the user. The forms are built in the function.php file. Some of the short codes are provided below, one may use them to create the forms.
+The CV management plugin consists of the forms that work on the frontend of the user. The user may download our child theme to get the best experience on the frontend as well but if the user doesn't want to download that they may use the short codes along the plugin to get the pages The pages are built in the function.php file. Some of the short codes are provided below, one may use them to create the forms. If you are only using our plugin use these shortcodes to generate the pages.
 Short Codes:
-Build your resume: [custom_shortcode]
-Email your CV: [email_inquiry_shortcode]
-
+Submission in Pdf: [pdf_generation]
+Resume Submission: [custom_shortcode]
+Generate PDF report: [pdfcv_shortcode]
+HR Dashboard:[follow_us]
+Received CV: [received_cvv]
+Shortlisted Candidates: [shortlisted_candidate]
 
 == Installation ==
 
 1. Upload the plugin to your 'wp-content/plugins' directory, or download and install automatically through your admin panel.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. If the user wants to download the child theme along this to get the frontend as well. Otherwise the pages are automatically generated in the pages section.
 
 == Frequently Asked Questions ==
 

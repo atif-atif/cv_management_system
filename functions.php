@@ -3,7 +3,7 @@
 Plugin Name: CV Management System
 Description: A simple CV management system for WordPress.
 Version: 1.0
-Author: Atif, Manal.
+Author: Atif, Manal
 */
 ob_start();
 
@@ -20,10 +20,41 @@ add_action( 'template_redirect', 'redirect_non_logged_in_users_to_login' );
 
 // Enqueue necessary scripts and styles
 function csv_management_enqueue_scripts() {
-    wp_enqueue_style('csv-management-style', plugins_url('/css/style.css', __FILE__));
+    // wp_enqueue_style('csv-management-style', plugins_url('/css/style.css', __FILE__));
     wp_enqueue_script('csv-management-script', plugins_url('/js/script.js', __FILE__), array('jquery'), null, true);
 }
 add_action('admin_enqueue_scripts', 'csv_management_enqueue_scripts');
+
+// Function to create pages with shortcodes
+function create_plugin_pages() {
+    
+    $pages = array(
+        'HR DASHBOARD' => '[follow_us]',
+        'RECEIVED CVS' => '[received_cvv]',
+        'SHORTLISTED CANDIDATES' => '[shortlisted_candidate]',
+        'RESUME SUBMISSION' => '[custom_shortcode]',
+        'GENERATE PDF REPORT' => '[pdf_generation]',
+        
+    );
+
+    foreach ($pages as $title => $content) {
+        // Check if the page doesn't exist already
+        if (!get_page_by_title($title)) {
+            $new_page = array(
+                'post_title'    => $title,
+                'post_content'  => $content,
+                'post_status'   => 'publish',
+                'post_type'     => 'page',
+            );
+
+            // Insert the page into the database
+            wp_insert_post($new_page);
+        }
+    }
+}
+
+// Hook into activation
+register_activation_hook(__FILE__, 'create_plugin_pages');
 
 // Create the admin menu page
 
@@ -130,7 +161,8 @@ if(isset($_POST['emailpm'])){
             <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="background-color: red; outline: none; border: none; padding:4px 7px; border-radius: 5px; color: #fff; cursor: pointer;">
         </form>
     </td>';
-  
+
+    
         echo '</tr>';
     }
 
@@ -322,6 +354,10 @@ function received_cvs_page() {
     } 
 
     ?>
+    
+    
+    
+    
 </tbody>
 
 
@@ -347,6 +383,8 @@ if (isset($_POST['insert'])) {
         $resume_data = $wpdb->get_row("SELECT * FROM wp_resumes WHERE id = $resume_id", ARRAY_A);
         $comment = $_POST['commentss'];
         $insert_id = $_POST['resume_id'];
+       
+
         // Check if resume data is retrieved successfully
         if ($resume_data) {
             // Insert the data into wp_shortlisted_candidates table
@@ -571,8 +609,10 @@ function handle_resume_submission() {
 // Hook to handle resume submission when the form is submitted
 add_action('admin_init', 'handle_resume_submission');
 ?>
+
 <?php
 function pdfgenreration_management_page() {
+    ob_start();
     ?>
     <div class="wrap" style="max-width: 600px; margin: 0 auto;">
         <h1>PDF Generate</h1>
@@ -617,17 +657,22 @@ function pdfgenreration_management_page() {
         </form>
         <?php
         if (isset($_POST['generate_pdf'])) {
+            // Call generate_pdf function without returning output
             generate_pdf($_POST);
         }
         ?>
     </div>
     <?php
+    // Return the buffered output
+    return ob_get_clean();  
 }
+
 function generate_pdf($data) {
+    // Generate PDF content here
     echo '<pre>';
     print_r($data);
     echo '</pre>';
-?>
+    ?>
     <script>
     function printTable() {
         window.print();
@@ -635,16 +680,19 @@ function generate_pdf($data) {
     </script>
 
     <!-- Button to trigger printing -->
-    <button onclick="printTable()" style="padding: 10px 20px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer;">Print Table</button>
+    <!-- <button onclick="printTable()" style="padding: 10px 20px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer;">Print Table</button> -->
     <?php
-    
+    return ''; // Return an empty string for now
 }
+
 add_shortcode('pdf_generation', 'pdfgenreration_management_page');
 ?>
+
 
 <?php
 // Add the custom shortcode function
 function custom_shortcode_function() {
+    get_header();
     ob_start(); // Start output buffering
     ?>
 
@@ -805,6 +853,7 @@ add_shortcode('custom_shortcode', 'custom_shortcode_function');
 // Handle CV file upload
 
 function pdfcv_shortcode_function() {
+
     ob_start(); // Start output buffering
 
     // Check if the form is submitted
@@ -865,12 +914,11 @@ function pdfcv_shortcode_function() {
     $output = ob_get_clean(); // Get the output and clean the buffer
     return $output; // Return the buffered output
 
+
     
 }
 
 add_shortcode('pdfcv_shortcode', 'pdfcv_shortcode_function');
-
-
 
 
 function email_shortcode_function($content) {
@@ -915,8 +963,10 @@ function create_table_for_shortlisted_candidates() {
   `linkedin` varchar(255) DEFAULT NULL,
   `phno` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
   `pdf_url` varchar(255) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
+ 
   PRIMARY KEY (`id`)
     )";
 
@@ -945,7 +995,9 @@ function create_table_for_resume() {
         `linkedin` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `phno` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+         timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `pdf_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+       
         PRIMARY KEY (`id`)
     )";
     $wpdb->query($sql);
@@ -961,7 +1013,7 @@ function custom_login_redirect( $redirect_to, $request, $user ) {
  
         // Set the URL to redirect users to based on their role
         if ( $user_role == 'subscriber' ) {
-            $redirect_to = '/cv-submission/';
+            $redirect_to = '/testing/';
         } 
     } else {
         // Handle WP_Error
@@ -978,6 +1030,7 @@ add_filter( 'login_redirect', 'custom_login_redirect', 10, 3 );
 <?php
 function follow_us_link()
 {
+   get_header();
     $current_user = wp_get_current_user();
     $user_display_name = $current_user->display_name;
     ob_start();
@@ -1037,6 +1090,7 @@ add_shortcode('follow_us', 'follow_us_link');
 <?php
 function received_cvv_page()
 {
+
     global $wpdb;
 
     $table_name = 'wp_resumes';
@@ -1065,10 +1119,7 @@ function received_cvv_page()
         }
 
         #search-form input[type="text"] {
-
             width: 205px;
-            width: 260px;
-
             height: 45px;
             padding: 5px;
             border-radius: 5px;
@@ -1085,8 +1136,6 @@ function received_cvv_page()
             cursor: pointer;
             width: 100px;
             height: 45px;
-            height: 44px;
-
         }
 
         /* Style for the table */
@@ -1103,7 +1152,8 @@ function received_cvv_page()
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #666 ;
+            color: #FFF;
         }
 
         tr:nth-child(even) {
@@ -1113,6 +1163,7 @@ function received_cvv_page()
         /* Style for buttons */
         button {
             padding: 5px 10px;
+            margin-bottom: 20px;
             border-radius: 5px;
             border: none;
             background-color: #007bff;
@@ -1120,7 +1171,6 @@ function received_cvv_page()
             cursor: pointer;
             width: 100px;
             height: 45px;
-            height: 44px;
         }
         .table-wrap{
             max-width: 1170px;
@@ -1130,12 +1180,19 @@ function received_cvv_page()
             padding: 10px;
             margin-bottom: 20px;
         }
+        body .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)){
+            max-width: 100%;
+
+        }
+
+
+
+
     </style>
 
     <div class='table-wrap'>
     <h1 style="font-size: 50px; font-weight: bold;">Received CVs</h1>
 
-    <h1 style="font-size: 50px; font-weight: 600;">Received CVs</h1>
 
         <!-- Search Form -->
         <form id="search-form" method="GET">
@@ -1161,9 +1218,11 @@ function received_cvv_page()
                     <th>LinkedIn</th>
                     <th>Phone Number</th>
                     <th>Address</th>
+                    <th>Time</th>
                     <th>CV Name</th>
                     <th>Action</th>
                     <th>Operations</th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -1182,6 +1241,7 @@ function received_cvv_page()
                 echo '<td>' . esc_html($resume['linkedin']) . '</td>';
                 echo '<td>' . esc_html($resume['phno']) . '</td>';
                 echo '<td>' . esc_html($resume['address']) . '</td>';
+                echo '<td>' . esc_html($resume['timestamp']) . '</td>';
                 echo '<td>';
                 $cv_name = esc_html($resume['pdf_url']);
                 $pdf_url = get_cv_pdf_url($cv_name); // Function to get PDF URL
@@ -1206,6 +1266,7 @@ function received_cvv_page()
                             <input type="submit" name="delete" value="Delete">
                         </form>
                     </td>';
+
                 echo '</tr>';
             }
             // delete record from 
@@ -1240,17 +1301,22 @@ function received_cvv_page()
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Get the search input element
+    var searchInput = document.getElementById('search');
+
     // Add event listener to the reload button
     var reloadButton = document.getElementById('ReloadButton');
     if (reloadButton) {
         reloadButton.addEventListener('click', function() {
+            // Reset the value of the search input to an empty string
+            if (searchInput) {
+                searchInput.value = '';
+            }
             location.reload(); // Reload the page
         });
     }
 });
 </script>
-
-
 
 <script>
 function printTable() {
@@ -1272,6 +1338,7 @@ if (isset($_POST['insert'])) {
         // Prepare the data to be inserted
         $resume_data = $wpdb->get_row("SELECT * FROM wp_resumes WHERE id = $resume_id", ARRAY_A);
         $comment = $_POST['commentss'];
+      
         $insert_id = $_POST['resume_id'];
         // Check if resume data is retrieved successfully
         if ($resume_data) {
@@ -1291,16 +1358,20 @@ if (isset($_POST['insert'])) {
                     'phno' => $resume_data['phno'],
                     'address' => $resume_data['address'],
                     'pdf_url' => $resume_data['pdf_url'],
-                    'comments' => $comment
+                    'comments' => $comment,
+                    
                 )
             );
 
             if ($insert_result !== false) {
                 echo "Record inserted successfully.";
-            } else {
+            } else 
+            {
                 echo "Error inserting record." . $wpdb->last_error;
             }
-        } else {
+        } 
+        else
+        {
             echo "Error retrieving resume data.";
         }
     }
@@ -1310,6 +1381,7 @@ if (isset($_POST['insert'])) {
         </table>
     </div>
     <?php
+    return ob_get_clean();
 }
 add_shortcode('received_cvv', 'received_cvv_page');
 ?>
@@ -1318,7 +1390,8 @@ add_shortcode('received_cvv', 'received_cvv_page');
 <!-- shortlist_candidate shortcode-->
 <?php
 function display_shortlisted_candidates()
-{
+{     
+get_header();
     global $wpdb;
 
     $table_name = 'wp_shortlisted_candidates';
@@ -1364,7 +1437,6 @@ function display_shortlisted_candidates()
     <button type="submit" style="background: #007bff; width: 158px; height: 60px; border: none; color: #fff; font-size: 16px; border-radius: 5px; cursor: pointer;">Email Forward to PM</button>
 </form>
 
-        <h1 style="font-size: 50px; font-weight: 600;">Shortlisted Candidates</h1>
 
         <table style="width: 100%; border-collapse: collapse;">
             <!-- Table Header -->
@@ -1385,6 +1457,7 @@ function display_shortlisted_candidates()
                     <th style="padding: 10px; border: 1px solid #ddd;">PDF URL</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Comments</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Operations</th>
+                   
                 </tr>
             </thead>
             <tbody>
@@ -1403,7 +1476,6 @@ function display_shortlisted_candidates()
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['linkedin']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['phno']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['address']) . '</td>';
-                
                 // Button to download PDF
                 echo '<td style="padding: 10px; border: 1px solid #ddd;"><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer;">Download PDF</button></form></td>';
                 
@@ -1412,7 +1484,6 @@ function display_shortlisted_candidates()
                     <form action="" method="post">
                         <input type="hidden" name="idsl" value="' . esc_html($candidate['id']) . '">
                         <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: red; color: #fff; cursor: pointer;">
-                        <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="padding: 5px 10px; width: 100px; height: 44px; border-radius: 5px; border: none; background-color: red; color: #fff; cursor: pointer;">
                     </form>
                 </td>';
 
@@ -1466,6 +1537,14 @@ function display_shortlisted_candidates()
         ?>
     </table>
 </div>
+
+
+<style>
+    th {
+            background-color: #666 ;
+            color: #FFF;
+        }
+    </style>
 <?php
 return ob_get_clean();
 }
@@ -1522,8 +1601,6 @@ input[type="submit"] {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    width: 100px;
-    height: 44px;
 }
 
 input[type="submit"]:hover {

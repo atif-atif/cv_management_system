@@ -33,7 +33,7 @@ function wpbcv_create_plugin_pages() {
         'RECEIVED CVS' => '[received_cvv]',
         'SHORTLISTED CANDIDATES' => '[shortlisted_candidate]',
         'RESUME SUBMISSION' => '[custom_shortcode]',
-        
+       
         
     );
 
@@ -58,14 +58,13 @@ register_activation_hook(__FILE__, 'wpbcv_create_plugin_pages');
 
 // Create the admin menu page
 
-function wpbcv_csv_management_menu() {
-    add_menu_page('CSV Management', 'CV Management', 'manage_options', 'csv-management', 'csv_management_page');
-    add_submenu_page('csv-management', 'HR Management', 'HR Dashboard', 'manage_options', 'hr-management', 'hr_management_page');
-    add_submenu_page('csv-management', 'Received CVs', 'Received CVs', 'manage_options', 'received-cvs', 'received_cvs_page');
-    add_submenu_page('csv-management', 'PDF Generation', 'PDF Generation', 'manage_options', 'pdf-generation', 'pdfgenreration_management_page');
-    add_submenu_page('csv-management', 'Shortlisted Candidates', 'Shortlisted Candidates', 'manage_options', 'shortlisted-candidates', 'shortlisted_candidates_page');
+function csv_management_menu() {
+    add_menu_page('CSV Management', 'CV Management', 'manage_options', 'csv-management', 'wpbcv_csv_management_page');
+    add_submenu_page('csv-management', 'HR Management', 'HR Dashboard', 'manage_options', 'hr-management', 'wpbcv_hr_management_page');
+    add_submenu_page('csv-management', 'Received CVs', 'Received CVs', 'manage_options', 'received-cvs', 'wpbcv_received_cvs_page');
+    add_submenu_page('csv-management', 'Shortlisted Candidates', 'Shortlisted Candidates', 'manage_options', 'shortlisted-candidates', 'wpbcv_shortlisted_candidates_page');
 }
-add_action('admin_menu', 'wpbcv_csv_management_menu');
+add_action('admin_menu', 'csv_management_menu');
 
 // Function to display the Received CVs page
 function wpbcv_shortlisted_candidates_page() {

@@ -8,32 +8,32 @@ Author: Atif, Manal
 ob_start();
 
 // redirect to user login
-function redirect_non_logged_in_users_to_login() {
+function wpbcv_redirect_non_logged_in_users_to_login() {
     if ( ! is_user_logged_in() && ! is_page('login') ) {
         wp_redirect( wp_login_url() );
         exit();
     }
 }
-add_action( 'template_redirect', 'redirect_non_logged_in_users_to_login' );
+add_action( 'template_redirect', 'wpbcv_redirect_non_logged_in_users_to_login' );
 
 
 
 // Enqueue necessary scripts and styles
-function csv_management_enqueue_scripts() {
+function wpbcv_csv_management_enqueue_scripts() {
     // wp_enqueue_style('csv-management-style', plugins_url('/css/style.css', __FILE__));
     wp_enqueue_script('csv-management-script', plugins_url('/js/script.js', __FILE__), array('jquery'), null, true);
 }
-add_action('admin_enqueue_scripts', 'csv_management_enqueue_scripts');
+add_action('admin_enqueue_scripts', 'wpbcv_csv_management_enqueue_scripts');
 
 // Function to create pages with shortcodes
-function create_plugin_pages() {
+function wpbcv_create_plugin_pages() {
     
     $pages = array(
         'HR DASHBOARD' => '[follow_us]',
         'RECEIVED CVS' => '[received_cvv]',
         'SHORTLISTED CANDIDATES' => '[shortlisted_candidate]',
         'RESUME SUBMISSION' => '[custom_shortcode]',
-        'GENERATE PDF REPORT' => '[pdf_generation]',
+        
         
     );
 
@@ -54,21 +54,21 @@ function create_plugin_pages() {
 }
 
 // Hook into activation
-register_activation_hook(__FILE__, 'create_plugin_pages');
+register_activation_hook(__FILE__, 'wpbcv_create_plugin_pages');
 
 // Create the admin menu page
 
-function csv_management_menu() {
+function wpbcv_csv_management_menu() {
     add_menu_page('CSV Management', 'CV Management', 'manage_options', 'csv-management', 'csv_management_page');
     add_submenu_page('csv-management', 'HR Management', 'HR Dashboard', 'manage_options', 'hr-management', 'hr_management_page');
     add_submenu_page('csv-management', 'Received CVs', 'Received CVs', 'manage_options', 'received-cvs', 'received_cvs_page');
     add_submenu_page('csv-management', 'PDF Generation', 'PDF Generation', 'manage_options', 'pdf-generation', 'pdfgenreration_management_page');
     add_submenu_page('csv-management', 'Shortlisted Candidates', 'Shortlisted Candidates', 'manage_options', 'shortlisted-candidates', 'shortlisted_candidates_page');
 }
-add_action('admin_menu', 'csv_management_menu');
+add_action('admin_menu', 'wpbcv_csv_management_menu');
 
 // Function to display the Received CVs page
-function shortlisted_candidates_page() {
+function wpbcv_shortlisted_candidates_page() {
     global $wpdb;
 
     $table_name = 'wp_shortlisted_candidates';
@@ -220,7 +220,7 @@ if (isset($_POST['download_pdf'])) {
 
 //shortlist candidate end
 
-function received_cvs_page() {
+function wpbcv_received_cvs_page() {
     global $wpdb;
 
     $table_name = 'wp_resumes';
@@ -296,7 +296,7 @@ function received_cvs_page() {
         echo '<td>' . esc_html($resume['address']) . '</td>';
         echo '<td>';
         $cv_name = esc_html($resume['pdf_url']);
-        $pdf_url = get_cv_pdf_url($cv_name); // Function to get PDF URL
+        $pdf_url = wpbcv_get_cv_pdf_url($cv_name); // Function to get PDF URL
 
         if ($pdf_url) {
             echo '<a href="'. esc_url($pdf_url) . '" target="_blank">Open PDF</a>';
@@ -428,7 +428,7 @@ if (isset($_POST['insert'])) {
 add_action('wp_ajax_get_filtered_data', 'get_filtered_data');
 add_action('wp_ajax_nopriv_get_filtered_data', 'get_filtered_data');
 
-function get_filtered_data() {
+function wpbcv_get_filtered_data() {
     global $wpdb;
 
     $search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
@@ -454,7 +454,7 @@ function get_filtered_data() {
         echo '<td>' . esc_html($resume['address']) . '</td>';
         echo '<td>';
         $cv_name = esc_html($resume['pdf_url']);
-        $pdf_url = get_cv_pdf_url($cv_name); // Function to get PDF URL
+        $pdf_url = wpbcv_get_cv_pdf_url($cv_name); // Function to get PDF URL
 
         if ($pdf_url) {
             echo '<a href="'. esc_url($pdf_url) . '" target="_blank">Open PDF</a>';
@@ -482,7 +482,7 @@ function get_filtered_data() {
 add_action('wp_ajax_shortlist_candidate', 'shortlist_candidate');
 add_action('wp_ajax_nopriv_shortlist_candidate', 'shortlist_candidate');
 
-function shortlist_candidate() {
+function wpbcv_shortlist_candidate() {
     // Process the shortlist form submission and store the data in the database
     $resume_id = isset($_POST['resume_id']) ? intval($_POST['resume_id']) : 0;
     $comments = isset($_POST['comments']) ? sanitize_text_field($_POST['comments']) : '';
@@ -493,7 +493,7 @@ function shortlist_candidate() {
 }
 
 
-function get_cv_pdf_url($cv_name) {
+function wpbcv_get_cv_pdf_url($cv_name) {
     global $wpdb;
     $table_name = 'wp_resumes';
 
@@ -518,7 +518,7 @@ function get_cv_pdf_url($cv_name) {
 
 
 // Function to display the CSV management page
-function csv_management_page() {
+function wpbcv_csv_management_page() {
     ?>
     <div class="wrap">
         <h1>CV Management System</h1>
@@ -526,7 +526,7 @@ function csv_management_page() {
     <?php
 }
 // Function to display the HR Management page
-function hr_management_page() {
+function wpbcv_hr_management_page() {
     // Check if the user is logged in
     if (!is_user_logged_in()) {
         // Redirect to the login page if the user is not logged in
@@ -588,7 +588,7 @@ function hr_management_page() {
     <?php
 }
 
-function handle_resume_submission() {
+function wpbcv_handle_resume_submission() {
     if (isset($_POST['resume_submission_submit'])) {
         // Collect submitted data
         $full_name = sanitize_text_field($_POST['full_name']);
@@ -607,11 +607,11 @@ function handle_resume_submission() {
 }
 
 // Hook to handle resume submission when the form is submitted
-add_action('admin_init', 'handle_resume_submission');
+add_action('admin_init', 'wpbcv_handle_resume_submission');
 ?>
 
 <?php
-function pdfgenreration_management_page() {
+function wpbcv_pdfgenreration_management_page() {
     ob_start();
     ?>
     <div class="wrap" style="max-width: 600px; margin: 0 auto;">
@@ -658,7 +658,7 @@ function pdfgenreration_management_page() {
         <?php
         if (isset($_POST['generate_pdf'])) {
             // Call generate_pdf function without returning output
-            generate_pdf($_POST);
+            wpbcv_generate_pdf($_POST);
         }
         ?>
     </div>
@@ -667,7 +667,7 @@ function pdfgenreration_management_page() {
     return ob_get_clean();  
 }
 
-function generate_pdf($data) {
+function wpbcv_generate_pdf($data) {
     // Generate PDF content here
     echo '<pre>';
     print_r($data);
@@ -685,13 +685,13 @@ function generate_pdf($data) {
     return ''; // Return an empty string for now
 }
 
-add_shortcode('pdf_generation', 'pdfgenreration_management_page');
+add_shortcode('pdf_generation', 'wpbcv_pdfgenreration_management_page');
 ?>
 
 
 <?php
 // Add the custom shortcode function
-function custom_shortcode_function() {
+function wpbcv_custom_shortcode_function() {
     get_header();
     ob_start(); // Start output buffering
     ?>
@@ -848,11 +848,11 @@ function custom_shortcode_function() {
     return $output; // Return the buffered output
 }
 
-add_shortcode('custom_shortcode', 'custom_shortcode_function');
+add_shortcode('custom_shortcode', 'wpbcv_custom_shortcode_function');
 
 // Handle CV file upload
 
-function pdfcv_shortcode_function() {
+function wpbcv_pdfcv_shortcode_function() {
 
     ob_start(); // Start output buffering
 
@@ -918,10 +918,10 @@ function pdfcv_shortcode_function() {
     
 }
 
-add_shortcode('pdfcv_shortcode', 'pdfcv_shortcode_function');
+add_shortcode('pdfcv_shortcode', 'wpbcv_pdfcv_shortcode_function');
 
 
-function email_shortcode_function($content) {
+function wpbcv_email_shortcode_function($content) {
     // Check if the shortcode exists in the content
     if (strpos($content, '[email_inquiry_shortcode]') !== false) {
         ob_start();
@@ -940,11 +940,11 @@ function email_shortcode_function($content) {
 
     return $content;
 }
-add_filter('the_content', 'email_shortcode_function');
+add_filter('the_content', 'wpbcv_email_shortcode_function');
 // database tables
 // shortlist_candidate
 // Shortlist_candidates table
-function create_table_for_shortlisted_candidates() {
+function wpbcv_create_table_for_shortlisted_candidates() {
     global $wpdb;
 
     // Define the table name with the WordPress prefix
@@ -963,7 +963,7 @@ function create_table_for_shortlisted_candidates() {
   `linkedin` varchar(255) DEFAULT NULL,
   `phno` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
-  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+   timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
   `pdf_url` varchar(255) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
  
@@ -973,10 +973,10 @@ function create_table_for_shortlisted_candidates() {
     $wpdb->query($sql);
 }
 
-register_activation_hook(__FILE__, 'create_table_for_shortlisted_candidates');
+register_activation_hook(__FILE__, 'wpbcv_create_table_for_shortlisted_candidates');
 
 // Resume table
-function create_table_for_resume() {
+function wpbcv_create_table_for_resume() {
     global $wpdb;
 
     // Define the table name with the WordPress prefix
@@ -1003,9 +1003,9 @@ function create_table_for_resume() {
     $wpdb->query($sql);
 }
 
-register_activation_hook(__FILE__, 'create_table_for_resume');
+register_activation_hook(__FILE__, 'wpbcv_create_table_for_resume');
 
-function custom_login_redirect( $redirect_to, $request, $user ) {
+function wpbcv_custom_login_redirect( $redirect_to, $request, $user ) {
     // Check if $user is a WP_User object
     if ( is_a( $user, 'WP_User' ) ) {
         // Get the current user's role
@@ -1023,12 +1023,12 @@ function custom_login_redirect( $redirect_to, $request, $user ) {
 
     return $redirect_to;
 }
-add_filter( 'login_redirect', 'custom_login_redirect', 10, 3 );
+add_filter( 'login_redirect', 'wpbcv_custom_login_redirect', 10, 3 );
 
 ?>
 <!-- HR DASHBOARD shortcode-->
 <?php
-function follow_us_link()
+function wpbcv_follow_us_link()
 {
    get_header();
     $current_user = wp_get_current_user();
@@ -1083,12 +1083,12 @@ function follow_us_link()
     <?php
     return ob_get_clean();
 }
-add_shortcode('follow_us', 'follow_us_link');
+add_shortcode('follow_us', 'wpbcv_follow_us_link');
 ?>
 
 <!-- received cv shortcode -->
 <?php
-function received_cvv_page()
+function wpbcv_received_cvv_page()
 {
 
     global $wpdb;
@@ -1195,12 +1195,41 @@ function received_cvv_page()
 
 
         <!-- Search Form -->
-        <form id="search-form" method="GET">
-            <label for="search">Search by Skills:</label>
-            <input type="text" name="search" id="search" value="<?php echo esc_attr($search_query); ?>" />
-            <input type="submit" value="Search" />
-            <button id="ReloadButton" type="button">Reload</button>
-        </form>
+    <form id="search-form" method="GET">
+    <label for="search">Search by Skills:</label>
+    <input type="text" name="search" id="search" placeholder="Enter or Select Skill" value="<?php echo esc_attr($search_query); ?>" list="skills-list" />
+    <datalist id="skills-list">
+        <option value="Theme Development">
+        <option value="Plugin Development">
+        <option value="PSD to Email">
+        <option value="PSD to Wordpress">
+        <option value="Python">
+        <option value="Human Resources Skills">
+        <option value="Java">
+        <option value="PSD to HTML&CSS">
+    </datalist>
+    <input type="submit" value="Search" />
+    <button id="ReloadButton" type="button">Reload</button>
+</form>
+
+<script>
+// Function to handle form submission
+document.getElementById('search-form').addEventListener('submit', function(event) {
+    // Get the search input value
+    var searchInputValue = document.getElementById('search').value.trim();
+
+    // If search input value is not empty, update the dropdown selection
+    if (searchInputValue !== '') {
+        var dropdownOptions = document.getElementById('skills-list').options;
+        for (var i = 0; i < dropdownOptions.length; i++) {
+            if (dropdownOptions[i].value === searchInputValue) {
+                document.getElementById('search').value = searchInputValue;
+                break;
+            }
+        }
+    }
+});
+</script>
 
         <table>
             <!-- Table Header -->
@@ -1244,7 +1273,7 @@ function received_cvv_page()
                 echo '<td>' . esc_html($resume['timestamp']) . '</td>';
                 echo '<td>';
                 $cv_name = esc_html($resume['pdf_url']);
-                $pdf_url = get_cv_pdf_url($cv_name); // Function to get PDF URL
+                $pdf_url = wpbcv_get_cv_pdf_url($cv_name); // Function to get PDF URL
 
                 if ($pdf_url) {
                     echo '<a href="'. esc_url($pdf_url) . '" target="_blank">Open PDF</a>';
@@ -1383,13 +1412,13 @@ if (isset($_POST['insert'])) {
     <?php
     return ob_get_clean();
 }
-add_shortcode('received_cvv', 'received_cvv_page');
+add_shortcode('received_cvv', 'wpbcv_received_cvv_page');
 ?>
 
 
 <!-- shortlist_candidate shortcode-->
 <?php
-function display_shortlisted_candidates()
+function wpbcv_display_shortlisted_candidates()
 {     
 get_header();
     global $wpdb;
@@ -1549,7 +1578,7 @@ get_header();
 return ob_get_clean();
 }
 
-add_shortcode('shortlisted_candidate', 'display_shortlisted_candidates');
+add_shortcode('shortlisted_candidate', 'wpbcv_display_shortlisted_candidates');
 ?>
 
 <!-- styling -->

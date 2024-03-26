@@ -1170,6 +1170,7 @@ function wpbcv_received_cvv_page()
             cursor: pointer;
             width: 100px;
             height: 45px;
+            margin-left: 20px;
         }
         .table-wrap{
             max-width: 1170px;
@@ -1208,7 +1209,7 @@ function wpbcv_received_cvv_page()
         <option value="PSD to HTML&CSS">
     </datalist>
     <input type="submit" value="Search" />
-    <button id="ReloadButton" type="button">Reload</button>
+   
 </form>
 
 <script>
@@ -1325,27 +1326,192 @@ document.getElementById('search-form').addEventListener('submit', function(event
         }
     } 
     ?>
+     
+    <form id="filterForm">
+    <label for="start_date" style="display: inline-block; margin-right: 10px;">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" required>
+        <label for="end_date" style="display: inline-block; margin-right: 10px;">End Date:</label>
+        <input type="date" id="end_date" name="end_date" required>
+        <button type="submit" style="display: inline-block; width: 10%; height: 30px ">Filter CVs</button>
+    </form>
+    
+   <?php
+          
+        global $wpdb; // WordPress database object
 
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Get the search input element
-    var searchInput = document.getElementById('search');
-
-    // Add event listener to the reload button
-    var reloadButton = document.getElementById('ReloadButton');
-    if (reloadButton) {
-        reloadButton.addEventListener('click', function() {
-            // Reset the value of the search input to an empty string
-            if (searchInput) {
-                searchInput.value = '';
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // Retrieve start and end dates from the form submission
+            $start_date = $_POST['start_date'];
+            $end_date = $_POST['end_date'];
+            $formatted_start_date = date('Y-m-d', strtotime($start_date));
+            $formatted_end_date = date('Y-m-d', strtotime($end_date));
+        
+        
+            // SQL query to fetch resumes between the provided dates
+            $sql = $wpdb->prepare("SELECT * FROM wp_resumes WHERE timestamp BETWEEN %s AND %s ", $start_date, $end_date);
+        
+            // Execute the query
+            $results = $wpdb->get_results($sql, ARRAY_A);
+        
+            // Display filtered resumes in a table
+            if ($results) {
+                echo '<h2>Filtered Resumes</h2>';
+                echo '<table>';
+                echo '<tr><th>ID</th><th>Full Name</th><th>Email</th><th>Degree</th><th>University</th><th>Job Title</th><th>Company</th><th>Employment History</th><th>Skills</th><th>LinkedIn</th><th>Phone Number</th><th>Address</th><th>Time</th><th>CV Name</th><th>Action</th><th>Operations</th></tr>';
+                foreach ($results as $resume) {
+                    echo '<tr>';
+                    echo '<td>' . $resume['id'] . '</td>';
+                    echo '<td>' . $resume['full_name'] . '</td>';
+                    echo '<td>' . $resume['email'] . '</td>';
+                    echo '<td>' . $resume['degree'] . '</td>';
+                    echo '<td>' . $resume['university'] . '</td>';
+                    echo '<td>' . $resume['job_title'] . '</td>';
+                    echo '<td>' . $resume['company'] . '</td>';
+                    echo '<td>' . $resume['employment_history'] . '</td>';
+                    echo '<td>' . $resume['skills'] . '</td>';
+                    echo '<td>' . $resume['linkedin'] . '</td>';
+                    echo '<td>' . $resume['phno	'] . '</td>';
+                    echo '<td>' . $resume['address'] . '</td>';
+                    echo '<td>' . $resume['timestamp'] . '</td>';
+                    echo '<td>' . $resume['pdf_url'] . '</td>';
+                    echo '</tr>';
+                }
+                echo '</table>';
+            } else {
+                echo '<p>No resumes found between the specified dates.</p>';
             }
-            location.reload(); // Reload the page
-        });
-    }
-});
-</script>
+        }
+        ?>
+        
+        
+        
+      <!-- search by name -->
+     <form id="filterForm"  method="POST">
+        <label for="full_name" style="display: inline-block; width: 150px;">Enter Name:</label>
+        <input type="text" id="full_name" name="full_name" required style="display: inline-block; width: 200px;" value="<?php echo esc_attr($search_query); ?>">
+        <button type="submit" style="display: inline-block;">Filter CVs</button>   
 
+    </form>
+     <?php
+global $wpdb;
+$search_query = isset($_POST['full_name']) ? sanitize_text_field($_POST['full_name']) : '';
+// If form submitted with candidate name, fetch data from database
+if (isset($_POST['full_name'])) {
+    // Get the entered full name
+    $full_name = $_POST['full_name'];
+
+    // Prepare SQL statement to fetch the data
+    $table_name = $wpdb->prefix . 'resumes';
+    $query = $wpdb->prepare("SELECT * FROM $table_name WHERE full_name = %s", $full_name);
+    $results = $wpdb->get_results($query, ARRAY_A);
+    if ($results) {
+        // Output data of each row
+        echo "<table border='1'>
+                <tr>
+                <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Degree</th>
+                    <th>University</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Employment History</th>
+                    <th>Skills</th>
+                    <th>LinkedIn</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Time</th>
+                    <th>CV Name</th>
+                    <th>Action</th>
+                    <th>Operations</th>
+                </tr>";
+        foreach ($results as $row) {
+            echo "<tr>
+            <td>".$row['id']."</td>
+            <td>".$row['full_name']."</td>
+                    <td>".$row['email']."</td>
+                    <td>".$row['degree']."</td>
+                    <td>".$row['university']."</td>
+                    <td>".$row['job_title']."</td>
+                    <td>".$row['company']."</td>
+                    <td>".$row['employment_history']."</td>
+                    <td>".$row['skills']."</td>
+                    <td>".$row['linkedin']."</td>
+                    <td>".$row['phno']."</td>
+                    <td>".$row['address']."</td>
+                    <td>".$row['timestamp']."</td>
+
+                <td>";
+                $cv_name = esc_html($row['pdf_url']);
+                $pdf_url = wpbcv_get_cv_pdf_url($cv_name); // Function to get PDF URL
+
+                if ($pdf_url) {
+                    echo '<a href="'. esc_url($pdf_url) . '" target="_blank">Open PDF</a>';
+                } else {
+                    echo 'No PDF available';
+                }
+                echo '</td>';
+
+                //action buttons
+                echo '<td>';
+                echo '<form method="post" action="">';
+                echo '<input type="hidden" name="resume_id" value="' . esc_html($resume['id']) . '">';
+                echo '<input type="text" name="commentss" placeholder="Add comment" required>';
+                echo '<button type="submit" name="insert" title="' . esc_html($resume['id']) . '">Shortlist</button>';
+                echo '</form>';
+                echo '</td>';
+                
+                echo '<td>';
+                echo '<form action="" method="post">';
+                echo '<input type="hidden" name="id" value="' . esc_html($resume['id']) . '">';
+                echo '<input type="submit" name="delete" value="Delete">';
+                echo '</form>';
+                echo '</td>';
+
+    // delete record from 
+    if (isset($_POST['delete'])) {
+        global $wpdb;
+    
+        // Get the ID from the hidden input field
+        $id_to_delete = isset($_POST['id']) ? intval($_POST['id']) : 0;
+    
+        // Check if the ID is valid
+        if ($id_to_delete > 0) {
+            // Delete the record from the wp_shortlisted_candidates table
+            $delete_result = $wpdb->delete(
+                'wp_resumes',
+                array('id' => $id_to_delete),
+                array('%d') // ID is an integer
+            );
+    
+            // Check if the record is successfully deleted
+            if ($delete_result !== false) {
+                echo "Record deleted successfully.";
+                header("location: #"); // Redirect to the current page
+                exit; // Make sure to exit after redirecting
+            }
+            else {
+                echo "Error deleting record.";
+            }
+        }
+    } 
+    
+                    echo '</td>';
+
+
+
+
+                
+  
+               echo  '</tr>';
+        }
+        echo "</table>";
+    } else {
+        echo "0 results";
+    }
+}
+?>
+    
 <script>
 function printTable() {
     window.print();
@@ -1404,6 +1570,7 @@ if (isset($_POST['insert'])) {
         }
     }
 }
+
             ?>
             </tbody>
         </table>

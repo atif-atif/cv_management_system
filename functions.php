@@ -701,63 +701,110 @@ function wpbcv_custom_shortcode_function() {
         <form method="post" enctype="multipart/form-data">
             <!-- Form fields -->
             <h5><strong>Personal Details</strong></h5>
-            <label for="full_name">Full Name:</label>
-            <input type="text" name="full_name" required>
+<label for="full_name" style="display: inline-block; width: 150px;">Full Name:</label>
+<input type="text" name="full_name" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
-            <label for="email">Email:</label>
-            <input type="email" name="email" required>
+<label for="email" style="display: inline-block; width: 150px;">Email:</label>
+<input type="email" name="email" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
-            <!-- Add more personal details fields as needed -->
+<!-- Add more personal details fields as needed -->
 
-            <h5><strong>Educational Details</strong></h5>
-            <label for="degree">Degree:</label>
-            <input type="text" name="degree" required>
+<h5><strong>Educational Details</strong></h5>
+<label for="degree" style="display: inline-block; width: 150px;">Degree:</label>
+<input type="text" name="degree" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
-            <label for="university">University:</label>
-            <input type="text" name="university" required>
+<label for="university" style="display: inline-block; width: 150px;">University:</label>
+<input type="text" name="university" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
-            <!-- Add more educational details fields as needed -->
+<!-- Add more educational details fields as needed -->
 
-            <h5><strong>Professional Details</strong></h5>
-            <label for="job_title">Job Title:</label>
-            <input type="text" name="job_title" required>
+<h5><strong>Professional Details</strong></h5>
+<label for="job_title" style="display: inline-block; width: 150px;">Job Title:</label>
+<input type="text" name="job_title" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
-            <label for="company">Company:</label>
-            <input type="text" name="company" required>
+<label for="company" style="display: inline-block; width: 150px;">Company:</label>
+<input type="text" name="company" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
-            <!-- Add more professional details fields as needed -->
+<!-- Add more professional details fields as needed -->
 
-            <h5><strong>Employment History</strong></h5>
-            <label for="employment_history">Employment History:</label>
-            <textarea name="employment_history" rows="4" cols="50"></textarea>
+<h5><strong>Employment History</strong></h5>
+<label for="employment_history" style="display: inline-block; width: 150px;">Employment History:</label>
+<textarea name="employment_history" rows="4" cols="50" style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"></textarea>
 
-            <h5><strong>Skills</strong></h5>
-            <label><input type="checkbox" name="skills[]" value="Theme Development"> Theme Development</label>
-            <label><input type="checkbox" name="skills[]" value="Plugin Development"> Plugin Development</label>
-            <label><input type="checkbox" name="skills[]" value="Theme Development"> PSD to Email</label><br>
-            <label><input type="checkbox" name="skills[]" value="Plugin Development">PSD to Wordpress</label>
-            <label><input type="checkbox" name="skills[]" value="Plugin Development">Python</label>
-            <label><input type="checkbox" name="skills[]" value="Plugin Development">Human Resources Skills</label>
-            <label><input type="checkbox" name="skills[]" value="Plugin Development">Java</label><br>
-            <label><input type="checkbox" name="skills[]" value="PSD to HTML&CSS"> PSD to HTML&CSS</label> <br>
-            <label>Other :</label><input type="text" name="skills[]" value="" placeholder="java,c++"><br>
-           
+<h5><strong>Skills</strong></h5>
+<div class="skills">
 
-            <h5><strong>Contact Details</strong></h5>
-            <label for="linkedin">Linkedin Profile:</label>
-            <input type="text" name="linkedin" required>
+<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+  <input type="checkbox" name="skills[]" value="Theme Development">
+  Theme Development
+</label>
+<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+  <input type="checkbox" name="skills[]" value="Plugin Development">
+  Plugin Development
+</label>
+<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+  <input type="checkbox" name="skills[]" value="PSD to Email">
+  PSD to Email
+</label><br>
+<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+  <input type="checkbox" name="skills[]" value="PSD to Wordpress">
+  PSD to Wordpress
+</label>
+<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+  <input type="checkbox" name="skills[]" value="Python">
+  Python
+</label>
+<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+  <input type="checkbox" name="skills[]" value="Human Resources Skills">
+  Human Resources Skills
+</label>
+<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+  <input type="checkbox" name="skills[]" value="Java">
+  Java
+</label><br>
+<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+  <input type="checkbox" name="skills[]" value="PSD to HTML&CSS">
+  PSD to HTML&CSS </label><br>
+  <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">Other :</label>
+<input type="text" name="skills[]" value="" placeholder="java,c++">
+</div>
+<style>
+.skills {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background-color: #fff;
+        } 
+        </style>
 
-            <label for="phno">Phone no:</label>
-            <input type="text" name="phno" required>
+<h5><strong>Contact Details</strong></h5>
+<label for="linkedin" style="display: inline-block; width: 150px;">Linkedin Profile:</label>
+<input type="text" name="linkedin" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
+
+<label for="phno" style="display: inline-block; width: 150px;">Phone no:</label>
+<input type="text" name="phno" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
             
-            <label for="address">Address:</label>
-            <textarea name="address" rows="4" cols="50"></textarea><br>
+<label for="address" style="display: inline-block; width: 150px;">Address:</label>
+<textarea name="address" rows="4" cols="50"></textarea><br>
 
-            <h5>Upload CV (PDF)</h5>
-            <label for="cv_upload">Upload CV:</label>
-            <input type="file" name="cv_upload" accept=".pdf">
+<h5>Upload CV (PDF)</h5>
+<label for="cv_upload" style="display: inline-block; width: 150px;">Upload CV:</label>
+<input type="file" name="cv_upload" accept=".pdf"><br>
 
-            <input type="submit" name="resume_submission_submit" value="Submit">
+<input type="submit" name="resume_submission_submit" value="Submit" style="background-color: #2c3e50; 
+                border: 20px;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                border-radius: 10px;">
+
         </form>
     </div>
 
@@ -1624,13 +1671,108 @@ get_header();
     ?>
 
 
-    <div class="table-wrap" style="max-width: 1170px; width: 100%; overflow-x: auto; margin: 0 auto; padding: 10px; margin-bottom: 20px;">
         <h1 style="font-size: 50px; font-weight: 100px;">Shortlisted Candidates</h1>
 
            <!-- Email Forwarding Form -->
            <form method="post">
     <button type="submit" style="background: #007bff; width: 158px; height: 60px; border: none; color: #fff; font-size: 16px; border-radius: 5px; cursor: pointer;">Email Forward to PM</button>
 </form>
+
+<?php
+global $wpdb;
+
+$table_name = 'wp_resumes';
+
+// Check if the table exists
+if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+    echo "<p>Table '$table_name' not found!</p>";
+    return;
+}
+// Check if search is initiated
+$search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
+
+// Retrieve data from the table with optional search filter
+$sql = "SELECT * FROM $table_name";
+if (!empty($search_query)) {
+    $sql = $wpdb->prepare("SELECT * FROM $table_name WHERE skills LIKE %s", '%' . $search_query . '%');
+}
+
+// Retrieve data from the table
+$resumes_data = $wpdb->get_results($sql, ARRAY_A);
+?>
+
+
+ <!-- search by name -->
+ <form id="filterForm"  method="POST">
+        <label for="full_name" style="display: inline-block; width: 150px;">Enter Name:</label>
+        <input type="text" id="full_name" name="full_name" required style="display: inline-block; width: 200px;" value="<?php echo esc_attr($search_query); ?>">
+        <button type="submit" style="display: inline-block;">Filter CVs</button>   
+
+    </form>
+     <?php
+global $wpdb;
+$search_query = isset($_POST['full_name']) ? sanitize_text_field($_POST['full_name']) : '';
+// If form submitted with candidate name, fetch data from database
+if (isset($_POST['full_name'])) {
+    // Get the entered full name
+    $full_name = $_POST['full_name'];
+
+    // Prepare SQL statement to fetch the data
+    $table_name = $wpdb->prefix . 'resumes';
+    $query = $wpdb->prepare("SELECT * FROM $table_name WHERE full_name = %s", $full_name);
+    $results = $wpdb->get_results($query, ARRAY_A);
+    if ($results) {
+        // Output data of each row
+        echo "<table border='1'>
+                <tr>
+                <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Degree</th>
+                    <th>University</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Employment History</th>
+                    <th>Skills</th>
+                    <th>LinkedIn</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>PDF URL</th>
+                    <th>Comments</th>
+                    <th>Operations</th>
+                </tr>";
+                foreach ($shortlisted_candidates_data as $candidate) {
+                    echo '<tr>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['id'] . '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['full_name']. '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['email'] . '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['degree'] . '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['university'] . '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['job_title'] . '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['company']. '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['employment_history']. '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['skills']. '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['linkedin']. '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['phno']. '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['address'] . '</td>';
+                    // Button to download PDF
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;"><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer;">Download PDF</button></form></td>';
+                    
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['comments']) . '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">
+                        <form action="" method="post">
+                            <input type="hidden" name="idsl" value="' . esc_html($candidate['id']) . '">
+                            <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: red; color: #fff; cursor: pointer;">
+                        </form>
+                    </td>';
+               echo  '</tr>';
+        }
+        echo "</table>";
+    } else {
+        echo "0 results";
+    }
+}
+?>
 
 
         <table style="width: 100%; border-collapse: collapse;">
@@ -1731,12 +1873,12 @@ get_header();
         }
         ?>
     </table>
-</div>
+
 
 
 <style>
     th {
-            background-color: #666 ;
+            background-color: #2c3e50 ;
             color: #FFF;
         }
     </style>

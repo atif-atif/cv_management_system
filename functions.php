@@ -121,6 +121,8 @@ if(isset($_POST['emailpm'])){
             <th style="width: 100px;">Email</th>
             <th style="width: 50px;" >Degree</th>
             <th style="width: 100px;">University</th>
+            <th style="width: 100px;">cgpa</th>
+
             <th style="width: 100px;">Job Title</th>
             <th style="width: 100px;">Company</th>
             <th style="width: 100px;">Employment History</th>
@@ -142,6 +144,8 @@ if(isset($_POST['emailpm'])){
         echo '<td>' . esc_html($candidate['email']) . '</td>';
         echo '<td>' . esc_html($candidate['degree']) . '</td>';
         echo '<td>' . esc_html($candidate['university']) . '</td>';
+        echo '<td>' . esc_html($candidate['cgpa']) . '</td>';
+
         echo '<td>' . esc_html($candidate['job_title']) . '</td>';
         echo '<td>' . esc_html($candidate['company']) . '</td>';
         echo '<td>' . esc_html($candidate['employment_history']) . '</td>';
@@ -264,6 +268,8 @@ function wpbcv_received_cvs_page() {
                     <th style="width: 140px;">Email</th>
                     <th style="width: 100px;">Degree</th>
                     <th style="width: 61px;">University</th>
+                    <th style="width: 61px;">cgpa</th>
+
                     <th style="width: 70px;">Job Title</th>
                     <th style="width: 60px;">Company</th>
                     <th style="width: 100px;">Employment History</th>
@@ -286,6 +292,8 @@ function wpbcv_received_cvs_page() {
         echo '<td>' . esc_html($resume['email']) . '</td>';
         echo '<td>' . esc_html($resume['degree']) . '</td>';
         echo '<td>' . esc_html($resume['university']) . '</td>';
+        echo '<td>' . esc_html($resume['cgpa']) . '</td>';
+
         echo '<td>' . esc_html($resume['job_title']) . '</td>';
         echo '<td>' . esc_html($resume['company']) . '</td>';
         echo '<td>' . esc_html($resume['employment_history']) . '</td>';
@@ -394,6 +402,8 @@ if (isset($_POST['insert'])) {
                     'email' => $resume_data['email'],
                     'degree' => $resume_data['degree'],
                     'university' => $resume_data['university'],
+                    'cgpa' => $resume_data['cgpa'],
+
                     'job_title' => $resume_data['job_title'],
                     'company' => $resume_data['company'],
                     'employment_history' => $resume_data['employment_history'],
@@ -444,6 +454,9 @@ function wpbcv_get_filtered_data() {
         echo '<td>' . esc_html($resume['email']) . '</td>';
         echo '<td>' . esc_html($resume['degree']) . '</td>';
         echo '<td>' . esc_html($resume['university']) . '</td>';
+        echo '<td>' . esc_html($resume['cgpa']) . '</td>';
+
+
         echo '<td>' . esc_html($resume['job_title']) . '</td>';
         echo '<td>' . esc_html($resume['company']) . '</td>';
         echo '<td>' . esc_html($resume['employment_history']) . '</td>';
@@ -700,7 +713,7 @@ function wpbcv_custom_shortcode_function() {
 
         <form method="post" enctype="multipart/form-data">
             <!-- Form fields -->
-            <h5><strong>Personal Details</strong></h5>
+            <h5 style="text-align: center;"><strong>Personal Details</strong></h5>
 <label for="full_name" style="display: inline-block; width: 150px;">Full Name:</label>
 <input type="text" name="full_name" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
@@ -709,29 +722,132 @@ function wpbcv_custom_shortcode_function() {
 
 <!-- Add more personal details fields as needed -->
 
-<h5><strong>Educational Details</strong></h5>
-<label for="degree" style="display: inline-block; width: 150px;">Degree:</label>
-<input type="text" name="degree" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+<h5 style="text-align: center;"><strong>Educational Details</strong></h5>
 
-<label for="university" style="display: inline-block; width: 150px;">University:</label>
-<input type="text" name="university" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+<label for="cgpa" style="display: inline-block; width: 150px;">CGPA</label>
+<input type="text" name="cgpa" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
+<div class="accordion">
+  <div class="accordion-item">
+    <div class="accordion-header">Education History 1</div>
+    <div class="accordion-content">
+      <!-- Education history form fields go here -->
+      <label for="degree1">Degree:</label>
+      <input type="text" id="degree1" name="degree1">
+      <label for="institution1">Institution:</label>
+      <input type="text" id="institution1" name="institution1">
+      <!-- Add more fields as needed -->
+    </div>
+  </div>
+</div>
+<button id="add-education">Add Education History</button>
 <!-- Add more educational details fields as needed -->
 
-<h5><strong>Professional Details</strong></h5>
-<label for="job_title" style="display: inline-block; width: 150px;">Job Title:</label>
-<input type="text" name="job_title" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+<h5 style="text-align: center;"><strong>Professional Details</strong></h5>
 
-<label for="company" style="display: inline-block; width: 150px;">Company:</label>
-<input type="text" name="company" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+
+<div class="accordion">
+  <div class="accordion-item">
+    <div class="accordion-header">Education History 1</div>
+    <div class="accordion-content">
+      <!-- Education history form fields go here -->
+      <label for="job_title">Job Title</label>
+      <input type="text" id="job_title" name="job_title">
+      <label for="company">Company:</label>
+      <input type="text" id="company" name="company">
+      <label for="Experiance">experiance</label>
+      <input type="text" id="experiance" name="experiance">
+      <!-- Add more fields as needed -->
+    </div>
+  </div>
+</div>
+<button id="add-education">Add Education History</button>
 
 <!-- Add more professional details fields as needed -->
 
-<h5><strong>Employment History</strong></h5>
-<label for="employment_history" style="display: inline-block; width: 150px;">Employment History:</label>
-<textarea name="employment_history" rows="4" cols="50" style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"></textarea>
 
-<h5><strong>Skills</strong></h5>
+<!-- ACCORDIAN-->
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    // Function to add educational history fields
+    function addEducationField() {
+      var itemCount = $('.accordion-item').length + 1;
+      var newItem = $('<div class="accordion-item">' +
+                        '<div class="accordion-header">Education History ' + itemCount + '</div>' +
+                        '<div class="accordion-content">' +
+                          '<label for="degree' + itemCount + '">Degree:</label>' +
+                          '<input type="text" id="degree' + itemCount + '" name="degree' + itemCount + '">' +
+                          '<label for="institution' + itemCount + '">Institution:</label>' +
+                          '<input type="text" id="institution' + itemCount + '" name="institution' + itemCount + '">' +
+                        '</div>' +
+                      '</div>');
+      $('.accordion').append(newItem);
+      // Reinitialize click event for accordion header
+      $('.accordion-header').off().click(function(){
+        $(this).next('.accordion-content').slideToggle();
+      });
+    }
+
+    // Click event for add education button
+    $('#add-education').click(function(){
+      addEducationField();
+    });
+
+    // Initial click event for accordion header
+    $('.accordion-header').click(function(){
+      $(this).next('.accordion-content').slideToggle();
+    });
+  });
+</script>
+<?php
+// Function to create the column if it doesn't exist
+function create_educational_history_column() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'resumes';
+    $column_name = 'educational_history';
+
+    $charset_collate = $wpdb->get_charset_collate();
+
+    // Check if the column already exists
+    if($wpdb->get_var("SHOW COLUMNS FROM $table_name LIKE '$column_name'") != $column_name) {
+        // Column doesn't exist, so add it
+        $sql = "ALTER TABLE $table_name ADD COLUMN $column_name LONGTEXT DEFAULT NULL";
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+    }
+}
+
+// Hook this function to the plugin activation
+register_activation_hook(__FILE__, 'create_educational_history_column');
+?>
+<?php
+// Handle form submission
+if(isset($_POST['submit_education'])) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'resumes';
+
+    // Extract educational history data from POST
+    $education_data = $_POST['education'];
+
+    // Prepare the data to be inserted into the database
+    $data_to_insert = array();
+    foreach($education_data as $education) {
+        $data_to_insert[] = array(
+            'educational_history' => serialize($education), // Serialize the data to store in a single column
+        );
+    }
+
+    // Insert the data into the database
+    $wpdb->insert($table_name, $data_to_insert);
+}
+?>
+<!-- ACCORDIAN FINISH-->
+
+
+<h5 style="text-align: center;"><strong>Skills</strong></h5>
 <div class="skills">
 
 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
@@ -779,7 +895,7 @@ function wpbcv_custom_shortcode_function() {
         } 
         </style>
 
-<h5><strong>Contact Details</strong></h5>
+<h5 style="text-align: center;"><strong>Contact Details</strong></h5>
 <label for="linkedin" style="display: inline-block; width: 150px;">Linkedin Profile:</label>
 <input type="text" name="linkedin" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
 
@@ -789,7 +905,7 @@ function wpbcv_custom_shortcode_function() {
 <label for="address" style="display: inline-block; width: 150px;">Address:</label>
 <textarea name="address" rows="4" cols="50"></textarea><br>
 
-<h5>Upload CV (PDF)</h5>
+<h5 style="text-align: center;">Upload CV (PDF)</h5>
 <label for="cv_upload" style="display: inline-block; width: 150px;">Upload CV:</label>
 <input type="file" name="cv_upload" accept=".pdf"><br>
 
@@ -848,6 +964,9 @@ function wpbcv_custom_shortcode_function() {
         $email = $_POST['email'];
         $degree = $_POST['degree'];
         $university = $_POST['university'];
+        $cgpa = $_POST['cgpa'];
+
+
         $job_title = $_POST['job_title'];
         $company = $_POST['company'];
         $employment_history = $_POST['employment_history'];
@@ -859,8 +978,8 @@ function wpbcv_custom_shortcode_function() {
         $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
 
         // Insert data into the database
-        $sql = "INSERT INTO wp_resumes (full_name, email, degree, university, job_title, company, employment_history, skills, linkedin, phno, address, pdf_url) 
-                VALUES ('$full_name', '$email', '$degree', '$university', '$job_title', '$company', '$employment_history', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
+        $sql = "INSERT INTO wp_resumes (full_name, email, degree, university,cgpa, job_title, company, employment_history, skills, linkedin, phno, address, pdf_url) 
+                VALUES ('$full_name', '$email', '$degree', '$university','$cgpa', '$job_title', '$company', '$employment_history', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
 
         if ($conn->query($sql) === TRUE) {
             echo "CV Submitted successfully";
@@ -1002,6 +1121,8 @@ function wpbcv_create_table_for_shortlisted_candidates() {
   `email` varchar(255) DEFAULT NULL,
   `degree` varchar(255) DEFAULT NULL,
   `university` varchar(255) DEFAULT NULL,
+  `cgpa` varchar(255) DEFAULT NULL,
+
   `job_title` varchar(255) DEFAULT NULL,
   `company` varchar(255) DEFAULT NULL,
   `employment_history` varchar(255) DEFAULT NULL,
@@ -1034,6 +1155,9 @@ function wpbcv_create_table_for_resume() {
         `email` varchar(255) NOT NULL,
         `degree` varchar(255) NOT NULL,
         `university` varchar(255) NOT NULL,
+        `cgpa` varchar(255) NOT NULL,
+
+
         `job_title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `company` varchar(255) NOT NULL,
         `employment_history` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -1287,6 +1411,7 @@ document.getElementById('search-form').addEventListener('submit', function(event
                     <th>Email</th>
                     <th>Degree</th>
                     <th>University</th>
+                    <th>CGPA</th>
                     <th>Job Title</th>
                     <th>Company</th>
                     <th>Employment History</th>
@@ -1310,6 +1435,7 @@ document.getElementById('search-form').addEventListener('submit', function(event
                 echo '<td>' . esc_html($resume['email']) . '</td>';
                 echo '<td>' . esc_html($resume['degree']) . '</td>';
                 echo '<td>' . esc_html($resume['university']) . '</td>';
+                echo '<td>' . esc_html($resume['cgpa']) . '</td>';
                 echo '<td>' . esc_html($resume['job_title']) . '</td>';
                 echo '<td>' . esc_html($resume['company']) . '</td>';
                 echo '<td>' . esc_html($resume['employment_history']) . '</td>';
@@ -1404,7 +1530,7 @@ document.getElementById('search-form').addEventListener('submit', function(event
             if ($results) {
                 echo '<h2>Filtered Resumes</h2>';
                 echo '<table>';
-                echo '<tr><th>ID</th><th>Full Name</th><th>Email</th><th>Degree</th><th>University</th><th>Job Title</th><th>Company</th><th>Employment History</th><th>Skills</th><th>LinkedIn</th><th>Phone Number</th><th>Address</th><th>Time</th><th>CV Name</th><th>Action</th><th>Operations</th></tr>';
+                echo '<tr><th>ID</th><th>Full Name</th><th>Email</th><th>Degree</th><th>University</th><th>cgpa</th><th>Job Title</th><th>Company</th><th>Employment History</th><th>Skills</th><th>LinkedIn</th><th>Phone Number</th><th>Address</th><th>Time</th><th>CV Name</th><th>Action</th><th>Operations</th></tr>';
                 foreach ($results as $resume) {
                     echo '<tr>';
                     echo '<td>' . $resume['id'] . '</td>';
@@ -1412,6 +1538,8 @@ document.getElementById('search-form').addEventListener('submit', function(event
                     echo '<td>' . $resume['email'] . '</td>';
                     echo '<td>' . $resume['degree'] . '</td>';
                     echo '<td>' . $resume['university'] . '</td>';
+                    echo '<td>' . $resume['cgpa'] . '</td>';
+
                     echo '<td>' . $resume['job_title'] . '</td>';
                     echo '<td>' . $resume['company'] . '</td>';
                     echo '<td>' . $resume['employment_history'] . '</td>';
@@ -1460,6 +1588,8 @@ if (isset($_POST['full_name'])) {
                     <th>Email</th>
                     <th>Degree</th>
                     <th>University</th>
+                    <th>cgpa</th>
+
                     <th>Job Title</th>
                     <th>Company</th>
                     <th>Employment History</th>
@@ -1479,6 +1609,8 @@ if (isset($_POST['full_name'])) {
                     <td>".$row['email']."</td>
                     <td>".$row['degree']."</td>
                     <td>".$row['university']."</td>
+                    <td>".$row['cgpa']."</td>
+
                     <td>".$row['job_title']."</td>
                     <td>".$row['company']."</td>
                     <td>".$row['employment_history']."</td>
@@ -1591,6 +1723,8 @@ if (isset($_POST['insert'])) {
                     'email' => $resume_data['email'],
                     'degree' => $resume_data['degree'],
                     'university' => $resume_data['university'],
+                    'cgpa' => $resume_data['cgpa'],
+
                     'job_title' => $resume_data['job_title'],
                     'company' => $resume_data['company'],
                     'employment_history' => $resume_data['employment_history'],
@@ -1730,6 +1864,9 @@ if (isset($_POST['full_name'])) {
                     <th>Email</th>
                     <th>Degree</th>
                     <th>University</th>
+                    <th>cgpa</th>
+
+
                     <th>Job Title</th>
                     <th>Company</th>
                     <th>Employment History</th>
@@ -1748,6 +1885,8 @@ if (isset($_POST['full_name'])) {
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['email'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['degree'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['university'] . '</td>';
+                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['cgpa'] . '</td>';
+
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['job_title'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['company']. '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['employment_history']. '</td>';
@@ -1784,6 +1923,8 @@ if (isset($_POST['full_name'])) {
                     <th style="padding: 10px; border: 1px solid #ddd;">Email</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Degree</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">University</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">cgpa</th>
+
                     <th style="padding: 10px; border: 1px solid #ddd;">Job Title</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Company</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Employment History</th>
@@ -1806,6 +1947,8 @@ if (isset($_POST['full_name'])) {
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['email']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['degree']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['university']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['cgpa']) . '</td>';
+
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['job_title']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['company']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['employment_history']) . '</td>';

@@ -119,13 +119,10 @@ if(isset($_POST['emailpm'])){
             <th style="width: 15px;">ID</th>
             <th style="width: 100px;">Full Name</th>
             <th style="width: 100px;">Email</th>
-            <th style="width: 50px;" >Degree</th>
-            <th style="width: 100px;">University</th>
             <th style="width: 100px;">cgpa</th>
 
             <th style="width: 100px;">Job Title</th>
             <th style="width: 100px;">Company</th>
-            <th style="width: 100px;">Employment History</th>
             <th style="width: 100px;">Skills</th>
             <th style="width: 100px;">LinkedIn</th>
             <th style="width: 100px;">Phone Number</th>
@@ -142,13 +139,10 @@ if(isset($_POST['emailpm'])){
         echo '<td>' . esc_html($candidate['id']) . '</td>';
         echo '<td>' . esc_html($candidate['full_name']) . '</td>';
         echo '<td>' . esc_html($candidate['email']) . '</td>';
-        echo '<td>' . esc_html($candidate['degree']) . '</td>';
-        echo '<td>' . esc_html($candidate['university']) . '</td>';
         echo '<td>' . esc_html($candidate['cgpa']) . '</td>';
 
         echo '<td>' . esc_html($candidate['job_title']) . '</td>';
         echo '<td>' . esc_html($candidate['company']) . '</td>';
-        echo '<td>' . esc_html($candidate['employment_history']) . '</td>';
         echo '<td>' . esc_html($candidate['skills']) . '</td>';
         echo '<td>' . esc_html($candidate['linkedin']) . '</td>';
         echo '<td>' . esc_html($candidate['phno']) . '</td>';
@@ -266,13 +260,10 @@ function wpbcv_received_cvs_page() {
                     <th style="width: 15px;">ID</th>
                     <th style="width: 100px;">Full Name</th>
                     <th style="width: 140px;">Email</th>
-                    <th style="width: 100px;">Degree</th>
-                    <th style="width: 61px;">University</th>
                     <th style="width: 61px;">cgpa</th>
 
                     <th style="width: 70px;">Job Title</th>
                     <th style="width: 60px;">Company</th>
-                    <th style="width: 100px;">Employment History</th>
                     <th style="width: 100px;">Skills</th>
                     <th style="width: 100px;">LinkedIn</th>
                     <th style="width: 100px;">Phone Number</th>
@@ -290,13 +281,10 @@ function wpbcv_received_cvs_page() {
         echo '<td>' . esc_html($resume['id']) . '</td>';
         echo '<td>' . esc_html($resume['full_name']) . '</td>';
         echo '<td>' . esc_html($resume['email']) . '</td>';
-        echo '<td>' . esc_html($resume['degree']) . '</td>';
-        echo '<td>' . esc_html($resume['university']) . '</td>';
         echo '<td>' . esc_html($resume['cgpa']) . '</td>';
 
         echo '<td>' . esc_html($resume['job_title']) . '</td>';
         echo '<td>' . esc_html($resume['company']) . '</td>';
-        echo '<td>' . esc_html($resume['employment_history']) . '</td>';
         echo '<td>' . esc_html($resume['skills']) . '</td>';
         echo '<td>' . esc_html($resume['linkedin']) . '</td>';
         echo '<td>' . esc_html($resume['phno']) . '</td>';
@@ -400,13 +388,10 @@ if (isset($_POST['insert'])) {
                 array(
                     'full_name' => $resume_data['full_name'],
                     'email' => $resume_data['email'],
-                    'degree' => $resume_data['degree'],
-                    'university' => $resume_data['university'],
                     'cgpa' => $resume_data['cgpa'],
 
                     'job_title' => $resume_data['job_title'],
                     'company' => $resume_data['company'],
-                    'employment_history' => $resume_data['employment_history'],
                     'skills' => $resume_data['skills'],
                     'linkedin' => $resume_data['linkedin'],
                     'phno' => $resume_data['phno'],
@@ -452,14 +437,11 @@ function wpbcv_get_filtered_data() {
         echo '<td>' . esc_html($resume['id']) . '</td>';
         echo '<td>' . esc_html($resume['full_name']) . '</td>';
         echo '<td>' . esc_html($resume['email']) . '</td>';
-        echo '<td>' . esc_html($resume['degree']) . '</td>';
-        echo '<td>' . esc_html($resume['university']) . '</td>';
         echo '<td>' . esc_html($resume['cgpa']) . '</td>';
 
 
         echo '<td>' . esc_html($resume['job_title']) . '</td>';
         echo '<td>' . esc_html($resume['company']) . '</td>';
-        echo '<td>' . esc_html($resume['employment_history']) . '</td>';
         echo '<td>' . esc_html($resume['skills']) . '</td>';
         echo '<td>' . esc_html($resume['linkedin']) . '</td>';
         echo '<td>' . esc_html($resume['phno']) . '</td>';
@@ -962,14 +944,11 @@ if(isset($_POST['submit_education'])) {
         // Collect form data
         $full_name = $_POST['full_name'];
         $email = $_POST['email'];
-        $degree = $_POST['degree'];
-        $university = $_POST['university'];
         $cgpa = $_POST['cgpa'];
 
 
         $job_title = $_POST['job_title'];
         $company = $_POST['company'];
-        $employment_history = $_POST['employment_history'];
         $linkedin = $_POST['linkedin'];
         $phno = $_POST['phno'];
         $address = $_POST['address'];
@@ -978,8 +957,8 @@ if(isset($_POST['submit_education'])) {
         $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
 
         // Insert data into the database
-        $sql = "INSERT INTO wp_resumes (full_name, email, degree, university,cgpa, job_title, company, employment_history, skills, linkedin, phno, address, pdf_url) 
-                VALUES ('$full_name', '$email', '$degree', '$university','$cgpa', '$job_title', '$company', '$employment_history', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
+        $sql = "INSERT INTO wp_resumes (full_name, email,cgpa, job_title, company,skills, linkedin, phno, address, pdf_url) 
+                VALUES ('$full_name', '$email','$cgpa', '$job_title', '$company', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
 
         if ($conn->query($sql) === TRUE) {
             echo "CV Submitted successfully";
@@ -1119,13 +1098,10 @@ function wpbcv_create_table_for_shortlisted_candidates() {
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `full_name` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `degree` varchar(255) DEFAULT NULL,
-  `university` varchar(255) DEFAULT NULL,
   `cgpa` varchar(255) DEFAULT NULL,
 
   `job_title` varchar(255) DEFAULT NULL,
   `company` varchar(255) DEFAULT NULL,
-  `employment_history` varchar(255) DEFAULT NULL,
   `skills` varchar(255) DEFAULT NULL,
   `linkedin` varchar(255) DEFAULT NULL,
   `phno` varchar(255) DEFAULT NULL,
@@ -1153,14 +1129,11 @@ function wpbcv_create_table_for_resume() {
          `id` int(55) NOT NULL AUTO_INCREMENT,
         `full_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `email` varchar(255) NOT NULL,
-        `degree` varchar(255) NOT NULL,
-        `university` varchar(255) NOT NULL,
         `cgpa` varchar(255) NOT NULL,
 
 
         `job_title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `company` varchar(255) NOT NULL,
-        `employment_history` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `skills` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `linkedin` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `phno` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -1409,12 +1382,9 @@ document.getElementById('search-form').addEventListener('submit', function(event
                     <th>ID</th>
                     <th>Full Name</th>
                     <th>Email</th>
-                    <th>Degree</th>
-                    <th>University</th>
                     <th>CGPA</th>
                     <th>Job Title</th>
                     <th>Company</th>
-                    <th>Employment History</th>
                     <th>Skills</th>
                     <th>LinkedIn</th>
                     <th>Phone Number</th>
@@ -1433,12 +1403,9 @@ document.getElementById('search-form').addEventListener('submit', function(event
                 echo '<td>' . esc_html($resume['id']) . '</td>';
                 echo '<td>' . esc_html($resume['full_name']) . '</td>';
                 echo '<td>' . esc_html($resume['email']) . '</td>';
-                echo '<td>' . esc_html($resume['degree']) . '</td>';
-                echo '<td>' . esc_html($resume['university']) . '</td>';
                 echo '<td>' . esc_html($resume['cgpa']) . '</td>';
                 echo '<td>' . esc_html($resume['job_title']) . '</td>';
                 echo '<td>' . esc_html($resume['company']) . '</td>';
-                echo '<td>' . esc_html($resume['employment_history']) . '</td>';
                 echo '<td>' . esc_html($resume['skills']) . '</td>';
                 echo '<td>' . esc_html($resume['linkedin']) . '</td>';
                 echo '<td>' . esc_html($resume['phno']) . '</td>';
@@ -1530,19 +1497,16 @@ document.getElementById('search-form').addEventListener('submit', function(event
             if ($results) {
                 echo '<h2>Filtered Resumes</h2>';
                 echo '<table>';
-                echo '<tr><th>ID</th><th>Full Name</th><th>Email</th><th>Degree</th><th>University</th><th>cgpa</th><th>Job Title</th><th>Company</th><th>Employment History</th><th>Skills</th><th>LinkedIn</th><th>Phone Number</th><th>Address</th><th>Time</th><th>CV Name</th><th>Action</th><th>Operations</th></tr>';
+                echo '<tr><th>ID</th><th>Full Name</th><th>Email</th><th>cgpa</th><th>Job Title</th><th>Company</th><th>Skills</th><th>LinkedIn</th><th>Phone Number</th><th>Address</th><th>Time</th><th>CV Name</th><th>Action</th><th>Operations</th></tr>';
                 foreach ($results as $resume) {
                     echo '<tr>';
                     echo '<td>' . $resume['id'] . '</td>';
                     echo '<td>' . $resume['full_name'] . '</td>';
                     echo '<td>' . $resume['email'] . '</td>';
-                    echo '<td>' . $resume['degree'] . '</td>';
-                    echo '<td>' . $resume['university'] . '</td>';
                     echo '<td>' . $resume['cgpa'] . '</td>';
 
                     echo '<td>' . $resume['job_title'] . '</td>';
                     echo '<td>' . $resume['company'] . '</td>';
-                    echo '<td>' . $resume['employment_history'] . '</td>';
                     echo '<td>' . $resume['skills'] . '</td>';
                     echo '<td>' . $resume['linkedin'] . '</td>';
                     echo '<td>' . $resume['phno	'] . '</td>';
@@ -1586,13 +1550,10 @@ if (isset($_POST['full_name'])) {
                 <th>ID</th>
                     <th>Full Name</th>
                     <th>Email</th>
-                    <th>Degree</th>
-                    <th>University</th>
                     <th>cgpa</th>
 
                     <th>Job Title</th>
                     <th>Company</th>
-                    <th>Employment History</th>
                     <th>Skills</th>
                     <th>LinkedIn</th>
                     <th>Phone Number</th>
@@ -1607,13 +1568,10 @@ if (isset($_POST['full_name'])) {
             <td>".$row['id']."</td>
             <td>".$row['full_name']."</td>
                     <td>".$row['email']."</td>
-                    <td>".$row['degree']."</td>
-                    <td>".$row['university']."</td>
                     <td>".$row['cgpa']."</td>
 
                     <td>".$row['job_title']."</td>
                     <td>".$row['company']."</td>
-                    <td>".$row['employment_history']."</td>
                     <td>".$row['skills']."</td>
                     <td>".$row['linkedin']."</td>
                     <td>".$row['phno']."</td>
@@ -1721,13 +1679,10 @@ if (isset($_POST['insert'])) {
                 array(
                     'full_name' => $resume_data['full_name'],
                     'email' => $resume_data['email'],
-                    'degree' => $resume_data['degree'],
-                    'university' => $resume_data['university'],
                     'cgpa' => $resume_data['cgpa'],
 
                     'job_title' => $resume_data['job_title'],
                     'company' => $resume_data['company'],
-                    'employment_history' => $resume_data['employment_history'],
                     'skills' => $resume_data['skills'],
                     'linkedin' => $resume_data['linkedin'],
                     'phno' => $resume_data['phno'],
@@ -1862,14 +1817,11 @@ if (isset($_POST['full_name'])) {
                 <th>ID</th>
                     <th>Full Name</th>
                     <th>Email</th>
-                    <th>Degree</th>
-                    <th>University</th>
                     <th>cgpa</th>
 
 
                     <th>Job Title</th>
                     <th>Company</th>
-                    <th>Employment History</th>
                     <th>Skills</th>
                     <th>LinkedIn</th>
                     <th>Phone Number</th>
@@ -1883,13 +1835,10 @@ if (isset($_POST['full_name'])) {
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['id'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['full_name']. '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['email'] . '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['degree'] . '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['university'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['cgpa'] . '</td>';
 
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['job_title'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['company']. '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['employment_history']. '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['skills']. '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['linkedin']. '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['phno']. '</td>';
@@ -1921,13 +1870,10 @@ if (isset($_POST['full_name'])) {
                     <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Full Name</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Email</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Degree</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">University</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">cgpa</th>
 
                     <th style="padding: 10px; border: 1px solid #ddd;">Job Title</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Company</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Employment History</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Skills</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">LinkedIn</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Phone Number</th>
@@ -1945,13 +1891,10 @@ if (isset($_POST['full_name'])) {
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['id']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['full_name']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['email']) . '</td>';
-                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['degree']) . '</td>';
-                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['university']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['cgpa']) . '</td>';
 
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['job_title']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['company']) . '</td>';
-                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['employment_history']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['skills']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['linkedin']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['phno']) . '</td>';

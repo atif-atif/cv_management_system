@@ -1531,67 +1531,129 @@ if (isset($_POST['download_pdf'])) {
 ?>
 
      
-    <form id="filterForm">
+<form id="filterForm" method="post"> <!-- Ensure the method attribute is set to "post" -->
     <label for="start_date" style="display: inline-block; margin-right: 10px;">Start Date:</label>
-        <input type="date" id="start_date" name="start_date" required>
-        <label for="end_date" style="display: inline-block; margin-right: 10px;">End Date:</label>
-        <input type="date" id="end_date" name="end_date" required>
-        <button type="submit" style="display: inline-block; width: 10%; height: 30px ">Filter CVs</button>
-    </form>
-    
-   <?php
-          
-        global $wpdb; // WordPress database object
+    <input type="date" id="start_date" name="start_date" required>
+    <label for="end_date" style="display: inline-block; margin-right: 10px;">End Date:</label>
+    <input type="date" id="end_date" name="end_date" required>
+    <button type="submit" style="display: inline-block; width: 10%; height: 30px ">Filter CVs</button>
+</form>
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            // Retrieve start and end dates from the form submission
-            $start_date = $_POST['start_date'];
-            $end_date = $_POST['end_date'];
-            $formatted_start_date = date('Y-m-d', strtotime($start_date));
-            $formatted_end_date = date('Y-m-d', strtotime($end_date));
-        
-        
-            // SQL query to fetch resumes between the provided dates
-            $sql = $wpdb->prepare("SELECT * FROM wp_resumes WHERE timestamp BETWEEN %s AND %s ", $start_date, $end_date);
-        
-            // Execute the query
-            $results = $wpdb->get_results($sql, ARRAY_A);
-        
-            // Display filtered resumes in a table
-            if ($results) {
-                echo '<h2>Filtered Resumes</h2>';
-                echo '<table>';
-                echo '<tr><th>ID</th><th>Full Name</th><th>Email</th><th>cgpa</th><th>Degree</th><th>institution</th><th>Job Title</th><th>Company</th><th>Experiance</th><th>Skills</th><th>LinkedIn</th><th>Phone Number</th><th>Address</th><th>Time</th><th>CV Name</th><th>Action</th><th>Operations</th></tr>';
-                foreach ($results as $resume) {
-                    echo '<tr>';
-                    echo '<td>' . $resume['id'] . '</td>';
-                    echo '<td>' . $resume['full_name'] . '</td>';
-                    echo '<td>' . $resume['email'] . '</td>';
-                    echo '<td>' . $resume['cgpa'] . '</td>';
-                    echo '<td>' . $resume['degree'] . '</td>';
-                    echo '<td>' . $resume['institution'] . '</td>';
+<?php
+global $wpdb; // WordPress database object
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Check if start_date and end_date keys are set in $_POST
+    if (isset($_POST['start_date']) && isset($_POST['end_date'])) {
+        // Retrieve start and end dates from the form submission
+        $start_date = $_POST['start_date'];
+        $end_date = $_POST['end_date'];
+        $formatted_start_date = date('Y-m-d', strtotime($start_date));
+        $formatted_end_date = date('Y-m-d', strtotime($end_date));
 
-                    echo '<td>' . $resume['job_title'] . '</td>';
-                    echo '<td>' . $resume['company'] . '</td>';
-                    echo '<td>' . $resume['experiance'] . '</td>';
+        // SQL query to fetch resumes between the provided dates
+        $sql = $wpdb->prepare("SELECT * FROM wp_resumes WHERE timestamp BETWEEN %s AND %s", $formatted_start_date, $formatted_end_date);
 
-                    echo '<td>' . $resume['skills'] . '</td>';
-                    echo '<td>' . $resume['linkedin'] . '</td>';
-                    echo '<td>' . $resume['phno	'] . '</td>';
-                    echo '<td>' . $resume['address'] . '</td>';
-                    echo '<td>' . $resume['timestamp'] . '</td>';
-                    echo '<td>' . $resume['pdf_url'] . '</td>';
+        // Execute the query
+        $results = $wpdb->get_results($sql, ARRAY_A);
+
+        // Display filtered resumes in a table
+        if ($results) {
+            echo '<h2>Filtered Resumes</h2>';
+            echo '<table>';
+            echo '<tr><th>ID</th><th>Full Name</th><th>Email</th><th>cgpa</th><th>Degree</th><th>Institution</th><th>Job Title</th><th>Company</th><th>Skills</th><th>LinkedIn</th><th>Phone Number</th><th>Address</th><th>Time</th><th>CV Name</th><th>Action</th><th>Operations</th></tr>';
+            foreach ($results as $resume) {
+                echo '<tr>';
+                echo '<td>' . $resume['id'] . '</td>';
+                echo '<td>' . $resume['full_name'] . '</td>';
+                echo '<td>' . $resume['email'] . '</td>';
+                echo '<td>' . $resume['cgpa'] . '</td>';
+                echo '<td>' . $resume['degree'] . '</td>';
+                echo '<td>' . $resume['institution'] . '</td>';
+                echo '<td>' . $resume['job_title'] . '</td>';
+                echo '<td>' . $resume['company'] . '</td>';
+                echo '<td>' . $resume['skills'] . '</td>';
+                echo '<td>' . $resume['linkedin'] . '</td>';
+                echo '<td>' . $resume['phno'] . '</td>';
+                echo '<td>' . $resume['address'] . '</td>';
+                echo '<td>' . $resume['timestamp'] . '</td>';
+                echo '<td><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($resume['pdf_url']) . '">Download PDF</button></form></td>';
+
+                // Action buttons
+                echo '<td>';
+                echo '<form method="post" action="">';
+                echo '<input type="hidden" name="resume_id" value="' . esc_html($resume['id']) . '">';
+                echo '<input type="text" name="commentss" placeholder="Add comment" required>';
+                echo '<button type="submit" name="insert" title="' . esc_html($resume['id']) . '">Shortlist</button>';
+                echo '</form>';
+                echo '<td>
+                        <form action="" method="post">
+                            <input type="hidden" name="id" value="' . esc_html($resume['id']) . '">
+                            <input type="submit" name="delete" value="Delete">
+                        </form>
+                    </td>';                
                     echo '</tr>';
-                }
-                echo '</table>';
-            } else {
-                echo '<p>No resumes found between the specified dates.</p>';
+            }
+             // delete record from 
+    if (isset($_POST['delete'])) {
+        global $wpdb;
+    
+        // Get the ID from the hidden input field
+        $id_to_delete = isset($_POST['id']) ? intval($_POST['id']) : 0;
+    
+        // Check if the ID is valid
+        if ($id_to_delete > 0) {
+            // Delete the record from the wp_shortlisted_candidates table
+            $delete_result = $wpdb->delete(
+                'wp_resumes',
+                array('id' => $id_to_delete),
+                array('%d') // ID is an integer
+            );
+    
+            // Check if the record is successfully deleted
+            if ($delete_result !== false) {
+                echo "Record deleted successfully.";
+                header("location: #"); // Redirect to the current page
+                exit; // Make sure to exit after redirecting
+            }
+            else {
+                echo "Error deleting record.";
             }
         }
-        ?>
+    } 
+    ?>
+    <?php
+// Handle form submission
+if (isset($_POST['download_pdf'])) {
+    // Get the PDF URL from the form submission
+    $pdf_url = $_POST['download_pdf'];
+    
+    // Validate the PDF URL and extract the file name
+    $file_name = basename($pdf_url);
+    
+    // Set headers for file download
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: attachment; filename="' . $file_name . '"');
+    
+    // Read the file and output its contents
+    readfile($pdf_url);
+    
+    // Exit to prevent further output
+    exit;
+}
+
+            echo '</table>';
+        } 
         
         
+        else {
+            echo '<p>No resumes found between the specified dates.</p>';
+        }
+    } else {
+        echo '<p>Please provide both start date and end date.</p>';
+    }
+}
+?>
         
       <!-- search by name -->
      <form id="filterForm"  method="POST">
@@ -1622,11 +1684,9 @@ if (isset($_POST['full_name'])) {
                     <th>cgpa</th>
                     <th>Degree</th>
                     <th>institution</th>
-
                     <th>Job Title</th>
                     <th>Company</th>
                     <th>Experiance</th>
-
                     <th>Skills</th>
                     <th>LinkedIn</th>
                     <th>Phone Number</th>
@@ -1638,24 +1698,20 @@ if (isset($_POST['full_name'])) {
                 </tr>";
         foreach ($results as $row) {
             echo "<tr>
-            <td>".$row['id']."</td>
-            <td>".$row['full_name']."</td>
+                    <td>".$row['id']."</td>
+                    <td>".$row['full_name']."</td>
                     <td>".$row['email']."</td>
                     <td>".$row['cgpa']."</td>
                     <td>".$row['degree']."</td>
                     <td>".$row['institution']."</td>
-
-
                     <td>".$row['job_title']."</td>
                     <td>".$row['company']."</td>
                     <td>".$row['experiance']."</td>
-
                     <td>".$row['skills']."</td>
                     <td>".$row['linkedin']."</td>
                     <td>".$row['phno']."</td>
                     <td>".$row['address']."</td>
                     <td>".$row['timestamp']."</td>
-
                 <td>";
                 $cv_name = esc_html($row['pdf_url']);
                 $pdf_url = wpbcv_get_cv_pdf_url($cv_name); // Function to get PDF URL
@@ -1710,15 +1766,8 @@ if (isset($_POST['full_name'])) {
             }
         }
     } 
-    
-                    echo '</td>';
-
-
-
-
-                
-  
-               echo  '</tr>';
+            echo '</td>';
+            echo  '</tr>';
         }
         echo "</table>";
     } else {
@@ -1932,8 +1981,10 @@ if (isset($_POST['full_name'])) {
                     <th>Comments</th>
                     <th>Operations</th>
                     <th>Status</th>
+                    
 
                 </tr>";
+            
                 foreach ($shortlisted_candidates_data as $candidate) {
                     echo '<tr>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['id'] . '</td>';
@@ -2156,12 +2207,17 @@ if (isset($_POST['rejected'])) {
 
 
 
-<style>
+    <style>
+    table {
+        overflow-x: auto; /* Change 'scroll' to 'auto' */
+        white-space: nowrap; /* Prevent table cells from wrapping */
+    }
+
     th {
-            background-color: #2c3e50 ;
-            color: #FFF;
-        }
-    </style>
+        background-color: #2c3e50;
+        color: #FFF;
+    }
+</style>
 <?php
 return ob_get_clean();
 }

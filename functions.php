@@ -740,7 +740,7 @@ function wpbcv_custom_shortcode_function() {
 
 <div class="accordion">
   <div class="accordion-item">
-    <div class="accordion-header">Education History 1</div>
+  <div class="accordion-header" style="background-color: #f0f0f0; color: #333; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Education History 1</div>
     <div class="accordion-content">
       <!-- Education history form fields go here -->
       <label for="degree">Degree:</label>
@@ -751,7 +751,7 @@ function wpbcv_custom_shortcode_function() {
     </div>
   </div>
 </div>
-<button id="add-education">Add Education History</button>
+<button id="add-education" style="padding: 10px 20px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;">Add Education History</button>
 <!-- Add more educational details fields as needed -->
 
 <h5 style="text-align: center;"><strong>Professional Details</strong></h5>
@@ -759,20 +759,20 @@ function wpbcv_custom_shortcode_function() {
 
 <div class="accordion">
   <div class="accordion-item">
-    <div class="accordion-header">Professional History 1</div>
+    <div class="accordion-header"    style="background-color: #f0f0f0; color: #333; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Professional History 1</div>
     <div class="accordion-content">
       <!-- Education history form fields go here -->
       <label for="job_title">Job Title</label>
       <input type="text" id="job_title" name="job_title">
       <label for="company">Company:</label>
       <input type="text" id="company" name="company">
-      <label for="experiance">experiance</label>
+      <label for="experiance">Experiance</label>
       <input type="text" id="experiance" name="experiance">
       <!-- Add more fields as needed -->
     </div>
   </div>
 </div>
-<button id="add-education">Add professional history</button>
+<button id="add-education" style="padding: 10px 20px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;">Add professional history</button>
 
 <!-- Add more professional details fields as needed -->
 
@@ -916,7 +916,7 @@ if(isset($_POST['submit_education'])) {
 
 <h5 style="text-align: center;">Upload CV (PDF)</h5>
 <label for="cv_upload" style="display: inline-block; width: 150px;">Upload CV:</label>
-<input type="file" name="cv_upload" accept=".pdf"><br>
+<input type="file" name="cv_upload" accept=".pdf" style="padding: 5px 10px; font-size: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;"><br>
 
 <input type="submit" name="resume_submission_submit" value="Submit" style="background-color: #2c3e50; 
                 border: 20px;
@@ -1267,6 +1267,7 @@ function wpbcv_follow_us_link()
     </div>
     <?php
     return ob_get_clean();
+    
 }
 add_shortcode('follow_us', 'wpbcv_follow_us_link');
 ?>
@@ -1337,7 +1338,7 @@ function wpbcv_received_cvv_page()
         }
 
         th {
-            background-color: #666 ;
+            background-color: #2c3e50 ;
             color: #FFF;
         }
 
@@ -1351,7 +1352,7 @@ function wpbcv_received_cvv_page()
             margin-bottom: 20px;
             border-radius: 5px;
             border: none;
-            background-color: #007bff;
+            background-color: #2c3e50;
             color: #fff;
             cursor: pointer;
             width: 100px;
@@ -1394,7 +1395,7 @@ function wpbcv_received_cvv_page()
         <option value="Java">
         <option value="PSD to HTML&CSS">
     </datalist>
-    <input type="submit" value="Search" />
+    <input type="submit" value="Search"  style="background-color: #2c3e50;"/>
    
 </form>
 
@@ -1473,10 +1474,10 @@ document.getElementById('search-form').addEventListener('submit', function(event
                 echo '<button type="submit" name="insert" title="' . esc_html($resume['id']) . '">Shortlist</button>';
                 echo '</form>';
                 echo '<td>
-                        <form action="" method="post">
-                            <input type="hidden" name="id" value="' . esc_html($resume['id']) . '">
-                            <input type="submit" name="delete" value="Delete">
-                        </form>
+                <form action="" method="post" >
+                <input type="hidden" name="id" value="' . esc_html($resume['id']) . '">
+                <input type="submit" name="delete" value="Delete" style="background-color: red;">
+            </form>
                     </td>';
 
                 echo '</tr>';
@@ -1838,7 +1839,6 @@ if (isset($_POST['insert'])) {
         }
     }
 }
-
             ?>
             </tbody>
         </table>
@@ -1876,10 +1876,10 @@ get_header();
 
     // Email Forwarding Form
     if(isset($_POST['emailpm'])){
-        $to = 'nouman.wpbrigade@gmail.com'; // jis ko send krne ha
+        $to = 'nouman.wpbrigade@gmail.com'; // reciver
         $subject = 'Check the short listed candidate list';
         $message = 'Please check the short listed candidate list.';
-        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); // jis email sa message huna ha
+        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); // sender
 
         $sent = wp_mail($to, $subject, $message, $headers);
 
@@ -1961,6 +1961,7 @@ if (isset($_POST['full_name'])) {
     if ($results) {
         // Output data of each row
         echo "<table border='1'>
+        
                 <tr>
                 <th>ID</th>
                     <th>Full Name</th>
@@ -2055,11 +2056,13 @@ if (isset($_POST['full_name'])) {
     }
 }
 ?>
+                <div class="tab" >
 
 
         <table style="width: 100%; border-collapse: collapse;">
             <!-- Table Header -->
             <thead>
+
                 <tr >
                     <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Full Name</th>
@@ -2083,7 +2086,7 @@ if (isset($_POST['full_name'])) {
 
                     <th style="padding: 10px; border: 1px solid #ddd;">Operations</th>
                    
-                </tr>
+                </tr></div>
             </thead>
             <tbody>
             <?php
@@ -2106,16 +2109,16 @@ if (isset($_POST['full_name'])) {
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['phno']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['address']) . '</td>';
                 // Button to download PDF
-                echo '<td style="padding: 10px; border: 1px solid #ddd;"><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer;">Download PDF</button></form></td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;"><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Download PDF</button></form></td>';
                 
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['comments']) . '</td>';
                 
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">
                 <form action="" method="post">
                     <input type="hidden" name="selected" value="' . esc_html($candidate['email']) . '">
-                    <input title="' . esc_html($candidate['email']) . '" type="submit" name="selected" value="Rejected" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: blue; color: #fff; cursor: pointer;">
+                    <input title="' . esc_html($candidate['email']) . '" type="submit" name="selected" value="Rejected" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">
                     <input type="hidden" name="rejected" value="' . esc_html($candidate['id']) . '">
-                    <input title="' . esc_html($candidate['id']) . '" type="submit" name="rejected" value="Selected" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: blue; color: #fff; cursor: pointer;">
+                    <input title="' . esc_html($candidate['id']) . '" type="submit" name="rejected" value="Selected" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">
                     </form>
             </td>';
               
@@ -2205,10 +2208,8 @@ if (isset($_POST['rejected'])) {
         ?>
     </table>
 
-
-
     <style>
-    table {
+    .tab {
         overflow-x: auto; /* Change 'scroll' to 'auto' */
         white-space: nowrap; /* Prevent table cells from wrapping */
     }

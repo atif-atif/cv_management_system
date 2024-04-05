@@ -52,10 +52,28 @@ function wpbcv_create_plugin_pages() {
         }
     }
 }
-
 // Hook into activation
 register_activation_hook(__FILE__, 'wpbcv_create_plugin_pages');
+register_activation_hook(__FILE__, 'wpbcv_create_plugin_pages');
 
+// Wordpress login page redirection
+
+function wpbcv_custom_login_redirect( $redirect_to, $request, $user ) {
+    // Check if the user has roles and if the roles array is not empty
+    if ( isset( $user->roles ) && is_array( $user->roles ) && ! empty( $user->roles ) ) {
+        // Get the current user's role
+        $user_role = $user->roles[0];
+ 
+        // Set the URL to redirect users to based on their role
+        if ( $user_role == 'subscriber' ) {
+            $redirect_to = '/shortlisted-candidates/';
+        } elseif ( $user_role == 'editor' ) {
+            $redirect_to = '/hr-dashboard/';
+        }
+    }
+    return $redirect_to;
+}
+add_filter( 'login_redirect', 'wpbcv_custom_login_redirect', 10, 3 );
 // Create the admin menu page
 
 function csv_management_menu() {
@@ -160,7 +178,6 @@ if(isset($_POST['emailpm'])){
         echo '<td><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '">Download PDF</button></form></td>';
         
         echo '<td>' . esc_html($candidate['comments']) . '</td>';
-        echo '<td>' . esc_html($candidate['status']) . '</td>';
 
         echo '<td>
         <form action="" method="post">
@@ -725,200 +742,182 @@ function wpbcv_custom_shortcode_function() {
         <form method="post" enctype="multipart/form-data">
             <!-- Form fields -->
             <h5 style="text-align: center;"><strong>Personal Details</strong></h5>
-<label for="full_name" style="display: inline-block; width: 150px;">Full Name:</label>
-<input type="text" name="full_name" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+            <label for="full_name" style="display: inline-block; width: 150px;">Full Name:</label>
+            <input type="text" name="full_name" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
-<label for="email" style="display: inline-block; width: 150px;">Email:</label>
-<input type="email" name="email" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+            <label for="email" style="display: inline-block; width: 150px;">Email:</label>
+            <input type="email" name="email" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
-<!-- Add more personal details fields as needed -->
+            <!-- Add more personal details fields as needed -->
 
-<h5 style="text-align: center;"><strong>Educational Details</strong></h5>
+            <h5 style="text-align: center;"><strong>Educational Details</strong></h5>
 
-<label for="cgpa" style="display: inline-block; width: 150px;">CGPA</label>
-<input type="text" name="cgpa" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+            <label for="cgpa" style="display: inline-block; width: 150px;">CGPA</label>
+            <input type="text" name="cgpa" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
-<div class="accordion">
-  <div class="accordion-item">
-  <div class="accordion-header" style="background-color: #f0f0f0; color: #333; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Education History 1</div>
-    <div class="accordion-content">
-      <!-- Education history form fields go here -->
-      <label for="degree">Degree:</label>
-      <input type="text" id="degree" name="degree">
-      <label for="institution">Institution:</label>
-      <input type="text" id="institution" name="institution">
-      <!-- Add more fields as needed -->
+            <div class="accordion-education">
+    <div class="accordion-item">
+        <div class="accordion-header" style="background-color: #f0f0f0; color: #333; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Education History 1</div>
+        <div class="accordion-content">
+            <!-- Education history form fields go here -->
+            <!-- Inside the form -->
+            <label for="degree">Degree:</label>
+            <input type="text" id="degree" name="degree[]"> <!-- Note the square brackets [] to indicate an array -->
+            <label for="institution">Institution:</label>
+            <input type="text" id="institution" name="institution[]"> <!-- Also with square brackets [] -->
+
+            <!-- Add more fields as needed -->
+        </div>
     </div>
-  </div>
 </div>
 <button id="add-education" style="padding: 10px 20px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;">Add Education History</button>
-<!-- Add more educational details fields as needed -->
 
 <h5 style="text-align: center;"><strong>Professional Details</strong></h5>
 
-
-<div class="accordion">
-  <div class="accordion-item">
-    <div class="accordion-header"    style="background-color: #f0f0f0; color: #333; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Professional History 1</div>
-    <div class="accordion-content">
-      <!-- Education history form fields go here -->
-      <label for="job_title">Job Title</label>
-      <input type="text" id="job_title" name="job_title">
-      <label for="company">Company:</label>
-      <input type="text" id="company" name="company">
-      <label for="experiance">Experiance</label>
-      <input type="text" id="experiance" name="experiance">
-      <!-- Add more fields as needed -->
+<div class="accordion-professional">
+    <div class="accordion-item">
+        <div class="accordion-header" style="background-color: #f0f0f0; color: #333; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Professional History 0</div>
+        <div class="accordion-content">
+            <!-- Education history form fields go here -->
+            <label for="job_title">Job Title</label>
+            <input type="text" id="job_title" name="job_title[]">
+            <label for="company">Company:</label>
+            <input type="text" id="company" name="company[]">
+            <label for="experiance">Experiance</label>
+            <input type="text" id="experiance" name="experiance[]">
+            <!-- Add more fields as needed -->
+        </div>
     </div>
-  </div>
 </div>
-<button id="add-education" style="padding: 10px 20px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;">Add professional history</button>
+<button id="add-professional" style="padding: 10px 20px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;">Add Professional History</button>
 
-<!-- Add more professional details fields as needed -->
-
-
-<!-- ACCORDIAN-->
+<!-- ACCORDION-->
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-  $(document).ready(function(){
-    // Function to add educational history fields
-    function addEducationField() {
-      var itemCount = $('.accordion-item').length + 1;
-      var newItem = $('<div class="accordion-item">' +
-                        '<div class="accordion-header">Education History ' + itemCount + '</div>' +
-                        '<div class="accordion-content">' +
-                          '<label for="degree' + itemCount + '">Degree:</label>' +
-                          '<input type="text" id="degree' + itemCount + '" name="degree' + itemCount + '">' +
-                          '<label for="institution' + itemCount + '">Institution:</label>' +
-                          '<input type="text" id="institution' + itemCount + '" name="institution' + itemCount + '">' +
-                        '</div>' +
-                      '</div>');
-      $('.accordion').append(newItem);
-      // Reinitialize click event for accordion header
-      $('.accordion-header').off().click(function(){
-        $(this).next('.accordion-content').slideToggle();
-      });
-    }
+    $(document).ready(function(){
+        // Function to add educational history fields
+        function addEducationField() {
+            var itemCount = $('.accordion-education .accordion-item').length + 1;
+            var newItem = $('<div class="accordion-item">' +
+                '<div class="accordion-header">Education History ' + itemCount + '</div>' +
+                '<div class="accordion-content">' +
+                '<label for="degree' + itemCount + '">Degree:</label>' +
+                '<input type="text" id="degree' + itemCount + '" name="degree[]">' +
+                '<label for="institution' + itemCount + '">Institution:</label>' +
+                '<input type="text" id="institution' + itemCount + '" name="institution[]">' +
+                '</div>' +
+                '</div>');
+            $('.accordion-education').append(newItem);
+            // Reinitialize click event for accordion header
+            $('.accordion-header').off().click(function(){
+                $(this).next('.accordion-content').slideToggle();
+            });
+        }
 
-    // Click event for add education button
-    $('#add-education').click(function(){
-      addEducationField();
-    });
+        // Click event for add education button
+        $('#add-education').click(function(){
+            addEducationField();
+        });
 
-    // Initial click event for accordion header
-    $('.accordion-header').click(function(){
-      $(this).next('.accordion-content').slideToggle();
+        // Function to add professional history fields
+        function addProfessionalField() {
+            var itemCount = $('.accordion-professional .accordion-item').length + 1;
+            var newItem = $('<div class="accordion-item">' +
+                '<div class="accordion-header">Professional History ' + itemCount + '</div>' +
+                '<div class="accordion-content">' +
+                '<label for="job_title' + itemCount + '">Job Title:</label>' +
+                '<input type="text" id="job_title' + itemCount + '" name="job_title[]">' +
+                '<label for="company' + itemCount + '">Company:</label>' +
+                '<input type="text" id="company' + itemCount + '" name="company[]">' +
+                '<label for="experiance' + itemCount + '">Experiance:</label>' +
+                '<input type="text" id="experiance' + itemCount + '" name="experiance[]">' +
+                '</div>' +
+                '</div>');
+            $('.accordion-professional').append(newItem);
+            // Reinitialize click event for accordion header
+            $('.accordion-header').off().click(function(){
+                $(this).next('.accordion-content').slideToggle();
+            });
+        }
+
+        // Click event for add professional button
+        $('#add-professional').click(function(){
+            addProfessionalField();
+        });
+
+        // Initial click event for accordion header
+        $('.accordion-header').click(function(){
+            $(this).next('.accordion-content').slideToggle();
+        });
     });
-  });
 </script>
-<?php
-// Function to create the column if it doesn't exist
-function create_educational_history_column() {
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'resumes';
-    $column_name = 'educational_history';
 
-    $charset_collate = $wpdb->get_charset_collate();
 
-    // Check if the column already exists
-    if($wpdb->get_var("SHOW COLUMNS FROM $table_name LIKE '$column_name'") != $column_name) {
-        // Column doesn't exist, so add it
-        $sql = "ALTER TABLE $table_name ADD COLUMN $column_name LONGTEXT DEFAULT NULL";
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-    }
-}
+            <h5 style="text-align: center;"><strong>Skills</strong></h5>
+            <div class="skills">
 
-// Hook this function to the plugin activation
-register_activation_hook(__FILE__, 'create_educational_history_column');
-?>
-<?php
-// Handle form submission
-if(isset($_POST['submit_education'])) {
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'resumes';
+                <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+                    <input type="checkbox" name="skills[]" value="Theme Development">
+                    Theme Development
+                </label>
+                <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+                    <input type="checkbox" name="skills[]" value="Plugin Development">
+                    Plugin Development
+                </label>
+                <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+                    <input type="checkbox" name="skills[]" value="PSD to Email">
+                    PSD to Email
+                </label><br>
+                <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+                    <input type="checkbox" name="skills[]" value="PSD to Wordpress">
+                    PSD to Wordpress
+                </label>
+                <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+                    <input type="checkbox" name="skills[]" value="Python">
+                    Python
+                </label>
+                <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+                    <input type="checkbox" name="skills[]" value="Human Resources Skills">
+                    Human Resources Skills
+                </label>
+                <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+                    <input type="checkbox" name="skills[]" value="Java">
+                    Java
+                </label><br>
+                <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
+                    <input type="checkbox" name="skills[]" value="PSD to HTML&CSS">
+                    PSD to HTML&CSS </label><br>
+                <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">Other :</label>
+                <input type="text" name="skills[]" value="" placeholder="java,c++">
+            </div>
+            <style>
+                .skills {
+                    max-width: 600px;
+                    margin: 20px auto;
+                    padding: 20px;
+                    border: 2px solid #333;
+                    border-radius: 8px;
+                    background-color: #fff;
+                }
+            </style>
 
-    // Extract educational history data from POST
-    $education_data = $_POST['education'];
+            <h5 style="text-align: center;"><strong>Contact Details</strong></h5>
+            <label for="linkedin" style="display: inline-block; width: 150px;">Linkedin Profile:</label>
+            <input type="text" name="linkedin" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
 
-    // Prepare the data to be inserted into the database
-    $data_to_insert = array();
-    foreach($education_data as $education) {
-        $data_to_insert[] = array(
-            'educational_history' => serialize($education), // Serialize the data to store in a single column
-        );
-    }
+            <label for="phno" style="display: inline-block; width: 150px;">Phone no:</label>
+            <input type="text" name="phno" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
 
-    // Insert the data into the database
-    $wpdb->insert($table_name, $data_to_insert);
-}
-?>
+            <label for="address" style="display: inline-block; width: 150px;">Address:</label>
+            <textarea name="address" rows="4" cols="50"></textarea><br>
 
-<h5 style="text-align: center;"><strong>Skills</strong></h5>
-<div class="skills">
+            <h5 style="text-align: center;">Upload CV (PDF)</h5>
+            <label for="cv_upload" style="display: inline-block; width: 150px;">Upload CV:</label>
+            <input type="file" name="cv_upload" accept=".pdf" style="padding: 5px 10px; font-size: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;"><br>
 
-<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-  <input type="checkbox" name="skills[]" value="Theme Development">
-  Theme Development
-</label>
-<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-  <input type="checkbox" name="skills[]" value="Plugin Development">
-  Plugin Development
-</label>
-<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-  <input type="checkbox" name="skills[]" value="PSD to Email">
-  PSD to Email
-</label><br>
-<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-  <input type="checkbox" name="skills[]" value="PSD to Wordpress">
-  PSD to Wordpress
-</label>
-<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-  <input type="checkbox" name="skills[]" value="Python">
-  Python
-</label>
-<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-  <input type="checkbox" name="skills[]" value="Human Resources Skills">
-  Human Resources Skills
-</label>
-<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-  <input type="checkbox" name="skills[]" value="Java">
-  Java
-</label><br>
-<label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-  <input type="checkbox" name="skills[]" value="PSD to HTML&CSS">
-  PSD to HTML&CSS </label><br>
-  <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">Other :</label>
-<input type="text" name="skills[]" value="" placeholder="java,c++">
-</div>
-<style>
-.skills {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 2px solid #333;
-            border-radius: 8px;
-            background-color: #fff;
-        } 
-        </style>
-
-<h5 style="text-align: center;"><strong>Contact Details</strong></h5>
-<label for="linkedin" style="display: inline-block; width: 150px;">Linkedin Profile:</label>
-<input type="text" name="linkedin" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
-
-<label for="phno" style="display: inline-block; width: 150px;">Phone no:</label>
-<input type="text" name="phno" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
-            
-<label for="address" style="display: inline-block; width: 150px;">Address:</label>
-<textarea name="address" rows="4" cols="50"></textarea><br>
-
-<h5 style="text-align: center;">Upload CV (PDF)</h5>
-<label for="cv_upload" style="display: inline-block; width: 150px;">Upload CV:</label>
-<input type="file" name="cv_upload" accept=".pdf" style="padding: 5px 10px; font-size: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;"><br>
-
-<input type="submit" name="resume_submission_submit" value="Submit" style="background-color: #2c3e50; 
+            <input type="submit" name="resume_submission_submit" value="Submit" style="background-color: #2c3e50; 
                 border: 20px;
                 color: white;
                 padding: 15px 32px;
@@ -969,27 +968,43 @@ if(isset($_POST['submit_education'])) {
         }
 
         // Collect form data
-        $full_name = $_POST['full_name'];
-        $email = $_POST['email'];
-        $cgpa = $_POST['cgpa'];
-        $degree = $_POST['degree'];
-        $institution = $_POST['institution'];
+      // Collect form data
+     $full_name = $_POST['full_name'];
+     $email = $_POST['email'];
+     $cgpa = $_POST['cgpa'];
+
+// Handle degree and institution arrays
+// Handle degree and institution arrays
+$degree = isset($_POST['degree']) ? implode(', ', $_POST['degree']) : '';
+$institution = isset($_POST['institution']) ? implode(', ', $_POST['institution']) : '';
+
+// Handle job title, company, and experiance arrays
+$job_titles = isset($_POST['job_title']) ? implode(', ', $_POST['job_title']) : '';
+$companies = isset($_POST['company']) ? implode(', ', $_POST['company']) : '';
+$experiances = isset($_POST['experiance']) ? implode(', ', $_POST['experiance']) : '';
+
+// Insert data into the database
 
 
-        $job_title = $_POST['job_title'];
-        $company = $_POST['company'];
-        $experiance = $_POST['experiance'];
+   
 
-        $linkedin = $_POST['linkedin'];
-        $phno = $_POST['phno'];
-        $address = $_POST['address'];
+
+    $job_title = $_POST['job_title'];
+    $company = $_POST['company'];
+    $experiance = $_POST['experiance'];
+    $linkedin = $_POST['linkedin'];
+    $phno = $_POST['phno'];
+    $address = $_POST['address'];
+
 
         // Skills handling
         $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
 
         // Insert data into the database
-        $sql = "INSERT INTO wp_resumes (full_name, email,cgpa, degree, institution,job_title, company, experiance, skills, linkedin, phno, address, pdf_url) 
-                VALUES ('$full_name', '$email','$cgpa', '$degree', '$institution', '$job_title', '$company', '$experiance' ,'$skills', '$linkedin', '$phno', '$address', '$cv_url')";
+     // Insert data into the database
+     $sql = "INSERT INTO wp_resumes (full_name, email, cgpa, degree, institution, job_title, company, experiance, skills, linkedin, phno, address, pdf_url) 
+     VALUES ('$full_name', '$email', '$cgpa', '$degree', '$institution', '$job_titles', '$companies', '$experiances', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
+
 
         if ($conn->query($sql) === TRUE) {
             echo "CV Submitted successfully";
@@ -1003,7 +1018,7 @@ if(isset($_POST['submit_education'])) {
         $message = 'Dear ' . $full_name . ',\n\n';
         $message .= 'Thank you for submitting your CV. We have received your submission successfully.';
         $headers = 'From: atifwpbrigade@gmail.com' . "\r\n";
-      
+
 
         // Send email
         $sent_to_user = mail($to, $subject, $message, $headers);
@@ -1024,6 +1039,7 @@ if(isset($_POST['submit_education'])) {
 }
 
 add_shortcode('custom_shortcode', 'wpbcv_custom_shortcode_function');
+
 
 // Handle CV file upload
 
@@ -1190,31 +1206,15 @@ function wpbcv_create_table_for_resume() {
 
 register_activation_hook(__FILE__, 'wpbcv_create_table_for_resume');
 
-function wpbcv_custom_login_redirect( $redirect_to, $request, $user ) {
-    // Check if $user is a WP_User object
-    if ( is_a( $user, 'WP_User' ) ) {
-        // Get the current user's role
-        $user_role = $user->roles[0];
- 
-        // Set the URL to redirect users to based on their role
-        if ( $user_role == 'subscriber' ) {
-            $redirect_to = '/testing/';
-        } 
-    } else {
-        // Handle WP_Error
-        error_log( 'Custom login redirect error: User is not a valid WP_User object' );
-        
-    }
 
-    return $redirect_to;
-}
-add_filter( 'login_redirect', 'wpbcv_custom_login_redirect', 10, 3 );
 
 ?>
 <!-- HR DASHBOARD shortcode-->
 <?php
 function wpbcv_follow_us_link()
 {
+    if (is_user_logged_in() && (current_user_can('administrator') || current_user_can('editor'))) {
+
    get_header();
     $current_user = wp_get_current_user();
     $user_display_name = $current_user->display_name;
@@ -1268,7 +1268,7 @@ function wpbcv_follow_us_link()
     <?php
     return ob_get_clean();
     
-}
+}}
 add_shortcode('follow_us', 'wpbcv_follow_us_link');
 ?>
 
@@ -1276,6 +1276,7 @@ add_shortcode('follow_us', 'wpbcv_follow_us_link');
 <?php
 function wpbcv_received_cvv_page()
 {
+    if (is_user_logged_in() && (current_user_can('administrator') || current_user_can('editor'))) {
 
     global $wpdb;
 
@@ -1377,8 +1378,51 @@ function wpbcv_received_cvv_page()
 
     </style>
 
+
+<div id="columnFilter">
+    <label for="selectColumns">Select Columns:</label><br>
+    <input type="text" id="selectColumns" list="columnOptions" multiple>
+    <datalist id="columnOptions">
+        <option value="ID">
+        <option value="Full Name">
+        <option value="Email">
+        <option value="CGPA">
+        <option value="Degree">
+        <option value="Institution">
+        <option value="Job Title">
+        <option value="Company">
+        <option value="Experience">
+        <option value="Skills">
+        <option value="LinkedIn">
+        <option value="Phone Number">
+        <option value="Address">
+        <option value="Time">
+        <option value="CV Name">
+    </datalist>
+</div>
+<table id="dataTable">
+    <!-- Your table content here -->
+</table>
+<script>
+    const selectColumnsInput = document.getElementById('selectColumns');
+    selectColumnsInput.addEventListener('input', function() {
+        const selectedOptions = [];
+        const inputValues = this.value.split(',');
+        
+        inputValues.forEach(function(value) {
+            const trimmedValue = value.trim();
+            if (trimmedValue !== '') {
+                selectedOptions.push(trimmedValue);
+            }
+        });
+        // Logic to show/hide selected columns based on selectedOptions array
+        // You can implement this logic here or call a function to handle it
+        console.log(selectedOptions);
+    });
+</script>
     <div class='table-wrap'>
     <h1 style="font-size: 50px; font-weight: bold;">Received CVs</h1>
+
 
 
         <!-- Search Form -->
@@ -1417,11 +1461,13 @@ document.getElementById('search-form').addEventListener('submit', function(event
     }
 });
 </script>
+<div class="firstdiv">
 
         <table>
             <!-- Table Header -->
             <thead>
                 <tr>
+                <th>Select</th>
                     <th>ID</th>
                     <th>Full Name</th>
                     <th>Email</th>
@@ -1448,6 +1494,8 @@ document.getElementById('search-form').addEventListener('submit', function(event
             <?php
             foreach ($resumes_data as $resume) {
                 echo '<tr>';
+                echo '<td><input type="checkbox" name="resume_checkbox[]" value="' . esc_attr($resume['id']) . '"></td>';
+
                 echo '<td>' . esc_html($resume['id']) . '</td>';
                 echo '<td>' . esc_html($resume['full_name']) . '</td>';
                 echo '<td>' . esc_html($resume['email']) . '</td>';
@@ -1530,15 +1578,14 @@ if (isset($_POST['download_pdf'])) {
     exit;
 }
 ?>
-
-     
 <form id="filterForm" method="post"> <!-- Ensure the method attribute is set to "post" -->
-    <label for="start_date" style="display: inline-block; margin-right: 10px;">Start Date:</label>
-    <input type="date" id="start_date" name="start_date" required>
-    <label for="end_date" style="display: inline-block; margin-right: 10px;">End Date:</label>
-    <input type="date" id="end_date" name="end_date" required>
-    <button type="submit" style="display: inline-block; width: 10%; height: 30px ">Filter CVs</button>
+<label for="start_date" style="display: inline-block; margin-right: 10px;">Start Date:</label>
+<input type="date" id="start_date" name="start_date" required style="width: 150px; height: 35px;">
+<label for="end_date" style="display: inline-block; margin-right: 10px; margin-left: 10px;">End Date:</label> 
+<input type="date" id="end_date" name="end_date" required style="width: 150px; height: 35px;">
+<button type="submit" style="display: inline-block; height: 35px;">Filter CVs</button>
 </form>
+
 
 <?php
 global $wpdb; // WordPress database object
@@ -1655,12 +1702,12 @@ if (isset($_POST['download_pdf'])) {
     }
 }
 ?>
-        
+                    <div class="secondclass">
       <!-- search by name -->
      <form id="filterForm"  method="POST">
         <label for="full_name" style="display: inline-block; width: 150px;">Enter Name:</label>
         <input type="text" id="full_name" name="full_name" required style="display: inline-block; width: 200px;" value="<?php echo esc_attr($search_query); ?>">
-        <button type="submit" style="display: inline-block;">Filter CVs</button>   
+        <button type="submit"  class="filtername" style="display: inline-block;">Filter CVs</button>   
 
     </form>
      <?php
@@ -1776,7 +1823,51 @@ if (isset($_POST['full_name'])) {
     }
 }
 ?>
+      </div>
+    <button id="deleteSelected">Delete Selected</button>
+<script>
+    // JavaScript to track selected rows and handle bulk action
+    document.getElementById('deleteSelected').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('.firstdiv input[type="checkbox"]:checked');
+        const selectedRows = Array.from(checkboxes).map(checkbox => checkbox.value);
+        if (selectedRows.length > 0) {
+            // Send selected rows to server for deletion
+            fetch('/path/to/server/script.php', {
+                method: 'POST',
+                body: JSON.stringify({ rows: selectedRows }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                // Handle response, e.g., display success message
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        } else {
+            // No rows selected, show error message or disable button
+        }
     
+    });
+</script>
+
+<script>
+    const firstdiv = document.getElementsByClassName ('firstdiv')[0];
+const secondclass = document.getElementsByClassName ('secondclass')[0];
+const leftClick = document.getElementsByClassName ('filtername')[0];
+const rightClick = document.getElementsByClassName ('filtername')[0];
+leftClick.addEventListener('click', ()=> {
+                
+                secondclass.style.display = 'block';
+                firstdiv.style.display = 'none';
+            });
+            rightClick.addEventListener('click', ()=> {
+                secondclass.style.display = 'block';
+                firstdiv.style.display = 'none';
+            });
+ </script>  
+
 <script>
 function printTable() {
     window.print();
@@ -1845,7 +1936,7 @@ if (isset($_POST['insert'])) {
     </div>
     <?php
     return ob_get_clean();
-}
+}}
 add_shortcode('received_cvv', 'wpbcv_received_cvv_page');
 ?>
  <?php
@@ -1868,7 +1959,8 @@ add_shortcode('received_cvv', 'wpbcv_received_cvv_page');
 <!-- shortlist_candidate shortcode-->
 <?php
 function wpbcv_display_shortlisted_candidates()
-{     
+{   
+    if (is_user_logged_in() && (current_user_can('administrator') || current_user_can('editor') || current_user_can('subscriber'))) {  
 get_header();
     global $wpdb;
 
@@ -1963,6 +2055,8 @@ if (isset($_POST['full_name'])) {
         echo "<table border='1'>
         
                 <tr>
+                <th>select</th>
+
                 <th>ID</th>
                     <th>Full Name</th>
                     <th>Email</th>
@@ -1988,6 +2082,8 @@ if (isset($_POST['full_name'])) {
             
                 foreach ($shortlisted_candidates_data as $candidate) {
                     echo '<tr>';
+                    echo '<td><input type="checkbox" name="resume_checkbox[]" value="' . esc_attr($candidate['id']) . '"></td>';
+
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['id'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['full_name']. '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['email'] . '</td>';
@@ -2056,7 +2152,7 @@ if (isset($_POST['full_name'])) {
     }
 }
 ?>
-                <div class="tab" >
+              
 
 
         <table style="width: 100%; border-collapse: collapse;">
@@ -2064,6 +2160,8 @@ if (isset($_POST['full_name'])) {
             <thead>
 
                 <tr >
+                <th style="padding: 10px; border: 1px solid #ddd;">Select</th>
+
                     <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Full Name</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Email</th>
@@ -2086,12 +2184,14 @@ if (isset($_POST['full_name'])) {
 
                     <th style="padding: 10px; border: 1px solid #ddd;">Operations</th>
                    
-                </tr></div>
+                </tr>
             </thead>
             <tbody>
             <?php
             foreach ($shortlisted_candidates_data as $candidate) {
                 echo '<tr>';
+                echo '<td><input type="checkbox" name="resume_checkbox[]" value="' . esc_attr($candidate['id']) . '"></td>';
+
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['id']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['full_name']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['email']) . '</td>';
@@ -2209,7 +2309,7 @@ if (isset($_POST['rejected'])) {
     </table>
 
     <style>
-    .tab {
+    .short {
         overflow-x: auto; /* Change 'scroll' to 'auto' */
         white-space: nowrap; /* Prevent table cells from wrapping */
     }
@@ -2221,7 +2321,7 @@ if (isset($_POST['rejected'])) {
 </style>
 <?php
 return ob_get_clean();
-}
+}}
 
 add_shortcode('shortlisted_candidate', 'wpbcv_display_shortlisted_candidates');
 ?>

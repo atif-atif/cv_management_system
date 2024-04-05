@@ -41,20 +41,15 @@ Here's a link to [Slides] (“ https://docs.google.com/presentation/d/19XJzNu8Tj
 * PM Receives Shortlisted CVs : The PMs receive the CVs that are shortlisted by the HR along with the comments that were added by the HR.
 
 == Frontend==
-The CV management plugin consists of the forms that work on the frontend of the user. The user may download our child theme to get the best experience on the frontend as well but if the user doesn't want to download that they may use the short codes along the plugin to get the pages The pages are built in the function.php file. Some of the short codes are provided below, one may use them to create the forms. If you are only using our plugin use these shortcodes to generate the pages.
-Short Codes:
-Submission in Pdf: [pdf_generation]
-Resume Submission: [custom_shortcode]
-Generate PDF report: [pdfcv_shortcode]
-HR Dashboard:[follow_us]
-Received CV: [received_cvv]
-Shortlisted Candidates: [shortlisted_candidate]
+The CV management plugin consists of the forms that work on the frontend of the user. The user may download our child theme to get the best experience on the frontend as well but if the user doesn't want to download that it's fine because our plugin automatically generates the pages.
+
 
 == Installation ==
 
 1. Upload the plugin to your 'wp-content/plugins' directory, or download and install automatically through your admin panel.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. If the user wants to download the child theme along this to get the frontend as well. Otherwise the pages are automatically generated in the pages section.
+4. Go to site folder and createa uploads folder(app>public>uploads) this folder stores all the cvs in the form of pdf.
 
 == Frequently Asked Questions ==
 

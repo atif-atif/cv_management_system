@@ -16,8 +16,6 @@ function wpbcv_redirect_non_logged_in_users_to_login() {
 }
 add_action( 'template_redirect', 'wpbcv_redirect_non_logged_in_users_to_login' );
 
-
-
 // Enqueue necessary scripts and styles
 function wpbcv_csv_management_enqueue_scripts() {
     // wp_enqueue_style('csv-management-style', plugins_url('/css/style.css', __FILE__));
@@ -32,9 +30,7 @@ function wpbcv_create_plugin_pages() {
         'HR DASHBOARD' => '[follow_us]',
         'RECEIVED CVS' => '[received_cvv]',
         'SHORTLISTED CANDIDATES' => '[shortlisted_candidate]',
-        'RESUME SUBMISSION' => '[custom_shortcode]',
-       
-        
+        'RESUME SUBMISSION' => '[custom_shortcode]',     
     );
 
     foreach ($pages as $title => $content) {
@@ -46,7 +42,6 @@ function wpbcv_create_plugin_pages() {
                 'post_status'   => 'publish',
                 'post_type'     => 'page',
             );
-
             // Insert the page into the database
             wp_insert_post($new_page);
         }
@@ -57,13 +52,12 @@ register_activation_hook(__FILE__, 'wpbcv_create_plugin_pages');
 register_activation_hook(__FILE__, 'wpbcv_create_plugin_pages');
 
 // Wordpress login page redirection
-
 function wpbcv_custom_login_redirect( $redirect_to, $request, $user ) {
     // Check if the user has roles and if the roles array is not empty
     if ( isset( $user->roles ) && is_array( $user->roles ) && ! empty( $user->roles ) ) {
         // Get the current user's role
         $user_role = $user->roles[0];
- 
+
         // Set the URL to redirect users to based on their role
         if ( $user_role == 'subscriber' ) {
             $redirect_to = '/shortlisted-candidates/';
@@ -74,7 +68,6 @@ function wpbcv_custom_login_redirect( $redirect_to, $request, $user ) {
     return $redirect_to;
 }
 add_filter( 'login_redirect', 'wpbcv_custom_login_redirect', 10, 3 );
-// Create the admin menu page
 
 function csv_management_menu() {
     add_menu_page('CSV Management', 'CV Management', 'manage_options', 'csv-management', 'wpbcv_csv_management_page');
@@ -87,37 +80,28 @@ add_action('admin_menu', 'csv_management_menu');
 // Function to display the Received CVs page
 function wpbcv_shortlisted_candidates_page() {
     global $wpdb;
-
     $table_name = 'wp_shortlisted_candidates';
-
     // Check if the table exists
     if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
         echo "<p>Table '$table_name' not found!</p>";
         return;
     }
-
     // Retrieve data from the table
     $shortlisted_candidates_data = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
-
     ?>
-
 <!-- shortlist_candidate -->
-<!-- shortlist_candidate -->
-
     <div class="wrap">
         <h1>Shortlisted Candidates</h1>
         <!-- mail to PM start -->
         <form method="post">
     <button type="submit" name="emailpm">Email Forward to PM</button>
 </form>
-
 <?php
 if(isset($_POST['emailpm'])){
     $to = 'nouman.wpbrigade@gmail.com'; 
     $subject = 'Check the short listed candidate list';
     $message = 'Please check the short listed candidate list.';
     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); 
-
     $sent = wp_mail($to, $subject, $message, $headers);
 
     if($sent){
@@ -127,9 +111,7 @@ if(isset($_POST['emailpm'])){
     }
 }
 ?>
-
         <!-- mail to PM end -->
-
         <table class="wp-list-table widefat fixed striped" id="shortlisted-candidates-table">
     <!-- Table Header -->
     <thead>
@@ -140,11 +122,9 @@ if(isset($_POST['emailpm'])){
             <th style="width: 100px;">cgpa</th>
             <th style="width: 100px;">Degree</th>
             <th style="width: 100px;">Institution</th>
-
             <th style="width: 100px;">Job Title</th>
             <th style="width: 100px;">Company</th>
             <th style="width: 100px;">Experiance</th>
-
             <th style="width: 100px;">Skills</th>
             <th style="width: 100px;">LinkedIn</th>
             <th style="width: 100px;">Phone Number</th>
@@ -164,38 +144,28 @@ if(isset($_POST['emailpm'])){
         echo '<td>' . esc_html($candidate['cgpa']) . '</td>';
         echo '<td>' . esc_html($candidate['degree']) . '</td>';
         echo '<td>' . esc_html($candidate['institution']) . '</td>';
-
         echo '<td>' . esc_html($candidate['job_title']) . '</td>';
         echo '<td>' . esc_html($candidate['company']) . '</td>';
         echo '<td>' . esc_html($candidate['experiance']) . '</td>';
-
         echo '<td>' . esc_html($candidate['skills']) . '</td>';
         echo '<td>' . esc_html($candidate['linkedin']) . '</td>';
         echo '<td>' . esc_html($candidate['phno']) . '</td>';
         echo '<td>' . esc_html($candidate['address']) . '</td>';
-        
         // Button to download PDF
         echo '<td><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '">Download PDF</button></form></td>';
-        
         echo '<td>' . esc_html($candidate['comments']) . '</td>';
-
         echo '<td>
         <form action="" method="post">
             <input type="hidden" name="idsl" value="' . esc_html($candidate['id']) . '">
             <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="background-color: red; outline: none; border: none; padding:4px 7px; border-radius: 5px; color: #fff; cursor: pointer;">
         </form>
     </td>';
-
-    
         echo '</tr>';
     }
-
     // delete shortlisted candidate 
     if (isset($_POST['deleteShortlisted'])) {
         global $wpdb;
-        $id_to_deletee = isset($_POST['idsl']) ? intval($_POST['idsl']) : 0;
-    
-        
+        $id_to_deletee = isset($_POST['idsl']) ? intval($_POST['idsl']) : 0; 
         if ($id_to_deletee > 0) {
             $delete_result = $wpdb->delete(
                 'wp_shortlisted_candidates',
@@ -212,7 +182,6 @@ if(isset($_POST['emailpm'])){
             }
         }
     }
-
     ?>
 </tbody>
 <?php
@@ -220,66 +189,48 @@ if(isset($_POST['emailpm'])){
 if (isset($_POST['download_pdf'])) {
     // Get the PDF URL from the form submission
     $pdf_url = $_POST['download_pdf'];
-    
     // Validate the PDF URL and extract the file name
     $file_name = basename($pdf_url);
-    
     // Set headers for file download
     header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename="' . $file_name . '"');
-    
     // Read the file and output its contents
     readfile($pdf_url);
-    
     // Exit to prevent further output
     exit;
 }
 ?>
-
 </table>
-
-    </div>
-    <?php
+</div>
+<?php
 }
-
 //shortlist candidate end
-
 function wpbcv_received_cvs_page() {
     global $wpdb;
-
     $table_name = 'wp_resumes';
-
     // Check if the table exists
     if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
         echo "<p>Table '$table_name' not found!</p>";
         return;
     }
-
     // Check if search is initiated
     $search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
-
     // Retrieve data from the table with optional search filter
     $sql = "SELECT * FROM $table_name";
     if (!empty($search_query)) {
         $sql = $wpdb->prepare("SELECT * FROM $table_name WHERE skills LIKE %s", '%' . $search_query . '%');
     }
-
     // Retrieve data from the table
     $resumes_data = $wpdb->get_results($sql, ARRAY_A);
-
-
     ?>
-
     <div class="wrap">
         <h1>Received CVs</h1>
-
         <!-- Search Form -->
         <form id="search-form">
             <label for="search">Search by Skills:</label>
             <input type="text" name="search" id="search" value="<?php echo esc_attr($search_query); ?>" />
             <input type="submit" value="Search" class="button" />
         </form>
-
         <table class="wp-list-table widefat fixed striped" id="cv-table">
             <!-- Table Header -->
             <thead>
@@ -290,11 +241,9 @@ function wpbcv_received_cvs_page() {
                     <th style="width: 61px;">cgpa</th>
                     <th style="width: 61px;">Degree</th>
                     <th style="width: 61px;">Institution</th>
-
                     <th style="width: 70px;">Job Title</th>
                     <th style="width: 60px;">Company</th>
                     <th style="width: 60px;">Experiance</th>
-
                     <th style="width: 100px;">Skills</th>
                     <th style="width: 100px;">LinkedIn</th>
                     <th style="width: 100px;">Phone Number</th>
@@ -315,13 +264,9 @@ function wpbcv_received_cvs_page() {
         echo '<td>' . esc_html($resume['cgpa']) . '</td>';
         echo '<td>' . esc_html($resume['degree']) . '</td>';
         echo '<td>' . esc_html($resume['institution']) . '</td>';
-
-
         echo '<td>' . esc_html($resume['job_title']) . '</td>';
         echo '<td>' . esc_html($resume['company']) . '</td>';
         echo '<td>' . esc_html($resume['experiance']) . '</td>';
-
-
         echo '<td>' . esc_html($resume['skills']) . '</td>';
         echo '<td>' . esc_html($resume['linkedin']) . '</td>';
         echo '<td>' . esc_html($resume['phno']) . '</td>';
@@ -329,15 +274,12 @@ function wpbcv_received_cvs_page() {
         echo '<td>';
         $cv_name = esc_html($resume['pdf_url']);
         $pdf_url = wpbcv_get_cv_pdf_url($cv_name); // Function to get PDF URL
-
         if ($pdf_url) {
             echo '<a href="'. esc_url($pdf_url) . '" target="_blank">Open PDF</a>';
         } else {
             echo 'No PDF available';
         }
         echo '</td>';
-        
-
         // Action buttons
         echo '<td>';
         echo '<form method="post" action="">';
@@ -345,25 +287,19 @@ function wpbcv_received_cvs_page() {
         echo '<input type="text" name="commentss" placeholder="Add comment" required> <br>';
         echo '<button type="submit" name="insert" title="' . esc_html($resume['id']) . '">Shortlist</button>';
         echo '</form>';
-
         echo '<td>
                 <form action="" method="post">
                     <input type="hidden" name="id" value="' . esc_html($resume['id']) . '">
                     <input type="submit" name="delete" value="Delete" style="background-color: red; outline: none; border: none; padding:4px 7px; border-radius: 5px; color: #fff; cursor: pointer;">
                 </form>
             </td>';
-
-
         echo '</tr>';
     }
-
     // delete record from 
     if (isset($_POST['delete'])) {
         global $wpdb;
-    
         // Get the ID from the hidden input field
         $id_to_delete = isset($_POST['id']) ? intval($_POST['id']) : 0;
-    
         // Check if the ID is valid
         if ($id_to_delete > 0) {
             // Delete the record from the wp_shortlisted_candidates table
@@ -372,7 +308,6 @@ function wpbcv_received_cvs_page() {
                 array('id' => $id_to_delete),
                 array('%d') // ID is an integer
             );
-    
             // Check if the record is successfully deleted
             if ($delete_result !== false) {
                 echo "Record deleted successfully.";
@@ -384,39 +319,26 @@ function wpbcv_received_cvs_page() {
             }
         }
     } 
-
-    ?>
-    
-    
-    
-    
+    ?>  
 </tbody>
-
-
-
 <script>
 function printTable() {
     window.print();
 }
 </script>
-
 <!-- Button to trigger printing -->
 <button onclick="printTable()">Print Table</button>
 <?php
 if (isset($_POST['insert'])) {
     // Get the resume ID from the form submission
     $resume_id = isset($_POST['resume_id']) ? intval($_POST['resume_id']) : 0;
-
     // Check if the ID is valid
     if ($resume_id > 0) {
         global $wpdb;
-
         // Prepare the data to be inserted
         $resume_data = $wpdb->get_row("SELECT * FROM wp_resumes WHERE id = $resume_id", ARRAY_A);
         $comment = $_POST['commentss'];
         $insert_id = $_POST['resume_id'];
-       
-
         // Check if resume data is retrieved successfully
         if ($resume_data) {
             // Insert the data into wp_shortlisted_candidates table
@@ -428,12 +350,9 @@ if (isset($_POST['insert'])) {
                     'cgpa' => $resume_data['cgpa'],
                     'degree' => $resume_data['degree'],
                     'institution' => $resume_data['institution'],
-
-
                     'job_title' => $resume_data['job_title'],
                     'company' => $resume_data['company'],
                     'experiance' => $resume_data['experiance'],
-
                     'skills' => $resume_data['skills'],
                     'linkedin' => $resume_data['linkedin'],
                     'phno' => $resume_data['phno'],
@@ -442,7 +361,6 @@ if (isset($_POST['insert'])) {
                     'comments' => $comment
                 )
             );
-
             if ($insert_result !== false) {
                 echo "Record inserted successfully.";
             } else {
@@ -453,27 +371,20 @@ if (isset($_POST['insert'])) {
         }
     }
 }
-
 ?>
-
-        </table>
-    </div>
+</table>
+</div>
 <?php
  }
 // AJAX handler
 add_action('wp_ajax_get_filtered_data', 'get_filtered_data');
 add_action('wp_ajax_nopriv_get_filtered_data', 'get_filtered_data');
-
 function wpbcv_get_filtered_data() {
     global $wpdb;
-
     $search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
-
     $sql = $wpdb->prepare("SELECT * FROM wp_resumes WHERE skills LIKE %s", '%' . $search_query . '%');
     $resumes_data = $wpdb->get_results($sql, ARRAY_A);
-
     ob_start();
-
     foreach ($resumes_data as $resume) {
         echo '<tr>';
         echo '<td>' . esc_html($resume['id']) . '</td>';
@@ -482,12 +393,9 @@ function wpbcv_get_filtered_data() {
         echo '<td>' . esc_html($resume['cgpa']) . '</td>';
         echo '<td>' . esc_html($resume['degree']) . '</td>';
         echo '<td>' . esc_html($resume['institution']) . '</td>';
-
-
         echo '<td>' . esc_html($resume['job_title']) . '</td>';
         echo '<td>' . esc_html($resume['company']) . '</td>';
         echo '<td>' . esc_html($resume['experiance']) . '</td>';
-
         echo '<td>' . esc_html($resume['skills']) . '</td>';
         echo '<td>' . esc_html($resume['linkedin']) . '</td>';
         echo '<td>' . esc_html($resume['phno']) . '</td>';
@@ -495,56 +403,42 @@ function wpbcv_get_filtered_data() {
         echo '<td>';
         $cv_name = esc_html($resume['pdf_url']);
         $pdf_url = wpbcv_get_cv_pdf_url($cv_name); // Function to get PDF URL
-
         if ($pdf_url) {
             echo '<a href="'. esc_url($pdf_url) . '" target="_blank">Open PDF</a>';
         } else {
             echo 'No PDF available';
         }
         echo '</td>';
-
         // Action buttons
         echo '<td>';
         echo '<button onclick="shortlistCandidate(' . json_encode($resume) . ')">Shortlist</button>';
         echo '<button onclick="forwardToPM(' . $resume['id'] . ')">Forward to PM</button>';
         echo '</td>';
-
         echo '</tr>';
     }
-
     $output = ob_get_clean();
     echo $output;
-
     wp_die();
 }
-
 // AJAX handler for shortlisting candidate
 add_action('wp_ajax_shortlist_candidate', 'shortlist_candidate');
 add_action('wp_ajax_nopriv_shortlist_candidate', 'shortlist_candidate');
-
 function wpbcv_shortlist_candidate() {
     // Process the shortlist form submission and store the data in the database
     $resume_id = isset($_POST['resume_id']) ? intval($_POST['resume_id']) : 0;
     $comments = isset($_POST['comments']) ? sanitize_text_field($_POST['comments']) : '';
-
-
     $response = array('message' => 'Candidate shortlisted successfully!');
     wp_send_json($response);
 }
-
-
 function wpbcv_get_cv_pdf_url($cv_name) {
     global $wpdb;
     $table_name = 'wp_resumes';
-
     $pdf_filename = $wpdb->get_var(
         $wpdb->prepare("SELECT pdf_filename FROM $table_name WHERE cv_name = %s", $cv_name)
     );
-
     if ($pdf_filename) {
         // Assuming the uploads folder is located in the WordPress content directory
         $pdf_path = WP_CONTENT_DIR . '/uploads/' . $pdf_filename;
-
         if (file_exists($pdf_path)) {
             $pdf_url = content_url("/uploads/$pdf_filename");
             return esc_url($pdf_url);
@@ -552,11 +446,8 @@ function wpbcv_get_cv_pdf_url($cv_name) {
             return false; // PDF file not found in the expected location
         }
     }
-
     return false;
 }
-
-
 // Function to display the CSV management page
 function wpbcv_csv_management_page() {
     ?>
@@ -579,122 +470,99 @@ function wpbcv_hr_management_page() {
     ?>
     <div class="wrap">
         <h1>HR Dashboard</h1>
-
         <div class="hr-dashboard-container" style="display: flex; justify-content: space-around;">
-
             <!-- HR Dashboard Section 1 -->
             <div class="hr-dashboard-section">
             <a href="?page=hr_management_page&action=review_cvs">
-    <img src="<?php echo plugins_url('/assets/img/profile.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
-</a>
-                <h2><?php echo esc_html($user_display_name); ?></h2>
-                <p>Helping Hand for HRs</p>
+            <img src="<?php echo plugins_url('/assets/img/profile.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
+            </a>
+            <h2><?php echo esc_html($user_display_name); ?></h2>
+            <p>Helping Hand for HRs</p>
             </div>
             <div class="hr-dashboard-section">
             <a href="?page=hr_management_page&action=review_cvs">
-                <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
+            <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
             </a>
-                <h2>Received CVs</h2>
-                <h2><?php
-                global $wpdb;
-                $table_name = $wpdb->prefix . 'resumes';
-                
-                $query = $wpdb->prepare("SELECT COUNT(*) FROM $table_name");
-                $total_rows = $wpdb->get_var($query);
-                
-                echo $total_rows;
-                ?></h2>
+            <h2>Received CVs</h2>
+            <h2><?php
+            global $wpdb;
+            $table_name = $wpdb->prefix . 'resumes';
+            $query = $wpdb->prepare("SELECT COUNT(*) FROM $table_name");
+            $total_rows = $wpdb->get_var($query);
+            echo $total_rows;
+            ?></h2>
             </div>
             <div class="hr-dashboard-section">
             <a href="?page=hr_management_page&action=review_cvs">
-                <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
+            <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
             </a>
-                <h2>Shortlisted Candidates</h2>
-                <h2><?php
-                global $wpdb;
-                $table_sl = $wpdb->prefix . 'shortlisted_candidates';
-                
-                $query = $wpdb->prepare("SELECT COUNT(*) FROM $table_sl");
-                $total_rows = $wpdb->get_var($query);
-                
-                echo $total_rows;
-                ?></h2>
+            <h2>Shortlisted Candidates</h2>
+            <h2><?php
+            global $wpdb;
+            $table_sl = $wpdb->prefix . 'shortlisted_candidates';    
+            $query = $wpdb->prepare("SELECT COUNT(*) FROM $table_sl");
+            $total_rows = $wpdb->get_var($query);
+            echo $total_rows;
+            ?></h2>
             </div>
-
             <!-- Add more dashboard sections as needed -->
-
-        </div>
-    </div>
-    <?php
+            </div>
+            </div>
+<?php
 }
-
 function wpbcv_handle_resume_submission() {
     if (isset($_POST['resume_submission_submit'])) {
         // Collect submitted data
         $full_name = sanitize_text_field($_POST['full_name']);
         $email = sanitize_email($_POST['email']);
-        // Collect other personal, educational, and professional details as needed
-
         // Process the data (you can store it in a database, etc.)
-        // For demonstration purposes, let's just print the data
         echo "<h2>Submitted Data:</h2>";
         echo "<p>Full Name: $full_name</p>";
         echo "<p>Email: $email</p>";
         // Display other submitted details
-
-        // You can also store the data in a database or perform other actions as needed
     }
 }
-
 // Hook to handle resume submission when the form is submitted
 add_action('admin_init', 'wpbcv_handle_resume_submission');
 ?>
-
 <?php
 function wpbcv_pdfgenreration_management_page() {
     ob_start();
     ?>
     <div class="wrap" style="max-width: 600px; margin: 0 auto;">
         <h1>PDF Generate</h1>
-        
+
         <form method="post" action="">
             <div style="margin-bottom: 20px;">
                 <label for="hr_name" style="display: block; margin-bottom: 5px;">Enter HR Name:</label>
                 <input type="text" name="hr_name" id="hr_name" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
             </div>
-
             <div style="margin-bottom: 20px;">
                 <label for="select_data" style="display: block; margin-bottom: 5px;">Select Data:</label>
                 <input type="date" name="reviewed_cvs" id="reviewed_cvs" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
             </div>
-
             <div style="margin-bottom: 20px;">
                 <label for="reviewed_cvs" style="display: block; margin-bottom: 5px;">Reviewed CVs:</label>
                 <input type="number" name="reviewed_cvs" id="reviewed_cvs" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
             </div>
-
             <div style="margin-bottom: 20px;">
                 <label for="shortlisted_cvs" style="display: block; margin-bottom: 5px;">Shortlisted CVs:</label>
                 <input type="number" name="shortlisted_cvs" id="shortlisted_cvs" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
             </div>
-
             <div style="margin-bottom: 20px;">
                 <label for="hired_interns" style="display: block; margin-bottom: 5px;">Hired Interns:</label>
                 <input type="number" name="hired_interns" id="hired_interns" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
             </div>
-
             <div style="margin-bottom: 20px;">
                 <label for="hired_employees" style="display: block; margin-bottom: 5px;">Hired Employees:</label>
                 <input type="number" name="hired_employees" id="hired_employees" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
             </div>
-
             <div style="margin-bottom: 20px;">
                 <label for="workforce_required" style="display: block; margin-bottom: 5px;">Workforce Required:</label>
                 <input type="number" name="workforce_required" id="workforce_required" required style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%;">
             </div>
-
             <button type="submit" name="generate_pdf" style="padding: 10px 20px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer; width: 100%;">Generate PDF</button>
-        </form>
+            </form>
         <?php
         if (isset($_POST['generate_pdf'])) {
             // Call generate_pdf function without returning output
@@ -706,7 +574,6 @@ function wpbcv_pdfgenreration_management_page() {
     // Return the buffered output
     return ob_get_clean();  
 }
-
 function wpbcv_generate_pdf($data) {
     // Generate PDF content here
     echo '<pre>';
@@ -718,40 +585,28 @@ function wpbcv_generate_pdf($data) {
         window.print();
     }
     </script>
-
     <!-- Button to trigger printing -->
-    <!-- <button onclick="printTable()" style="padding: 10px 20px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer;">Print Table</button> -->
     <?php
     return ''; // Return an empty string for now
 }
-
 add_shortcode('pdf_generation', 'wpbcv_pdfgenreration_management_page');
 ?>
-
-
 <?php
 // Add the custom shortcode function
 function wpbcv_custom_shortcode_function() {
     get_header();
     ob_start(); // Start output buffering
     ?>
-
     <div class="wrap">
         <h4>CV Submission Form</h4>
-
         <form method="post" enctype="multipart/form-data">
             <!-- Form fields -->
             <h5 style="text-align: center;"><strong>Personal Details</strong></h5>
             <label for="full_name" style="display: inline-block; width: 150px;">Full Name:</label>
             <input type="text" name="full_name" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
-
             <label for="email" style="display: inline-block; width: 150px;">Email:</label>
             <input type="email" name="email" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
-
-            <!-- Add more personal details fields as needed -->
-
             <h5 style="text-align: center;"><strong>Educational Details</strong></h5>
-
             <label for="cgpa" style="display: inline-block; width: 150px;">CGPA</label>
             <input type="text" name="cgpa" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
@@ -765,8 +620,6 @@ function wpbcv_custom_shortcode_function() {
             <input type="text" id="degree" name="degree[]"> <!-- Note the square brackets [] to indicate an array -->
             <label for="institution">Institution:</label>
             <input type="text" id="institution" name="institution[]"> <!-- Also with square brackets [] -->
-
-            <!-- Add more fields as needed -->
         </div>
     </div>
 </div>
@@ -785,15 +638,12 @@ function wpbcv_custom_shortcode_function() {
             <input type="text" id="company" name="company[]">
             <label for="experiance">Experiance</label>
             <input type="text" id="experiance" name="experiance[]">
-            <!-- Add more fields as needed -->
         </div>
     </div>
 </div>
 <button id="add-professional" style="padding: 10px 20px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;">Add Professional History</button>
 
 <!-- ACCORDION-->
-
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     $(document).ready(function(){
@@ -815,7 +665,6 @@ function wpbcv_custom_shortcode_function() {
                 $(this).next('.accordion-content').slideToggle();
             });
         }
-
         // Click event for add education button
         $('#add-education').click(function(){
             addEducationField();
@@ -841,23 +690,18 @@ function wpbcv_custom_shortcode_function() {
                 $(this).next('.accordion-content').slideToggle();
             });
         }
-
         // Click event for add professional button
         $('#add-professional').click(function(){
             addProfessionalField();
         });
-
         // Initial click event for accordion header
         $('.accordion-header').click(function(){
             $(this).next('.accordion-content').slideToggle();
         });
     });
 </script>
-
-
             <h5 style="text-align: center;"><strong>Skills</strong></h5>
             <div class="skills">
-
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
                     <input type="checkbox" name="skills[]" value="Theme Development">
                     Theme Development
@@ -902,21 +746,16 @@ function wpbcv_custom_shortcode_function() {
                     background-color: #fff;
                 }
             </style>
-
             <h5 style="text-align: center;"><strong>Contact Details</strong></h5>
             <label for="linkedin" style="display: inline-block; width: 150px;">Linkedin Profile:</label>
             <input type="text" name="linkedin" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
-
             <label for="phno" style="display: inline-block; width: 150px;">Phone no:</label>
             <input type="text" name="phno" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
-
             <label for="address" style="display: inline-block; width: 150px;">Address:</label>
             <textarea name="address" rows="4" cols="50"></textarea><br>
-
             <h5 style="text-align: center;">Upload CV (PDF)</h5>
             <label for="cv_upload" style="display: inline-block; width: 150px;">Upload CV:</label>
             <input type="file" name="cv_upload" accept=".pdf" style="padding: 5px 10px; font-size: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;"><br>
-
             <input type="submit" name="resume_submission_submit" value="Submit" style="background-color: #2c3e50; 
                 border: 20px;
                 color: white;
@@ -928,12 +767,9 @@ function wpbcv_custom_shortcode_function() {
                 margin: 4px 2px;
                 cursor: pointer;
                 border-radius: 10px;">
-
         </form>
     </div>
-
     <?php
-
     // Process Form Submission
     if (isset($_POST['resume_submission_submit'])) {
         // Establish Database Connection
@@ -941,20 +777,15 @@ function wpbcv_custom_shortcode_function() {
         $db_user = 'root';
         $db_pass = 'root';
         $db_name = 'local';
-
         global $wpdb;
-
         $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
-
         // Process File Upload
         if (isset($_FILES['cv_upload']) && $_FILES['cv_upload']['error'] == 0) {
             $target_directory = "uploads/";
             $target_file = $target_directory . basename($_FILES['cv_upload']['name']);
-
             if (move_uploaded_file($_FILES['cv_upload']['tmp_name'], $target_file)) {
                 echo "File uploaded successfully.";
                 $cv_url = $target_file;
@@ -966,87 +797,63 @@ function wpbcv_custom_shortcode_function() {
             echo "No file uploaded.";
             $cv_url = "";
         }
-
         // Collect form data
       // Collect form data
      $full_name = $_POST['full_name'];
      $email = $_POST['email'];
      $cgpa = $_POST['cgpa'];
-
 // Handle degree and institution arrays
 // Handle degree and institution arrays
 $degree = isset($_POST['degree']) ? implode(', ', $_POST['degree']) : '';
 $institution = isset($_POST['institution']) ? implode(', ', $_POST['institution']) : '';
-
 // Handle job title, company, and experiance arrays
 $job_titles = isset($_POST['job_title']) ? implode(', ', $_POST['job_title']) : '';
 $companies = isset($_POST['company']) ? implode(', ', $_POST['company']) : '';
 $experiances = isset($_POST['experiance']) ? implode(', ', $_POST['experiance']) : '';
-
 // Insert data into the database
-
-
-   
-
-
     $job_title = $_POST['job_title'];
     $company = $_POST['company'];
     $experiance = $_POST['experiance'];
     $linkedin = $_POST['linkedin'];
     $phno = $_POST['phno'];
     $address = $_POST['address'];
-
-
-        // Skills handling
-        $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
-
-        // Insert data into the database
+    // Skills handling
+    $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
+    // Insert data into the database
      // Insert data into the database
      $sql = "INSERT INTO wp_resumes (full_name, email, cgpa, degree, institution, job_title, company, experiance, skills, linkedin, phno, address, pdf_url) 
      VALUES ('$full_name', '$email', '$cgpa', '$degree', '$institution', '$job_titles', '$companies', '$experiances', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
-
-
         if ($conn->query($sql) === TRUE) {
             echo "CV Submitted successfully";
         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
         }
-
         // Send email to user
         $to = $email;
         $subject = 'CV Submission Confirmation';
         $message = 'Dear ' . $full_name . ',\n\n';
         $message .= 'Thank you for submitting your CV. We have received your submission successfully.';
         $headers = 'From: atifwpbrigade@gmail.com' . "\r\n";
-
-
         // Send email
         $sent_to_user = mail($to, $subject, $message, $headers);
-
         // Check if email sent successfully to user
         if ($sent_to_user) {
             echo '<p>Email sent successfully!</p>';
         } else {
             echo '<p>Failed to send email.</p>';
         }
-
         // Close Database Connection
         $conn->close();
     }
-
     $output = ob_get_clean(); // Get the output and clean the buffer
     return $output; // Return the buffered output
 }
-
 add_shortcode('custom_shortcode', 'wpbcv_custom_shortcode_function');
-
 
 // Handle CV file upload
 
 function wpbcv_pdfcv_shortcode_function() {
-
     ob_start(); // Start output buffering
-
     // Check if the form is submitted
     if (isset($_POST['resume_submission_submit'])) {
         // Establish Database Connection
@@ -1054,29 +861,22 @@ function wpbcv_pdfcv_shortcode_function() {
         $db_user = 'root';
         $db_pass = 'root';
         $db_name = 'local';
-
         $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
-
         // Handle File Upload
         if (isset($_FILES['cv_upload']) && $_FILES['cv_upload']['error'] === UPLOAD_ERR_OK) {
             $cv_tmp_name = $_FILES['cv_upload']['tmp_name'];
             $cv_name = basename($_FILES['cv_upload']['name']);
-            
             // Create the "uploads" folder if it doesn't exist
             if (!file_exists('uploads')) {
                 mkdir('uploads', 0777, true);
             }
-
             $cv_destination = "uploads/$cv_name"; 
-
             if (move_uploaded_file($cv_tmp_name, $cv_destination)) {
                 // Insert data into the database
                 $sql = "INSERT INTO cvs (cv_name) VALUES ('$cv_name')";
-
                 if ($conn->query($sql) === TRUE) {
                     echo "CV uploaded and record inserted successfully.";
                 } else {
@@ -1086,11 +886,9 @@ function wpbcv_pdfcv_shortcode_function() {
                 echo "Error uploading CV.";
             }
         }
-
         // Close Database Connection
         $conn->close();
     }
-
     ?>
     <div class="wrap">
         <form method="post" enctype="multipart/form-data">
@@ -1101,17 +899,10 @@ function wpbcv_pdfcv_shortcode_function() {
         </form>
     </div>
     <?php
-
     $output = ob_get_clean(); // Get the output and clean the buffer
     return $output; // Return the buffered output
-
-
-    
 }
-
 add_shortcode('pdfcv_shortcode', 'wpbcv_pdfcv_shortcode_function');
-
-
 function wpbcv_email_shortcode_function($content) {
     // Check if the shortcode exists in the content
     if (strpos($content, '[email_inquiry_shortcode]') !== false) {
@@ -1124,11 +915,9 @@ function wpbcv_email_shortcode_function($content) {
         </div>
         <?php
         $form_content = ob_get_clean();
-
         // Replace the shortcode with the form content
         $content = str_replace('[email_inquiry_shortcode]', $form_content, $content);
     }
-
     return $content;
 }
 add_filter('the_content', 'wpbcv_email_shortcode_function');
@@ -1137,10 +926,8 @@ add_filter('the_content', 'wpbcv_email_shortcode_function');
 // Shortlist_candidates table
 function wpbcv_create_table_for_shortlisted_candidates() {
     global $wpdb;
-
     // Define the table name with the WordPress prefix
     $table_name = $wpdb->prefix . 'shortlisted_candidates'; // Corrected table name
-
     $sql = "CREATE TABLE $table_name (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `full_name` varchar(255) DEFAULT NULL,
@@ -1148,11 +935,9 @@ function wpbcv_create_table_for_shortlisted_candidates() {
   `cgpa` varchar(255) DEFAULT NULL,
   `degree` varchar(255) DEFAULT NULL,
   `institution` varchar(255) DEFAULT NULL,
-
   `job_title` varchar(255) DEFAULT NULL,
   `company` varchar(255) DEFAULT NULL,
   `experiance` varchar(255) DEFAULT NULL,
-
   `skills` varchar(255) DEFAULT NULL,
   `linkedin` varchar(255) DEFAULT NULL,
   `phno` varchar(255) DEFAULT NULL,
@@ -1160,24 +945,16 @@ function wpbcv_create_table_for_shortlisted_candidates() {
    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
   `pdf_url` varchar(255) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
-
-
- 
   PRIMARY KEY (`id`)
     )";
-
     $wpdb->query($sql);
 }
-
 register_activation_hook(__FILE__, 'wpbcv_create_table_for_shortlisted_candidates');
-
 // Resume table
 function wpbcv_create_table_for_resume() {
     global $wpdb;
-
     // Define the table name with the WordPress prefix
     $table_name = $wpdb->prefix . 'resumes';
-
     $sql = "CREATE TABLE $table_name (
          `id` int(55) NOT NULL AUTO_INCREMENT,
         `full_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -1185,36 +962,26 @@ function wpbcv_create_table_for_resume() {
         `cgpa` varchar(255) NOT NULL,
         `degree` varchar(255) NOT NULL,
         `institution` varchar(255) NOT NULL,
-
-
         `job_title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `company` varchar(255) NOT NULL,
         `experiance` varchar(255) NOT NULL,
-
-
         `skills` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `linkedin` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `phno` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
          timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `pdf_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-       
         PRIMARY KEY (`id`)
     )";
     $wpdb->query($sql);
 }
-
 register_activation_hook(__FILE__, 'wpbcv_create_table_for_resume');
-
-
-
 ?>
 <!-- HR DASHBOARD shortcode-->
 <?php
 function wpbcv_follow_us_link()
 {
     if (is_user_logged_in() && (current_user_can('administrator') || current_user_can('editor'))) {
-
    get_header();
     $current_user = wp_get_current_user();
     $user_display_name = $current_user->display_name;
@@ -1222,13 +989,11 @@ function wpbcv_follow_us_link()
     ?>
     <div class="wrap">
         <h1 style="margin: 0 0 50px; font-size: 50px;">HR Dashboard</h1>
-
         <div class="hr-dashboard-container" style="gap: 137px;display: flex; justify-content: space-around;">
-
             <!-- HR Dashboard Section 1 -->
             <div class="hr-dashboard-section">
                 <a href="?page=hr_management_page&action=review_cvs">
-                    <img src="<?php echo plugins_url('/assets/img/profile.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
+                <img src="<?php echo plugins_url('/assets/img/profile.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
                 </a>
                 <h2  style="margin: 0 0 20px; font-size: 20px;"><?php echo esc_html($user_display_name); ?></h2>
                 <p>Helping Hand for HRs</p>
@@ -1241,10 +1006,8 @@ function wpbcv_follow_us_link()
                 <h2><?php
                     global $wpdb;
                     $table_name = $wpdb->prefix . 'resumes';
-                    
                     $query = $wpdb->prepare("SELECT COUNT(*) FROM $table_name");
                     $total_rows = $wpdb->get_var($query);
-                    
                     echo $total_rows;
                     ?></h2>
             </div>
@@ -1256,10 +1019,8 @@ function wpbcv_follow_us_link()
                 <h2><?php
                     global $wpdb;
                     $table_sl = $wpdb->prefix . 'shortlisted_candidates';
-                    
                     $query = $wpdb->prepare("SELECT COUNT(*) FROM $table_sl");
                     $total_rows = $wpdb->get_var($query);
-                    
                     echo $total_rows;
                     ?></h2>
             </div>
@@ -1267,21 +1028,16 @@ function wpbcv_follow_us_link()
     </div>
     <?php
     return ob_get_clean();
-    
 }}
 add_shortcode('follow_us', 'wpbcv_follow_us_link');
 ?>
-
 <!-- received cv shortcode -->
 <?php
 function wpbcv_received_cvv_page()
 {
     if (is_user_logged_in() && (current_user_can('administrator') || current_user_can('editor'))) {
-
     global $wpdb;
-
     $table_name = 'wp_resumes';
-
     // Check if the table exists
     if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
         echo "<p>Table '$table_name' not found!</p>";
@@ -1289,13 +1045,11 @@ function wpbcv_received_cvv_page()
     }
     // Check if search is initiated
     $search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
-
     // Retrieve data from the table with optional search filter
     $sql = "SELECT * FROM $table_name";
     if (!empty($search_query)) {
         $sql = $wpdb->prepare("SELECT * FROM $table_name WHERE skills LIKE %s", '%' . $search_query . '%');
     }
-
     // Retrieve data from the table
     $resumes_data = $wpdb->get_results($sql, ARRAY_A);
     ?>
@@ -1304,7 +1058,6 @@ function wpbcv_received_cvv_page()
         #search-form {
             margin-bottom: 20px;
         }
-
         #search-form input[type="text"] {
             width: 205px;
             height: 45px;
@@ -1313,7 +1066,6 @@ function wpbcv_received_cvv_page()
             border: 1px solid #ccc;
             margin-right: 10px;
         }
-
         #search-form input[type="submit"] {
             padding: 5px 10px;
             border-radius: 5px;
@@ -1324,29 +1076,23 @@ function wpbcv_received_cvv_page()
             width: 100px;
             height: 45px;
         }
-
         /* Style for the table */
-
         table {
             width: 100%;
             border-collapse: collapse;
         }
-
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
-
         th {
             background-color: #2c3e50 ;
             color: #FFF;
         }
-
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
-
         /* Style for buttons */
         button {
             padding: 5px 10px;
@@ -1370,60 +1116,85 @@ function wpbcv_received_cvv_page()
         }
         body .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)){
             max-width: 100%;
-
         }
-
-
-
-
     </style>
 
+<div class="dropdown">
+  <div id="dropdown-content" class="dropdown-content" style="display: flex; flex-wrap: wrap; width: 20%;">
+    <div style="flex: 1  25%; padding: 5px;">
+        <input type="checkbox" id="id" name="id" value="id" style="margin-right: 5px;">
+        <label for="id">ID</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="full_name" name="full_name" value="full_name" style="margin-right: 5px;">
+        <label for="full_name">Full Name</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="email" name="email" value="email" style="margin-right: 5px;">
+        <label for="email">Email</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="cgpa" name="cgpa" value="cgpa" style="margin-right: 5px;">
+        <label for="cgpa">CGPA</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="degree" name="degree" value="degree" style="margin-right: 5px;">
+        <label for="degree">Degree</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="institution" name="institution" value="institution" style="margin-right: 5px;">
+        <label for="institution">Institution</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="job_title" name="job_title" value="job_title" style="margin-right: 5px;">
+        <label for="job_title">Job Title</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="company" name="company" value="company" style="margin-right: 5px;">
+        <label for="company">Company</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="experiance" name="experiance" value="experiance" style="margin-right: 5px;">
+        <label for="experiance">Experiance</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="skills" name="skills" value="skills" style="margin-right: 5px;">
+        <label for="skills">Skills</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="linkedin" name="linkedin" value="linkedin" style="margin-right: 5px;">
+        <label for="linkedin">LinkedIn</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="ph_no" name="ph_no" value="ph_no" style="margin-right: 5px;">
+        <label for="ph_no">Ph no</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="address" name="address" value="address" style="margin-right: 5px;">
+        <label for="address">Address</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="time" name="time" value="time" style="margin-right: 5px;">
+        <label for="time">Time</label>
+    </div>
+    <div style="flex: 1 0 25%; padding: 5px;">
+        <input type="checkbox" id="cv_name" name="cv_name" value="cv_name" style="margin-right: 5px;">
+        <label for="cv_name">CV Name</label>
+    </div>
+    <button onclick="toggleDropdown()" class="dropbtn">Select Options</button>
 
-<div id="columnFilter">
-    <label for="selectColumns">Select Columns:</label><br>
-    <input type="text" id="selectColumns" list="columnOptions" multiple>
-    <datalist id="columnOptions">
-        <option value="ID">
-        <option value="Full Name">
-        <option value="Email">
-        <option value="CGPA">
-        <option value="Degree">
-        <option value="Institution">
-        <option value="Job Title">
-        <option value="Company">
-        <option value="Experience">
-        <option value="Skills">
-        <option value="LinkedIn">
-        <option value="Phone Number">
-        <option value="Address">
-        <option value="Time">
-        <option value="CV Name">
-    </datalist>
 </div>
-<table id="dataTable">
-    <!-- Your table content here -->
-</table>
-<script>
-    const selectColumnsInput = document.getElementById('selectColumns');
-    selectColumnsInput.addEventListener('input', function() {
-        const selectedOptions = [];
-        const inputValues = this.value.split(',');
-        
-        inputValues.forEach(function(value) {
-            const trimmedValue = value.trim();
-            if (trimmedValue !== '') {
-                selectedOptions.push(trimmedValue);
-            }
-        });
-        // Logic to show/hide selected columns based on selectedOptions array
-        // You can implement this logic here or call a function to handle it
-        console.log(selectedOptions);
-    });
-</script>
+</div>
+<style>
+.dropdown-content {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+    </style>
+
     <div class='table-wrap'>
     <h1 style="font-size: 50px; font-weight: bold;">Received CVs</h1>
-
-
 
         <!-- Search Form -->
     <form id="search-form" method="GET">
@@ -1440,7 +1211,6 @@ function wpbcv_received_cvv_page()
         <option value="PSD to HTML&CSS">
     </datalist>
     <input type="submit" value="Search"  style="background-color: #2c3e50;"/>
-   
 </form>
 
 <script>
@@ -1448,7 +1218,6 @@ function wpbcv_received_cvv_page()
 document.getElementById('search-form').addEventListener('submit', function(event) {
     // Get the search input value
     var searchInputValue = document.getElementById('search').value.trim();
-
     // If search input value is not empty, update the dropdown selection
     if (searchInputValue !== '') {
         var dropdownOptions = document.getElementById('skills-list').options;
@@ -1462,7 +1231,6 @@ document.getElementById('search-form').addEventListener('submit', function(event
 });
 </script>
 <div class="firstdiv">
-
         <table>
             <!-- Table Header -->
             <thead>
@@ -1474,11 +1242,9 @@ document.getElementById('search-form').addEventListener('submit', function(event
                     <th>CGPA</th>
                     <th>Degree</th>
                     <th>institution</th>
-
                     <th>Job Title</th>
                     <th>Company</th>
                     <th>Experiance</th>
-
                     <th>Skills</th>
                     <th>LinkedIn</th>
                     <th>Phone Number</th>
@@ -1487,7 +1253,6 @@ document.getElementById('search-form').addEventListener('submit', function(event
                     <th>CV Name</th>
                     <th>Action</th>
                     <th>Operations</th>
-                    
                 </tr>
             </thead>
             <tbody>
@@ -1495,25 +1260,21 @@ document.getElementById('search-form').addEventListener('submit', function(event
             foreach ($resumes_data as $resume) {
                 echo '<tr>';
                 echo '<td><input type="checkbox" name="resume_checkbox[]" value="' . esc_attr($resume['id']) . '"></td>';
-
                 echo '<td>' . esc_html($resume['id']) . '</td>';
                 echo '<td>' . esc_html($resume['full_name']) . '</td>';
                 echo '<td>' . esc_html($resume['email']) . '</td>';
                 echo '<td>' . esc_html($resume['cgpa']) . '</td>';
                 echo '<td>' . esc_html($resume['degree']) . '</td>';
                 echo '<td>' . esc_html($resume['institution']) . '</td>';
-
                 echo '<td>' . esc_html($resume['job_title']) . '</td>';
                 echo '<td>' . esc_html($resume['company']) . '</td>';
                 echo '<td>' . esc_html($resume['experiance']) . '</td>';
-
                 echo '<td>' . esc_html($resume['skills']) . '</td>';
                 echo '<td>' . esc_html($resume['linkedin']) . '</td>';
                 echo '<td>' . esc_html($resume['phno']) . '</td>';
                 echo '<td>' . esc_html($resume['address']) . '</td>';
                 echo '<td>' . esc_html($resume['timestamp']) . '</td>';
                 echo '<td><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($resume['pdf_url']) . '">Download PDF</button></form></td>';
-
                 // Action buttons
                 echo '<td>';
                 echo '<form method="post" action="">';
@@ -1527,16 +1288,14 @@ document.getElementById('search-form').addEventListener('submit', function(event
                 <input type="submit" name="delete" value="Delete" style="background-color: red;">
             </form>
                     </td>';
-
                 echo '</tr>';
             }
+
             // delete record from 
     if (isset($_POST['delete'])) {
         global $wpdb;
-    
         // Get the ID from the hidden input field
         $id_to_delete = isset($_POST['id']) ? intval($_POST['id']) : 0;
-    
         // Check if the ID is valid
         if ($id_to_delete > 0) {
             // Delete the record from the wp_shortlisted_candidates table
@@ -1545,7 +1304,6 @@ document.getElementById('search-form').addEventListener('submit', function(event
                 array('id' => $id_to_delete),
                 array('%d') // ID is an integer
             );
-    
             // Check if the record is successfully deleted
             if ($delete_result !== false) {
                 echo "Record deleted successfully.";
@@ -1563,17 +1321,13 @@ document.getElementById('search-form').addEventListener('submit', function(event
 if (isset($_POST['download_pdf'])) {
     // Get the PDF URL from the form submission
     $pdf_url = $_POST['download_pdf'];
-    
     // Validate the PDF URL and extract the file name
     $file_name = basename($pdf_url);
-    
     // Set headers for file download
     header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename="' . $file_name . '"');
-    
     // Read the file and output its contents
     readfile($pdf_url);
-    
     // Exit to prevent further output
     exit;
 }
@@ -1585,11 +1339,8 @@ if (isset($_POST['download_pdf'])) {
 <input type="date" id="end_date" name="end_date" required style="width: 150px; height: 35px;">
 <button type="submit" style="display: inline-block; height: 35px;">Filter CVs</button>
 </form>
-
-
 <?php
 global $wpdb; // WordPress database object
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if start_date and end_date keys are set in $_POST
     if (isset($_POST['start_date']) && isset($_POST['end_date'])) {
@@ -1598,13 +1349,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $end_date = $_POST['end_date'];
         $formatted_start_date = date('Y-m-d', strtotime($start_date));
         $formatted_end_date = date('Y-m-d', strtotime($end_date));
-
         // SQL query to fetch resumes between the provided dates
         $sql = $wpdb->prepare("SELECT * FROM wp_resumes WHERE timestamp BETWEEN %s AND %s", $formatted_start_date, $formatted_end_date);
-
         // Execute the query
         $results = $wpdb->get_results($sql, ARRAY_A);
-
         // Display filtered resumes in a table
         if ($results) {
             echo '<h2>Filtered Resumes</h2>';
@@ -1626,7 +1374,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo '<td>' . $resume['address'] . '</td>';
                 echo '<td>' . $resume['timestamp'] . '</td>';
                 echo '<td><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($resume['pdf_url']) . '">Download PDF</button></form></td>';
-
                 // Action buttons
                 echo '<td>';
                 echo '<form method="post" action="">';
@@ -1645,10 +1392,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
              // delete record from 
     if (isset($_POST['delete'])) {
         global $wpdb;
-    
         // Get the ID from the hidden input field
         $id_to_delete = isset($_POST['id']) ? intval($_POST['id']) : 0;
-    
         // Check if the ID is valid
         if ($id_to_delete > 0) {
             // Delete the record from the wp_shortlisted_candidates table
@@ -1657,7 +1402,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 array('id' => $id_to_delete),
                 array('%d') // ID is an integer
             );
-    
             // Check if the record is successfully deleted
             if ($delete_result !== false) {
                 echo "Record deleted successfully.";
@@ -1675,25 +1419,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 if (isset($_POST['download_pdf'])) {
     // Get the PDF URL from the form submission
     $pdf_url = $_POST['download_pdf'];
-    
     // Validate the PDF URL and extract the file name
     $file_name = basename($pdf_url);
-    
     // Set headers for file download
     header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename="' . $file_name . '"');
-    
     // Read the file and output its contents
     readfile($pdf_url);
-    
     // Exit to prevent further output
     exit;
 }
-
-            echo '</table>';
+echo '</table>';
         } 
-        
-        
         else {
             echo '<p>No resumes found between the specified dates.</p>';
         }
@@ -1702,13 +1439,12 @@ if (isset($_POST['download_pdf'])) {
     }
 }
 ?>
-                    <div class="secondclass">
+     <div class="secondclass">
       <!-- search by name -->
      <form id="filterForm"  method="POST">
         <label for="full_name" style="display: inline-block; width: 150px;">Enter Name:</label>
         <input type="text" id="full_name" name="full_name" required style="display: inline-block; width: 200px;" value="<?php echo esc_attr($search_query); ?>">
         <button type="submit"  class="filtername" style="display: inline-block;">Filter CVs</button>   
-
     </form>
      <?php
 global $wpdb;
@@ -1717,7 +1453,6 @@ $search_query = isset($_POST['full_name']) ? sanitize_text_field($_POST['full_na
 if (isset($_POST['full_name'])) {
     // Get the entered full name
     $full_name = $_POST['full_name'];
-
     // Prepare SQL statement to fetch the data
     $table_name = $wpdb->prefix . 'resumes';
     $query = $wpdb->prepare("SELECT * FROM $table_name WHERE full_name = %s", $full_name);
@@ -1770,7 +1505,6 @@ if (isset($_POST['full_name'])) {
                     echo 'No PDF available';
                 }
                 echo '</td>';
-
                 //action buttons
                 echo '<td>';
                 echo '<form method="post" action="">';
@@ -1779,7 +1513,6 @@ if (isset($_POST['full_name'])) {
                 echo '<button type="submit" name="insert" title="' . esc_html($resume['id']) . '">Shortlist</button>';
                 echo '</form>';
                 echo '</td>';
-                
                 echo '<td>';
                 echo '<form action="" method="post">';
                 echo '<input type="hidden" name="id" value="' . esc_html($resume['id']) . '">';
@@ -1790,10 +1523,8 @@ if (isset($_POST['full_name'])) {
     // delete record from 
     if (isset($_POST['delete'])) {
         global $wpdb;
-    
         // Get the ID from the hidden input field
         $id_to_delete = isset($_POST['id']) ? intval($_POST['id']) : 0;
-    
         // Check if the ID is valid
         if ($id_to_delete > 0) {
             // Delete the record from the wp_shortlisted_candidates table
@@ -1802,7 +1533,6 @@ if (isset($_POST['full_name'])) {
                 array('id' => $id_to_delete),
                 array('%d') // ID is an integer
             );
-    
             // Check if the record is successfully deleted
             if ($delete_result !== false) {
                 echo "Record deleted successfully.";
@@ -1848,17 +1578,15 @@ if (isset($_POST['full_name'])) {
         } else {
             // No rows selected, show error message or disable button
         }
-    
     });
 </script>
 
 <script>
-    const firstdiv = document.getElementsByClassName ('firstdiv')[0];
+const firstdiv = document.getElementsByClassName ('firstdiv')[0];
 const secondclass = document.getElementsByClassName ('secondclass')[0];
 const leftClick = document.getElementsByClassName ('filtername')[0];
 const rightClick = document.getElementsByClassName ('filtername')[0];
 leftClick.addEventListener('click', ()=> {
-                
                 secondclass.style.display = 'block';
                 firstdiv.style.display = 'none';
             });
@@ -1867,7 +1595,6 @@ leftClick.addEventListener('click', ()=> {
                 firstdiv.style.display = 'none';
             });
  </script>  
-
 <script>
 function printTable() {
     window.print();
@@ -1880,15 +1607,12 @@ function printTable() {
 if (isset($_POST['insert'])) {
     // Get the resume ID from the form submission
     $resume_id = isset($_POST['resume_id']) ? intval($_POST['resume_id']) : 0;
-
     // Check if the ID is valid
     if ($resume_id > 0) {
         global $wpdb;
-
         // Prepare the data to be inserted
         $resume_data = $wpdb->get_row("SELECT * FROM wp_resumes WHERE id = $resume_id", ARRAY_A);
         $comment = $_POST['commentss'];
-      
         $insert_id = $_POST['resume_id'];
         // Check if resume data is retrieved successfully
         if ($resume_data) {
@@ -1901,22 +1625,17 @@ if (isset($_POST['insert'])) {
                     'cgpa' => $resume_data['cgpa'],
                     'degree' => $resume_data['degree'],
                     'institution' => $resume_data['institution'],
-
-
                     'job_title' => $resume_data['job_title'],
                     'company' => $resume_data['company'],
                     'experiance' => $resume_data['experiance'],
-
                     'skills' => $resume_data['skills'],
                     'linkedin' => $resume_data['linkedin'],
                     'phno' => $resume_data['phno'],
                     'address' => $resume_data['address'],
                     'pdf_url' => $resume_data['pdf_url'],
                     'comments' => $comment,
-                    
                 )
             );
-
             if ($insert_result !== false) {
                 echo "Record inserted successfully.";
             } else 
@@ -1944,10 +1663,8 @@ add_shortcode('received_cvv', 'wpbcv_received_cvv_page');
                     $to = $candidate_email;
                     $subject = 'Application Rejection Notification';
                     $message = 'Dear Candidate,<br><br>We regret to inform you that your application has been rejected.<br><br>Thank you for your interest.<br><br>Best regards,<br>WP Brigade';
-                    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); // Change sender email if needed
-                
+                    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); 
                     $sent = wp_mail($to, $subject, $message, $headers);
-                
                     if ($sent) {
                         return true;
                     } else {
@@ -1955,7 +1672,6 @@ add_shortcode('received_cvv', 'wpbcv_received_cvv_page');
                     }
                 }
 ?>
-
 <!-- shortlist_candidate shortcode-->
 <?php
 function wpbcv_display_shortlisted_candidates()
@@ -1963,18 +1679,14 @@ function wpbcv_display_shortlisted_candidates()
     if (is_user_logged_in() && (current_user_can('administrator') || current_user_can('editor') || current_user_can('subscriber'))) {  
 get_header();
     global $wpdb;
-
     $table_name = 'wp_shortlisted_candidates';
-
     // Email Forwarding Form
     if(isset($_POST['emailpm'])){
         $to = 'nouman.wpbrigade@gmail.com'; // reciver
         $subject = 'Check the short listed candidate list';
         $message = 'Please check the short listed candidate list.';
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); // sender
-
         $sent = wp_mail($to, $subject, $message, $headers);
-
         if($sent){
             echo '<p>Email sent successfully!</p>';
         } else {
@@ -1982,8 +1694,6 @@ get_header();
         }
     }
     ?>
-   
-
     <?php
 
     // Check if the table exists
@@ -1991,27 +1701,18 @@ get_header();
         echo "<p>Table '$table_name' not found!</p>";
         return;
     }
-
     // Retrieve data from the table
     $shortlisted_candidates_data = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A); 
-    
-   
     ob_start();
     ?>
-
-
-        <h1 style="font-size: 50px; font-weight: 100px;">Shortlisted Candidates</h1>
-
-           <!-- Email Forwarding Form -->
-           <form method="post">
-    <button type="submit" style="background: #007bff; width: 158px; height: 60px; border: none; color: #fff; font-size: 16px; border-radius: 5px; cursor: pointer;">Email Forward to PM</button>
+<h1 style="font-size: 50px; font-weight: 100px;">Shortlisted Candidates</h1>
+<!-- Email Forwarding Form -->
+<form method="post">
+<button type="submit" style="background: #007bff; width: 158px; height: 60px; border: none; color: #fff; font-size: 16px; border-radius: 5px; cursor: pointer;">Email Forward to PM</button>
 </form>
-
 <?php
 global $wpdb;
-
 $table_name = 'wp_resumes';
-
 // Check if the table exists
 if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
     echo "<p>Table '$table_name' not found!</p>";
@@ -2019,24 +1720,19 @@ if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
 }
 // Check if search is initiated
 $search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
-
 // Retrieve data from the table with optional search filter
 $sql = "SELECT * FROM $table_name";
 if (!empty($search_query)) {
     $sql = $wpdb->prepare("SELECT * FROM $table_name WHERE skills LIKE %s", '%' . $search_query . '%');
 }
-
 // Retrieve data from the table
 $resumes_data = $wpdb->get_results($sql, ARRAY_A);
 ?>
-
-
  <!-- search by name -->
  <form id="filterForm"  method="POST">
         <label for="full_name" style="display: inline-block; width: 150px;">Enter Name:</label>
         <input type="text" id="full_name" name="full_name" required style="display: inline-block; width: 200px;" value="<?php echo esc_attr($search_query); ?>">
         <button type="submit" style="display: inline-block;">Filter CVs</button>   
-
     </form>
      <?php
 global $wpdb;
@@ -2045,7 +1741,6 @@ $search_query = isset($_POST['full_name']) ? sanitize_text_field($_POST['full_na
 if (isset($_POST['full_name'])) {
     // Get the entered full name
     $full_name = $_POST['full_name'];
-
     // Prepare SQL statement to fetch the data
     $table_name = $wpdb->prefix . 'resumes';
     $query = $wpdb->prepare("SELECT * FROM $table_name WHERE full_name = %s", $full_name);
@@ -2053,21 +1748,17 @@ if (isset($_POST['full_name'])) {
     if ($results) {
         // Output data of each row
         echo "<table border='1'>
-        
                 <tr>
                 <th>select</th>
-
                 <th>ID</th>
                     <th>Full Name</th>
                     <th>Email</th>
                     <th>cgpa</th>
                     <th>Degree</th>
                     <th>institution</th>
-
                     <th>Job Title</th>
                     <th>Company</th>
                     <th>Experiance</th>
-
                     <th>Skills</th>
                     <th>LinkedIn</th>
                     <th>Phone Number</th>
@@ -2076,35 +1767,26 @@ if (isset($_POST['full_name'])) {
                     <th>Comments</th>
                     <th>Operations</th>
                     <th>Status</th>
-                    
-
                 </tr>";
-            
                 foreach ($shortlisted_candidates_data as $candidate) {
                     echo '<tr>';
                     echo '<td><input type="checkbox" name="resume_checkbox[]" value="' . esc_attr($candidate['id']) . '"></td>';
-
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['id'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['full_name']. '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['email'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['cgpa'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['degree'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['institution'] . '</td>';
-
-
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['job_title'] . '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['company']. '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['experiance']. '</td>';
-
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['skills']. '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['linkedin']. '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['phno']. '</td>';
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['address'] . '</td>';
                     // Button to download PDF
                     echo '<td style="padding: 10px; border: 1px solid #ddd;"><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer;">Download PDF</button></form></td>';
-                    
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['comments']) . '</td>';
-                    
                     echo '<td style="padding: 10px; border: 1px solid #ddd;">
                     <form action="" method="post">
                         <input type="hidden" name="selected" value="' . esc_html($candidate['email']) . '">
@@ -2114,13 +1796,10 @@ if (isset($_POST['full_name'])) {
                         </form>
                 </td>';
                    // Process rejection button click
-                   
-
                 if (isset($_POST['rejected'])) {
                     // Get the candidate's ID from the respective row
                     $candidate_id = intval($_POST['rejected_id']);
                     $candidate_email = '';
-                
                     // Find candidate's email based on ID
                     foreach ($shortlisted_candidates_data as $candidate) {
                         if ($candidate['id'] == $candidate_id) {
@@ -2128,10 +1807,8 @@ if (isset($_POST['full_name'])) {
                             break;
                         }
                     }
-                
                     // Send rejection email
                     $rejection_sent = send_rejection_email($candidate_email);
-                
                     if ($rejection_sent) {
                         echo '<p>Rejection email sent successfully!</p>';
                     } else {
@@ -2152,28 +1829,22 @@ if (isset($_POST['full_name'])) {
     }
 }
 ?>
-              
-
-
-        <table style="width: 100%; border-collapse: collapse;">
+<button id="deleteSelected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
+<button id="rejectselected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Reject Selected</button>
+<table style="width: 100%; border-collapse: collapse;">
             <!-- Table Header -->
             <thead>
-
                 <tr >
                 <th style="padding: 10px; border: 1px solid #ddd;">Select</th>
-
                     <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Full Name</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Email</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">cgpa</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Degree</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">institution</th>
-
-
                     <th style="padding: 10px; border: 1px solid #ddd;">Job Title</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Company</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Experiance</th>
-
                     <th style="padding: 10px; border: 1px solid #ddd;">Skills</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">LinkedIn</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Phone Number</th>
@@ -2181,9 +1852,7 @@ if (isset($_POST['full_name'])) {
                     <th style="padding: 10px; border: 1px solid #ddd;">PDF URL</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Comments</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Status</th>
-
                     <th style="padding: 10px; border: 1px solid #ddd;">Operations</th>
-                   
                 </tr>
             </thead>
             <tbody>
@@ -2191,28 +1860,22 @@ if (isset($_POST['full_name'])) {
             foreach ($shortlisted_candidates_data as $candidate) {
                 echo '<tr>';
                 echo '<td><input type="checkbox" name="resume_checkbox[]" value="' . esc_attr($candidate['id']) . '"></td>';
-
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['id']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['full_name']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['email']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['cgpa']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['degree']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['institution']) . '</td>';
-
-
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['job_title']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['company']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['experiance']) . '</td>';
-
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['skills']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['linkedin']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['phno']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['address']) . '</td>';
                 // Button to download PDF
                 echo '<td style="padding: 10px; border: 1px solid #ddd;"><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Download PDF</button></form></td>';
-                
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['comments']) . '</td>';
-                
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">
                 <form action="" method="post">
                     <input type="hidden" name="selected" value="' . esc_html($candidate['email']) . '">
@@ -2220,24 +1883,20 @@ if (isset($_POST['full_name'])) {
                     <input type="hidden" name="rejected" value="' . esc_html($candidate['id']) . '">
                     <input title="' . esc_html($candidate['id']) . '" type="submit" name="rejected" value="Selected" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">
                     </form>
-            </td>';
-              
+            </td>'; 
 // Process rejection button click
 if (isset($_POST['rejected'])) {
     // Get the candidate's email from the respective row
     $candidate_id = intval($_POST['rejected']);
     $candidate_email = ''; // Set the variable to hold candidate's email
-
     foreach ($shortlisted_candidates_data as $candidate) {
         if ($candidate['id'] == $candidate_id) {
             $candidate_email = $candidate['email'];
             break;
         }
     }
-
     // Send rejection email
     $rejection_sent = send_rejection_email($candidate_email);
-
     if ($rejection_sent) {
         echo '<p>Rejection email sent successfully!</p>';
     } else {
@@ -2248,25 +1907,18 @@ if (isset($_POST['rejected'])) {
         }
     }
 }
-
-
-
-                echo '<td style="padding: 10px; border: 1px solid #ddd;">
+echo '<td style="padding: 10px; border: 1px solid #ddd;">
                     <form action="" method="post">
                         <input type="hidden" name="idsl" value="' . esc_html($candidate['id']) . '">
                         <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: red; color: #fff; cursor: pointer;">
                     </form>
                 </td>';
-
                 echo '</tr>';
             }
-
             // Delete shortlisted candidate 
             if (isset($_POST['deleteShortlisted'])) {
                 global $wpdb;
                 $id_to_deletee = isset($_POST['idsl']) ? intval($_POST['idsl']) : 0;
-            
-                
                 if ($id_to_deletee > 0) {
                     $delete_result = $wpdb->delete(
                         'wp_shortlisted_candidates',
@@ -2283,7 +1935,6 @@ if (isset($_POST['rejected'])) {
                     }
                 }
             }
-
             ?>
         </tbody>
         <?php
@@ -2291,29 +1942,23 @@ if (isset($_POST['rejected'])) {
         if (isset($_POST['download_pdf'])) {
             // Get the PDF URL from the form submission
             $pdf_url = $_POST['download_pdf'];
-            
             // Validate the PDF URL and extract the file name
             $file_name = basename($pdf_url);
-            
             // Set headers for file download
             header('Content-Type: application/pdf');
             header('Content-Disposition: attachment; filename="' . $file_name . '"');
-            
             // Read the file and output its contents
             readfile($pdf_url);
-            
             // Exit to prevent further output
             exit;
         }
         ?>
     </table>
-
     <style>
     .short {
         overflow-x: auto; /* Change 'scroll' to 'auto' */
         white-space: nowrap; /* Prevent table cells from wrapping */
     }
-
     th {
         background-color: #2c3e50;
         color: #FFF;
@@ -2322,27 +1967,22 @@ if (isset($_POST['rejected'])) {
 <?php
 return ob_get_clean();
 }}
-
 add_shortcode('shortlisted_candidate', 'wpbcv_display_shortlisted_candidates');
 ?>
-
 <!-- styling -->
 <style>
 h4 {
     text-align: center;
     color: #333;
 }
-
 form {
     margin-top: 20px;
 }
-
 label {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
 }
-
 input[type="text"],
 input[type="email"],
 input[type="url"],
@@ -2355,19 +1995,15 @@ textarea {
     border-radius: 4px;
     box-sizing: border-box;
 }
-
 textarea {
     resize: vertical;
 }
-
 input[type="checkbox"] {
     margin-right: 5px;
 }
-
 input[type="file"] {
     margin-top: 5px;
 }
-
 input[type="submit"] {
     background-color: #4caf50;
     color: white;
@@ -2376,10 +2012,8 @@ input[type="submit"] {
     border-radius: 4px;
     cursor: pointer;
 }
-
 input[type="submit"]:hover {
     background-color: #45a049;
 }
-
 </style>
 

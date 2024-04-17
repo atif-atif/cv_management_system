@@ -1541,47 +1541,57 @@ if (isset($_POST['full_name'])) {
 }
 ?>
 </div>
-<button id="deleteSelected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
-<script>
+<?php
+// Delete selected records from the database
+if (isset($_POST['ids'])) {
+    global $wpdb;
+    $idsToDelete = $_POST['ids'];
+    foreach ($idsToDelete as $id) {
+        $id_to_delete = intval($id);
+        if ($id_to_delete > 0) {
+            $delete_result = $wpdb->delete(
+                'wp_resumes',
+                array('id' => $id_to_delete),
+                array('%d')
+            );
+            if ($delete_result === false) {
+                echo "Error deleting record with ID: $id";
+                exit;
+            }
+        }
+    }
+    echo "Records deleted successfully.";
+}
+?>
+
+      </div>
+      <button id="deleteSelected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
+      <script>
 document.getElementById('deleteSelected').addEventListener('click', function() {
     var checkboxes = document.querySelectorAll('.row-checkbox:checked');
     var idsToDelete = [];
-    checkboxes.forEach(function(checkbox) {
+    checkboxes.forEach(function(checkbox)
+ {
         idsToDelete.push(checkbox.value);
         checkbox.closest('tr').remove();
     });
 
-    // Send selected IDs to PHP script for deletion
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            console.log(xhr.responseText); // Log response from server (for debugging)
-        }
-    };
-    xhr.send('ids=' + JSON.stringify(idsToDelete));
+    // Send idsToDelete to your server for deletion via form submission
+    var form = document.createElement('form');
+    form.method = 'POST';
+     form.action = ''; // Set the action attribute to your server-side script URL
+    idsToDelete.forEach(function(id)
+ {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'ids[]';
+        input.value = id;
+        form.appendChild(input);
+     });
+    document.body.appendChild(form);
+    form.submit();
 });
 </script>
-
-<?php
-// Assuming you have a database connection established in your WordPress environment
-global $wpdb;
-
-// Check if the request method is POST and 'ids' parameter is set
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ids'])) {
-    $idsToDelete = json_decode($_POST['ids']); // Decode JSON string to array
-
-    // Prepare and execute SQL query to delete rows with the given IDs
-    $resumes = $wpdb->prefix . 'resumes'; // Adjust 'your_table' to your actual table name
-    $idsToDeleteString = implode(',', $idsToDelete);
-    $sql = "DELETE FROM $resumes WHERE id IN ($idsToDeleteString)";
-    $wpdb->query($sql);
-
-    // Send response back to the client
-    echo 'Rows deleted successfully';
-}
-?>
 
 <script>
 const firstdiv = document.getElementsByClassName ('firstdiv')[0];
@@ -1733,17 +1743,55 @@ if (!empty($search_query)) {
 $resumes_data = $wpdb->get_results($sql, ARRAY_A);
 ?>
 
-<button id="deleteSelected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
-<script>
+<?php
+// Delete selected records from the database
+if (isset($_POST['ids'])) {
+    global $wpdb;
+    $idsToDelete = $_POST['ids'];
+    foreach ($idsToDelete as $id) {
+        $id_to_delete = intval($id);
+        if ($id_to_delete > 0) {
+            $delete_result = $wpdb->delete(
+                'wp_resumes',
+                array('id' => $id_to_delete),
+                array('%d')
+            );
+            if ($delete_result === false) {
+                echo "Error deleting record with ID: $id";
+                exit;
+            }
+        }
+    }
+    echo "Records deleted successfully.";
+}
+?>
+
+      </div>
+      <button id="deleteSelected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
+      <script>
 document.getElementById('deleteSelected').addEventListener('click', function() {
     var checkboxes = document.querySelectorAll('.row-checkbox:checked');
     var idsToDelete = [];
-    checkboxes.forEach(function(checkbox) {
+    checkboxes.forEach(function(checkbox)
+ {
         idsToDelete.push(checkbox.value);
         checkbox.closest('tr').remove();
     });
-    // Send idsToDelete to your server for deletion via AJAX or any other method
-    console.log('Deleted IDs:', idsToDelete);
+
+    // Send idsToDelete to your server for deletion via form submission
+    var form = document.createElement('form');
+    form.method = 'POST';
+     form.action = ''; // Set the action attribute to your server-side script URL
+    idsToDelete.forEach(function(id)
+ {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'ids[]';
+        input.value = id;
+        form.appendChild(input);
+     });
+    document.body.appendChild(form);
+    form.submit();
 });
 </script>
 

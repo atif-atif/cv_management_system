@@ -148,7 +148,6 @@ if(isset($_POST['emailpm'])){
         echo '<td>' . esc_html($candidate['institution']) . '</td>';
         echo '<td>' . esc_html($candidate['duration']) . '</td>';
 
-
         echo '<td>' . esc_html($candidate['job_title']) . '</td>';
         echo '<td>' . esc_html($candidate['company']) . '</td>';
         echo '<td>' . esc_html($candidate['experiance']) . '</td>';
@@ -1218,8 +1217,8 @@ document.getElementById('search-form').addEventListener('submit', function(event
                     <th>Email</th>
                     <th>CGPA</th>
                     <th>Degree</th>
-                    <th>institution</th>
-                    <th>duration</th>
+                    <th>Institution</th>
+                    <th>Duration</th>
 
                     <th>Job Title</th>
                     <th>Company</th>
@@ -1449,7 +1448,7 @@ if (isset($_POST['full_name'])) {
                     <th>Email</th>
                     <th>cgpa</th>
                     <th>Degree</th>
-                    <th>institution</th>
+                    <th>Institution</th>
                     <th>Duration</th>
 
                     <th>Job Title</th>
@@ -1805,7 +1804,7 @@ document.getElementById('deleteSelected').addEventListener('click', function() {
                     <th style="padding: 10px; border: 1px solid #ddd;">Email</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">cgpa</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Degree</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">institution</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Institution</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Duration</th>
 
                     <th style="padding: 10px; border: 1px solid #ddd;">Job Title</th>

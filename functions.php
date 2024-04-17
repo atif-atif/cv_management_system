@@ -122,6 +122,8 @@ if(isset($_POST['emailpm'])){
             <th style="width: 100px;">cgpa</th>
             <th style="width: 100px;">Degree</th>
             <th style="width: 100px;">Institution</th>
+            <th style="width: 100px;">Duration</th>
+
             <th style="width: 100px;">Job Title</th>
             <th style="width: 100px;">Company</th>
             <th style="width: 100px;">Experiance</th>
@@ -144,6 +146,9 @@ if(isset($_POST['emailpm'])){
         echo '<td>' . esc_html($candidate['cgpa']) . '</td>';
         echo '<td>' . esc_html($candidate['degree']) . '</td>';
         echo '<td>' . esc_html($candidate['institution']) . '</td>';
+        echo '<td>' . esc_html($candidate['duration']) . '</td>';
+
+
         echo '<td>' . esc_html($candidate['job_title']) . '</td>';
         echo '<td>' . esc_html($candidate['company']) . '</td>';
         echo '<td>' . esc_html($candidate['experiance']) . '</td>';
@@ -241,6 +246,8 @@ function wpbcv_received_cvs_page() {
                     <th style="width: 61px;">cgpa</th>
                     <th style="width: 61px;">Degree</th>
                     <th style="width: 61px;">Institution</th>
+                    <th style="width: 61px;">Duration</th>
+
                     <th style="width: 70px;">Job Title</th>
                     <th style="width: 60px;">Company</th>
                     <th style="width: 60px;">Experiance</th>
@@ -264,6 +271,9 @@ function wpbcv_received_cvs_page() {
         echo '<td>' . esc_html($resume['cgpa']) . '</td>';
         echo '<td>' . esc_html($resume['degree']) . '</td>';
         echo '<td>' . esc_html($resume['institution']) . '</td>';
+        echo '<td>' . esc_html($resume['duration']) . '</td>';
+
+
         echo '<td>' . esc_html($resume['job_title']) . '</td>';
         echo '<td>' . esc_html($resume['company']) . '</td>';
         echo '<td>' . esc_html($resume['experiance']) . '</td>';
@@ -350,6 +360,9 @@ if (isset($_POST['insert'])) {
                     'cgpa' => $resume_data['cgpa'],
                     'degree' => $resume_data['degree'],
                     'institution' => $resume_data['institution'],
+                    'duration' => $resume_data['duration'],
+
+
                     'job_title' => $resume_data['job_title'],
                     'company' => $resume_data['company'],
                     'experiance' => $resume_data['experiance'],
@@ -393,6 +406,8 @@ function wpbcv_get_filtered_data() {
         echo '<td>' . esc_html($resume['cgpa']) . '</td>';
         echo '<td>' . esc_html($resume['degree']) . '</td>';
         echo '<td>' . esc_html($resume['institution']) . '</td>';
+        echo '<td>' . esc_html($resume['duration']) . '</td>';
+
         echo '<td>' . esc_html($resume['job_title']) . '</td>';
         echo '<td>' . esc_html($resume['company']) . '</td>';
         echo '<td>' . esc_html($resume['experiance']) . '</td>';
@@ -619,7 +634,9 @@ function wpbcv_custom_shortcode_function() {
             <label for="degree">Degree:</label>
             <input type="text" id="degree" name="degree[]"> <!-- Note the square brackets [] to indicate an array -->
             <label for="institution">Institution:</label>
-            <input type="text" id="institution" name="institution[]"> <!-- Also with square brackets [] -->
+            <input type="text" id="institution" name="institution[]">
+            <label for="duration">Duration:</label>
+            <input type="text" id="duration" name="duration[]"> <!-- Also with square brackets [] -->
         </div>
     </div>
 </div>
@@ -657,6 +674,8 @@ function wpbcv_custom_shortcode_function() {
                 '<input type="text" id="degree' + itemCount + '" name="degree[]">' +
                 '<label for="institution' + itemCount + '">Institution:</label>' +
                 '<input type="text" id="institution' + itemCount + '" name="institution[]">' +
+                '<label for="duration' + itemCount + '">Duration:</label>' +
+                '<input type="text" id="duration' + itemCount + '" name="duration[]">' +
                 '</div>' +
                 '</div>');
             $('.accordion-education').append(newItem);
@@ -806,6 +825,8 @@ function wpbcv_custom_shortcode_function() {
 // Handle degree and institution arrays
 $degree = isset($_POST['degree']) ? implode(', ', $_POST['degree']) : '';
 $institution = isset($_POST['institution']) ? implode(', ', $_POST['institution']) : '';
+$duration = isset($_POST['duration']) ? implode(', ', $_POST['duration']) : '';
+
 // Handle job title, company, and experiance arrays
 $job_titles = isset($_POST['job_title']) ? implode(', ', $_POST['job_title']) : '';
 $companies = isset($_POST['company']) ? implode(', ', $_POST['company']) : '';
@@ -821,8 +842,8 @@ $experiances = isset($_POST['experiance']) ? implode(', ', $_POST['experiance'])
     $skills = isset($_POST['skills']) ? implode(', ', $_POST['skills']) : '';
     // Insert data into the database
      // Insert data into the database
-     $sql = "INSERT INTO wp_resumes (full_name, email, cgpa, degree, institution, job_title, company, experiance, skills, linkedin, phno, address, pdf_url) 
-     VALUES ('$full_name', '$email', '$cgpa', '$degree', '$institution', '$job_titles', '$companies', '$experiances', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
+     $sql = "INSERT INTO wp_resumes (full_name, email, cgpa, degree, institution, duration, job_title, company, experiance, skills, linkedin, phno, address, pdf_url) 
+     VALUES ('$full_name', '$email', '$cgpa', '$degree', '$institution','$duration', '$job_titles', '$companies', '$experiances', '$skills', '$linkedin', '$phno', '$address', '$cv_url')";
         if ($conn->query($sql) === TRUE) {
             echo "CV Submitted successfully";
         } else {
@@ -891,12 +912,28 @@ function wpbcv_pdfcv_shortcode_function() {
     }
     ?>
     <div class="wrap">
-        <form method="post" enctype="multipart/form-data">
-            <h2>Upload CV (PDF)</h2>
-            <label for="cv_upload">Upload CV:</label>
-            <input type="file" name="cv_upload" accept=".pdf">
-            <input type="submit" name="resume_submission_submit" value="Submit">
-        </form>
+    <form method="POST" enctype="multipart/form-data">
+    <h2>Upload CV (PDF)</h2>
+    <label for="cv_upload">Upload CV:</label>
+    <input type="file" name="file" accept=".pdf" id="fileInput" onchange="checkFile()">
+    <input type="submit" name="resume_submission_submit" value="Submit">
+</form>
+
+<script>
+    function checkFile() {
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+        if (file) {
+            if (file.type !== 'application/pdf') {
+                alert('Please upload a PDF file.');
+                fileInput.value = ''; // Clear the file input
+            } else if (file.size > 2 * 1024 * 1024) {
+                alert('File size exceeds 2MB limit.');
+                fileInput.value = ''; // Clear the file input
+            }
+        }
+    }
+</script>
     </div>
     <?php
     $output = ob_get_clean(); // Get the output and clean the buffer
@@ -935,6 +972,8 @@ function wpbcv_create_table_for_shortlisted_candidates() {
   `cgpa` varchar(255) DEFAULT NULL,
   `degree` varchar(255) DEFAULT NULL,
   `institution` varchar(255) DEFAULT NULL,
+  `duration` varchar(255) DEFAULT NULL,
+
   `job_title` varchar(255) DEFAULT NULL,
   `company` varchar(255) DEFAULT NULL,
   `experiance` varchar(255) DEFAULT NULL,
@@ -962,6 +1001,8 @@ function wpbcv_create_table_for_resume() {
         `cgpa` varchar(255) NOT NULL,
         `degree` varchar(255) NOT NULL,
         `institution` varchar(255) NOT NULL,
+        `duration` varchar(255) NOT NULL,
+
         `job_title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
         `company` varchar(255) NOT NULL,
         `experiance` varchar(255) NOT NULL,
@@ -1119,72 +1160,8 @@ function wpbcv_received_cvv_page()
         }
     </style>
 
-<div class="dropdown">
-  <div id="dropdown-content" class="dropdown-content" style="display: flex; flex-wrap: wrap; width: 20%;">
-    <div style="flex: 1  25%; padding: 5px;">
-        <input type="checkbox" id="id" name="id" value="id" style="margin-right: 5px;">
-        <label for="id">ID</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="full_name" name="full_name" value="full_name" style="margin-right: 5px;">
-        <label for="full_name">Full Name</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="email" name="email" value="email" style="margin-right: 5px;">
-        <label for="email">Email</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="cgpa" name="cgpa" value="cgpa" style="margin-right: 5px;">
-        <label for="cgpa">CGPA</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="degree" name="degree" value="degree" style="margin-right: 5px;">
-        <label for="degree">Degree</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="institution" name="institution" value="institution" style="margin-right: 5px;">
-        <label for="institution">Institution</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="job_title" name="job_title" value="job_title" style="margin-right: 5px;">
-        <label for="job_title">Job Title</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="company" name="company" value="company" style="margin-right: 5px;">
-        <label for="company">Company</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="experiance" name="experiance" value="experiance" style="margin-right: 5px;">
-        <label for="experiance">Experiance</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="skills" name="skills" value="skills" style="margin-right: 5px;">
-        <label for="skills">Skills</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="linkedin" name="linkedin" value="linkedin" style="margin-right: 5px;">
-        <label for="linkedin">LinkedIn</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="ph_no" name="ph_no" value="ph_no" style="margin-right: 5px;">
-        <label for="ph_no">Ph no</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="address" name="address" value="address" style="margin-right: 5px;">
-        <label for="address">Address</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="time" name="time" value="time" style="margin-right: 5px;">
-        <label for="time">Time</label>
-    </div>
-    <div style="flex: 1 0 25%; padding: 5px;">
-        <input type="checkbox" id="cv_name" name="cv_name" value="cv_name" style="margin-right: 5px;">
-        <label for="cv_name">CV Name</label>
-    </div>
-    <button onclick="toggleDropdown()" class="dropbtn">Select Options</button>
 
-</div>
-</div>
+
 <style>
 .dropdown-content {
             border: 1px solid #ccc;
@@ -1242,6 +1219,8 @@ document.getElementById('search-form').addEventListener('submit', function(event
                     <th>CGPA</th>
                     <th>Degree</th>
                     <th>institution</th>
+                    <th>duration</th>
+
                     <th>Job Title</th>
                     <th>Company</th>
                     <th>Experiance</th>
@@ -1259,13 +1238,15 @@ document.getElementById('search-form').addEventListener('submit', function(event
             <?php
             foreach ($resumes_data as $resume) {
                 echo '<tr>';
-                echo '<td><input type="checkbox" name="resume_checkbox[]" value="' . esc_attr($resume['id']) . '"></td>';
+                echo '<td><input type="checkbox" class="row-checkbox" name="resume_checkbox[]" value="' . esc_attr($resume['id']) . '"></td>';
                 echo '<td>' . esc_html($resume['id']) . '</td>';
                 echo '<td>' . esc_html($resume['full_name']) . '</td>';
                 echo '<td>' . esc_html($resume['email']) . '</td>';
                 echo '<td>' . esc_html($resume['cgpa']) . '</td>';
                 echo '<td>' . esc_html($resume['degree']) . '</td>';
                 echo '<td>' . esc_html($resume['institution']) . '</td>';
+                echo '<td>' . esc_html($resume['duration']) . '</td>';
+
                 echo '<td>' . esc_html($resume['job_title']) . '</td>';
                 echo '<td>' . esc_html($resume['company']) . '</td>';
                 echo '<td>' . esc_html($resume['experiance']) . '</td>';
@@ -1357,7 +1338,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($results) {
             echo '<h2>Filtered Resumes</h2>';
             echo '<table>';
-            echo '<tr><th>ID</th><th>Full Name</th><th>Email</th><th>cgpa</th><th>Degree</th><th>Institution</th><th>Job Title</th><th>Company</th><th>Skills</th><th>LinkedIn</th><th>Phone Number</th><th>Address</th><th>Time</th><th>CV Name</th><th>Action</th><th>Operations</th></tr>';
+            echo '<tr><th>ID</th><th>Full Name</th><th>Email</th><th>cgpa</th><th>Degree</th><th>Institution</th><th>Duration</th><th>Job Title</th><th>Company</th><th>Skills</th><th>LinkedIn</th><th>Phone Number</th><th>Address</th><th>Time</th><th>CV Name</th><th>Action</th><th>Operations</th></tr>';
             foreach ($results as $resume) {
                 echo '<tr>';
                 echo '<td>' . $resume['id'] . '</td>';
@@ -1366,6 +1347,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo '<td>' . $resume['cgpa'] . '</td>';
                 echo '<td>' . $resume['degree'] . '</td>';
                 echo '<td>' . $resume['institution'] . '</td>';
+                echo '<td>' . $resume['duration'] . '</td>';
+
                 echo '<td>' . $resume['job_title'] . '</td>';
                 echo '<td>' . $resume['company'] . '</td>';
                 echo '<td>' . $resume['skills'] . '</td>';
@@ -1467,6 +1450,8 @@ if (isset($_POST['full_name'])) {
                     <th>cgpa</th>
                     <th>Degree</th>
                     <th>institution</th>
+                    <th>Duration</th>
+
                     <th>Job Title</th>
                     <th>Company</th>
                     <th>Experiance</th>
@@ -1487,6 +1472,8 @@ if (isset($_POST['full_name'])) {
                     <td>".$row['cgpa']."</td>
                     <td>".$row['degree']."</td>
                     <td>".$row['institution']."</td>
+                    <td>".$row['duration']."</td>
+
                     <td>".$row['job_title']."</td>
                     <td>".$row['company']."</td>
                     <td>".$row['experiance']."</td>
@@ -1553,33 +1540,48 @@ if (isset($_POST['full_name'])) {
     }
 }
 ?>
-      </div>
-    <button id="deleteSelected">Delete Selected</button>
+</div>
+<button id="deleteSelected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
 <script>
-    // JavaScript to track selected rows and handle bulk action
-    document.getElementById('deleteSelected').addEventListener('click', function() {
-        const checkboxes = document.querySelectorAll('.firstdiv input[type="checkbox"]:checked');
-        const selectedRows = Array.from(checkboxes).map(checkbox => checkbox.value);
-        if (selectedRows.length > 0) {
-            // Send selected rows to server for deletion
-            fetch('/path/to/server/script.php', {
-                method: 'POST',
-                body: JSON.stringify({ rows: selectedRows }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                // Handle response, e.g., display success message
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        } else {
-            // No rows selected, show error message or disable button
-        }
+document.getElementById('deleteSelected').addEventListener('click', function() {
+    var checkboxes = document.querySelectorAll('.row-checkbox:checked');
+    var idsToDelete = [];
+    checkboxes.forEach(function(checkbox) {
+        idsToDelete.push(checkbox.value);
+        checkbox.closest('tr').remove();
     });
+
+    // Send selected IDs to PHP script for deletion
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            console.log(xhr.responseText); // Log response from server (for debugging)
+        }
+    };
+    xhr.send('ids=' + JSON.stringify(idsToDelete));
+});
 </script>
+
+<?php
+// Assuming you have a database connection established in your WordPress environment
+global $wpdb;
+
+// Check if the request method is POST and 'ids' parameter is set
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ids'])) {
+    $idsToDelete = json_decode($_POST['ids']); // Decode JSON string to array
+
+    // Prepare and execute SQL query to delete rows with the given IDs
+    $resumes = $wpdb->prefix . 'resumes'; // Adjust 'your_table' to your actual table name
+    $idsToDeleteString = implode(',', $idsToDelete);
+    $sql = "DELETE FROM $resumes WHERE id IN ($idsToDeleteString)";
+    $wpdb->query($sql);
+
+    // Send response back to the client
+    echo 'Rows deleted successfully';
+}
+?>
 
 <script>
 const firstdiv = document.getElementsByClassName ('firstdiv')[0];
@@ -1625,6 +1627,8 @@ if (isset($_POST['insert'])) {
                     'cgpa' => $resume_data['cgpa'],
                     'degree' => $resume_data['degree'],
                     'institution' => $resume_data['institution'],
+                    'duration' => $resume_data['duration'],
+
                     'job_title' => $resume_data['job_title'],
                     'company' => $resume_data['company'],
                     'experiance' => $resume_data['experiance'],
@@ -1728,113 +1732,25 @@ if (!empty($search_query)) {
 // Retrieve data from the table
 $resumes_data = $wpdb->get_results($sql, ARRAY_A);
 ?>
- <!-- search by name -->
- <form id="filterForm"  method="POST">
-        <label for="full_name" style="display: inline-block; width: 150px;">Enter Name:</label>
-        <input type="text" id="full_name" name="full_name" required style="display: inline-block; width: 200px;" value="<?php echo esc_attr($search_query); ?>">
-        <button type="submit" style="display: inline-block;">Filter CVs</button>   
-    </form>
-     <?php
-global $wpdb;
-$search_query = isset($_POST['full_name']) ? sanitize_text_field($_POST['full_name']) : '';
-// If form submitted with candidate name, fetch data from database
-if (isset($_POST['full_name'])) {
-    // Get the entered full name
-    $full_name = $_POST['full_name'];
-    // Prepare SQL statement to fetch the data
-    $table_name = $wpdb->prefix . 'resumes';
-    $query = $wpdb->prepare("SELECT * FROM $table_name WHERE full_name = %s", $full_name);
-    $results = $wpdb->get_results($query, ARRAY_A);
-    if ($results) {
-        // Output data of each row
-        echo "<table border='1'>
-                <tr>
-                <th>select</th>
-                <th>ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>cgpa</th>
-                    <th>Degree</th>
-                    <th>institution</th>
-                    <th>Job Title</th>
-                    <th>Company</th>
-                    <th>Experiance</th>
-                    <th>Skills</th>
-                    <th>LinkedIn</th>
-                    <th>Phone Number</th>
-                    <th>Address</th>
-                    <th>PDF URL</th>
-                    <th>Comments</th>
-                    <th>Operations</th>
-                    <th>Status</th>
-                </tr>";
-                foreach ($shortlisted_candidates_data as $candidate) {
-                    echo '<tr>';
-                    echo '<td><input type="checkbox" name="resume_checkbox[]" value="' . esc_attr($candidate['id']) . '"></td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['id'] . '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['full_name']. '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['email'] . '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['cgpa'] . '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['degree'] . '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['institution'] . '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['job_title'] . '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['company']. '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['experiance']. '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['skills']. '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['linkedin']. '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['phno']. '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . $candidate['address'] . '</td>';
-                    // Button to download PDF
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;"><form method="post"><button type="submit" name="download_pdf" value="' . esc_attr($candidate['pdf_url']) . '" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #007bff; color: #fff; cursor: pointer;">Download PDF</button></form></td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['comments']) . '</td>';
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">
-                    <form action="" method="post">
-                        <input type="hidden" name="selected" value="' . esc_html($candidate['email']) . '">
-                        <input title="' . esc_html($candidate['email']) . '" type="submit" name="selected" value="Rejected" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: blue; color: #fff; cursor: pointer;">
-                        <input type="hidden" name="rejected_id" value="' . esc_html($candidate['id']) . '">
-                        <input title="' . esc_html($candidate['id']) . '" type="submit" name="rejected" value="Selected" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: blue; color: #fff; cursor: pointer;">
-                        </form>
-                </td>';
-                   // Process rejection button click
-                if (isset($_POST['rejected'])) {
-                    // Get the candidate's ID from the respective row
-                    $candidate_id = intval($_POST['rejected_id']);
-                    $candidate_email = '';
-                    // Find candidate's email based on ID
-                    foreach ($shortlisted_candidates_data as $candidate) {
-                        if ($candidate['id'] == $candidate_id) {
-                            $candidate_email = $candidate['email']; // Assign candidate's email
-                            break;
-                        }
-                    }
-                    // Send rejection email
-                    $rejection_sent = send_rejection_email($candidate_email);
-                    if ($rejection_sent) {
-                        echo '<p>Rejection email sent successfully!</p>';
-                    } else {
-                        echo '<p>Failed to send rejection email.</p>';
-                    }
-                }
-                    echo '<td style="padding: 10px; border: 1px solid #ddd;">
-                        <form action="" method="post">
-                            <input type="hidden" name="idsl" value="' . esc_html($candidate['id']) . '">
-                            <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: red; color: #fff; cursor: pointer;">
-                        </form>
-                    </td>';
-               echo  '</tr>';
-        }
-        echo "</table>";
-    } else {
-        echo "0 results";
-    }
-}
-?>
+
 <button id="deleteSelected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
-<button id="rejectselected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Reject Selected</button>
+<script>
+document.getElementById('deleteSelected').addEventListener('click', function() {
+    var checkboxes = document.querySelectorAll('.row-checkbox:checked');
+    var idsToDelete = [];
+    checkboxes.forEach(function(checkbox) {
+        idsToDelete.push(checkbox.value);
+        checkbox.closest('tr').remove();
+    });
+    // Send idsToDelete to your server for deletion via AJAX or any other method
+    console.log('Deleted IDs:', idsToDelete);
+});
+</script>
+
 <table style="width: 100%; border-collapse: collapse;">
             <!-- Table Header -->
             <thead>
-                <tr >
+                <tr>
                 <th style="padding: 10px; border: 1px solid #ddd;">Select</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Full Name</th>
@@ -1842,6 +1758,8 @@ if (isset($_POST['full_name'])) {
                     <th style="padding: 10px; border: 1px solid #ddd;">cgpa</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Degree</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">institution</th>
+                    <th style="padding: 10px; border: 1px solid #ddd;">Duration</th>
+
                     <th style="padding: 10px; border: 1px solid #ddd;">Job Title</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Company</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Experiance</th>
@@ -1853,19 +1771,22 @@ if (isset($_POST['full_name'])) {
                     <th style="padding: 10px; border: 1px solid #ddd;">Comments</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Status</th>
                     <th style="padding: 10px; border: 1px solid #ddd;">Operations</th>
-                </tr>
+            </tr>
             </thead>
             <tbody>
             <?php
             foreach ($shortlisted_candidates_data as $candidate) {
                 echo '<tr>';
-                echo '<td><input type="checkbox" name="resume_checkbox[]" value="' . esc_attr($candidate['id']) . '"></td>';
+
+                echo '<td><input type="checkbox" class="row-checkbox" name="resume_checkbox[]" value="' . esc_attr($candidate['id']) . '"></td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['id']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['full_name']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['email']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['cgpa']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['degree']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['institution']) . '</td>';
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['duration']) . '</td>';
+
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['job_title']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['company']) . '</td>';
                 echo '<td style="padding: 10px; border: 1px solid #ddd;">' . esc_html($candidate['experiance']) . '</td>';

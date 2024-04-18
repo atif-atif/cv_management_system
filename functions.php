@@ -148,6 +148,7 @@ if(isset($_POST['emailpm'])){
         echo '<td>' . esc_html($candidate['institution']) . '</td>';
         echo '<td>' . esc_html($candidate['duration']) . '</td>';
 
+
         echo '<td>' . esc_html($candidate['job_title']) . '</td>';
         echo '<td>' . esc_html($candidate['company']) . '</td>';
         echo '<td>' . esc_html($candidate['experiance']) . '</td>';
@@ -617,12 +618,12 @@ function wpbcv_custom_shortcode_function() {
             <!-- Form fields -->
             <h5 style="text-align: center;"><strong>Personal Details</strong></h5>
             <label for="full_name" style="display: inline-block; width: 150px;">Full Name:</label>
-            <input type="text" name="full_name" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+            <input type="text" name="full_name" placeholder="Enter full name" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
             <label for="email" style="display: inline-block; width: 150px;">Email:</label>
-            <input type="email" name="email" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+            <input type="email" name="email" placeholder="Enter Email" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
             <h5 style="text-align: center;"><strong>Educational Details</strong></h5>
             <label for="cgpa" style="display: inline-block; width: 150px;">CGPA</label>
-            <input type="text" name="cgpa" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+            <input type="text" name="cgpa" placeholder="Enter CGPA" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
             <div class="accordion-education">
     <div class="accordion-item">
@@ -631,11 +632,11 @@ function wpbcv_custom_shortcode_function() {
             <!-- Education history form fields go here -->
             <!-- Inside the form -->
             <label for="degree">Degree:</label>
-            <input type="text" id="degree" name="degree[]"> <!-- Note the square brackets [] to indicate an array -->
+            <input type="text" id="degree" placeholder="Enter Relevant Degree" name="degree[]"> <!-- Note the square brackets [] to indicate an array -->
             <label for="institution">Institution:</label>
-            <input type="text" id="institution" name="institution[]">
+            <input type="text" id="institution" placeholder="Enter respective instituation" name="institution[]">
             <label for="duration">Duration:</label>
-            <input type="text" id="duration" name="duration[]"> <!-- Also with square brackets [] -->
+            <input type="text" id="duration" placeholder="Ex: (**** year - **** year)" name="duration[]"> <!-- Also with square brackets [] -->
         </div>
     </div>
 </div>
@@ -649,11 +650,11 @@ function wpbcv_custom_shortcode_function() {
         <div class="accordion-content">
             <!-- Education history form fields go here -->
             <label for="job_title">Job Title</label>
-            <input type="text" id="job_title" name="job_title[]">
+            <input type="text" id="job_title" placeholder="Enter job title" name="job_title[]">
             <label for="company">Company:</label>
-            <input type="text" id="company" name="company[]">
+            <input type="text" id="company" placeholder="Enter respective company" name="company[]">
             <label for="experiance">Experiance</label>
-            <input type="text" id="experiance" name="experiance[]">
+            <input type="text" id="experiance" placeholder="Enter Experience" name="experiance[]">
         </div>
     </div>
 </div>
@@ -670,11 +671,11 @@ function wpbcv_custom_shortcode_function() {
                 '<div class="accordion-header">Education History ' + itemCount + '</div>' +
                 '<div class="accordion-content">' +
                 '<label for="degree' + itemCount + '">Degree:</label>' +
-                '<input type="text" id="degree' + itemCount + '" name="degree[]">' +
+                '<input type="text" placeholder="Enter Relevant Degree" id="degree' + itemCount + '" name="degree[]">' +
                 '<label for="institution' + itemCount + '">Institution:</label>' +
-                '<input type="text" id="institution' + itemCount + '" name="institution[]">' +
+                '<input type="text" placeholder="Enter respective instituation" id="institution' + itemCount + '" name="institution[]">' +
                 '<label for="duration' + itemCount + '">Duration:</label>' +
-                '<input type="text" id="duration' + itemCount + '" name="duration[]">' +
+                '<input type="text" placeholder="Ex: (**** year - **** year)" id="duration' + itemCount + '" name="duration[]">' +
                 '</div>' +
                 '</div>');
             $('.accordion-education').append(newItem);
@@ -695,11 +696,11 @@ function wpbcv_custom_shortcode_function() {
                 '<div class="accordion-header">Professional History ' + itemCount + '</div>' +
                 '<div class="accordion-content">' +
                 '<label for="job_title' + itemCount + '">Job Title:</label>' +
-                '<input type="text" id="job_title' + itemCount + '" name="job_title[]">' +
+                '<input type="text" placeholder="Enter job title" id="job_title' + itemCount + '" name="job_title[]">' +
                 '<label for="company' + itemCount + '">Company:</label>' +
-                '<input type="text" id="company' + itemCount + '" name="company[]">' +
+                '<input type="text" placeholder="Enter respective company" id="company' + itemCount + '" name="company[]">' +
                 '<label for="experiance' + itemCount + '">Experiance:</label>' +
-                '<input type="text" id="experiance' + itemCount + '" name="experiance[]">' +
+                '<input type="text" placeholder="Enter Experience" id="experiance' + itemCount + '" name="experiance[]">' +
                 '</div>' +
                 '</div>');
             $('.accordion-professional').append(newItem);
@@ -721,38 +722,23 @@ function wpbcv_custom_shortcode_function() {
             <h5 style="text-align: center;"><strong>Skills</strong></h5>
             <div class="skills">
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="Theme Development">
-                    Theme Development
-                </label>
+                    <input type="checkbox" name="skills[]" value="Theme Development">Theme Development</label>
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="Plugin Development">
-                    Plugin Development
-                </label>
+                    <input type="checkbox" name="skills[]" value="Plugin Development">Plugin Development</label>
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="PSD to Email">
-                    PSD to Email
-                </label><br>
+                    <input type="checkbox" name="skills[]" value="PSD to Email">PSD to Email</label><br>
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="PSD to Wordpress">
-                    PSD to Wordpress
-                </label>
+                    <input type="checkbox" name="skills[]" value="PSD to Wordpress">PSD to Wordpress</label>
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="Python">
-                    Python
-                </label>
+                    <input type="checkbox" name="skills[]" value="Python">Python</label>
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="Human Resources Skills">
-                    Human Resources Skills
-                </label>
+                    <input type="checkbox" name="skills[]" value="Human Resources Skills">HR Skills</label>
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="Java">
-                    Java
-                </label><br>
+                    <input type="checkbox" name="skills[]" value="Java">Java</label><br>
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="PSD to HTML&CSS">
-                    PSD to HTML&CSS </label><br>
+                    <input type="checkbox" name="skills[]" value="PSD to HTML&CSS">PSD to HTML&CSS </label><br>
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">Other :</label>
-                <input type="text" name="skills[]" value="" placeholder="java,c++">
+                <input type="text" name="skills[]" value="" placeholder="add skills">
             </div>
             <style>
                 .skills {
@@ -766,11 +752,11 @@ function wpbcv_custom_shortcode_function() {
             </style>
             <h5 style="text-align: center;"><strong>Contact Details</strong></h5>
             <label for="linkedin" style="display: inline-block; width: 150px;">Linkedin Profile:</label>
-            <input type="text" name="linkedin" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
-            <label for="phno" style="display: inline-block; width: 150px;">Phone no:</label>
-            <input type="text" name="phno" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
-            <label for="address" style="display: inline-block; width: 150px;">Address:</label>
-            <textarea name="address" rows="4" cols="50"></textarea><br>
+            <input type="text" placeholder="Enter Linkedin URL" name="linkedin" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
+            <label for="phno" style="display: inline-block; width: 150px;" >Phone no:</label>
+            <input type="text" name="phno" placeholder="(****-*******)" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
+            <label for="address" style="display: inline-block; width: 150px;" >Address:</label>
+            <textarea name="address" placeholder="Enter detailed address" rows="4" cols="50"></textarea><br>
             <h5 style="text-align: center;">Upload CV (PDF)</h5>
             <label for="cv_upload" style="display: inline-block; width: 150px;">Upload CV:</label>
             <input type="file" name="cv_upload" accept=".pdf" style="padding: 5px 10px; font-size: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;"><br>
@@ -1217,8 +1203,8 @@ document.getElementById('search-form').addEventListener('submit', function(event
                     <th>Email</th>
                     <th>CGPA</th>
                     <th>Degree</th>
-                    <th>Institution</th>
-                    <th>Duration</th>
+                    <th>institution</th>
+                    <th>duration</th>
 
                     <th>Job Title</th>
                     <th>Company</th>
@@ -1448,7 +1434,7 @@ if (isset($_POST['full_name'])) {
                     <th>Email</th>
                     <th>cgpa</th>
                     <th>Degree</th>
-                    <th>Institution</th>
+                    <th>institution</th>
                     <th>Duration</th>
 
                     <th>Job Title</th>
@@ -1542,28 +1528,28 @@ if (isset($_POST['full_name'])) {
 </div>
 <?php
 // Delete selected records from the database
-if (isset($_POST['ids'])) {
-    global $wpdb;
-    $idsToDelete = $_POST['ids'];
-    foreach ($idsToDelete as $id) {
-        $id_to_delete = intval($id);
-        if ($id_to_delete > 0) {
-            $delete_result = $wpdb->delete(
-                'wp_resumes',
-                array('id' => $id_to_delete),
-                array('%d')
-            );
-            if ($delete_result === false) {
-                echo "Error deleting record with ID: $id";
-                exit;
-            }
-        }
-    }
-    echo "Records deleted successfully.";
-}
+// if (isset($_POST['ids'])) {
+//     global $wpdb;
+//     $idsToDelete = $_POST['ids'];
+//     foreach ($idsToDelete as $id) {
+//         $id_to_delete = intval($id);
+//         if ($id_to_delete > 0) {
+//             $delete_result = $wpdb->delete(
+//                 'wp_resumes',
+//                 array('id' => $id_to_delete),
+//                 array('%d')
+//             );
+//             if ($delete_result === false) {
+//                 echo "Error deleting record with ID: $id";
+//                 exit;
+//             }
+//         }
+//     }
+//     echo "Records deleted successfully.";
+// }
 ?>
 
-      </div>
+      <!-- </div>
       <button id="deleteSelected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
       <script>
 document.getElementById('deleteSelected').addEventListener('click', function() {
@@ -1590,7 +1576,9 @@ document.getElementById('deleteSelected').addEventListener('click', function() {
     document.body.appendChild(form);
     form.submit();
 });
-</script>
+</script> -->
+
+
 
 <script>
 const firstdiv = document.getElementsByClassName ('firstdiv')[0];
@@ -1606,6 +1594,35 @@ leftClick.addEventListener('click', ()=> {
                 firstdiv.style.display = 'none';
             });
  </script>  
+
+<button id="deleteSelected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
+<script>
+                document.getElementById('deleteSelected').addEventListener('click', function() {
+                    var checkboxes = document.querySelectorAll('.row-checkbox:checked');
+                    var idsToDelete = [];
+                    checkboxes.forEach(function(checkbox) {
+                        idsToDelete.push(checkbox.value);
+                        checkbox.closest('tr').remove(); // Remove the row from the UI
+                    });
+
+                    // Send idsToDelete to your server for deletion via AJAX
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '<?php echo admin_url('admin-ajax.php'); ?>', true); // Use admin-ajax.php to handle AJAX requests in WordPress
+                    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            // alert(xhr.responseText);
+                            alert('Recored Deeted Successfully');
+                            // You can handle the response here
+                        } else {
+                            alert("Error deleting records. Please try again later.");
+                        }
+                    };
+                    var params = 'action=delete_rows&ids=' + JSON.stringify(idsToDelete);
+                    xhr.send(params);
+                });
+            </script>
+
 <script>
 function printTable() {
     window.print();
@@ -1670,6 +1687,35 @@ if (isset($_POST['insert'])) {
     return ob_get_clean();
 }}
 add_shortcode('received_cvv', 'wpbcv_received_cvv_page');
+    // AJAX handler for deleting rows
+    add_action('wp_ajax_delete_rows', 'delete_rows_callback');
+    function delete_rows_callback() {
+        global $wpdb;
+        // Check if the request is coming from a logged-in user
+        if (is_user_logged_in()) {
+            // Check for required parameters
+            if (isset($_POST['ids'])) {
+                $idsToDelete = json_decode(stripslashes($_POST['ids'])); // Decode the JSON data
+                foreach ($idsToDelete as $id) {
+                    $id_to_delete = intval($id);
+                    if ($id_to_delete > 0) {
+                        // Delete the row from the database
+                        $delete_result = $wpdb->delete('wp_resumes', array('id' => $id_to_delete), array('%d'));
+                        if ($delete_result === false) {
+                            echo "Error deleting record with ID: $id";
+                            exit;
+                        }
+                    }
+                }
+                echo "Records deleted successfully.";
+            } else {
+                echo "No IDs provided for deletion.";
+            }
+        } else {
+            echo "You are not authorized to perform this action.";
+        }
+        wp_die(); // Always include this to terminate the script properly
+    }
 ?>
  <?php
   function send_rejection_email($candidate_email) {
@@ -1688,136 +1734,111 @@ add_shortcode('received_cvv', 'wpbcv_received_cvv_page');
 <!-- shortlist_candidate shortcode-->
 <?php
 function wpbcv_display_shortlisted_candidates()
-{   
-    if (is_user_logged_in() && (current_user_can('administrator') || current_user_can('editor') || current_user_can('subscriber'))) {  
-get_header();
-    global $wpdb;
-    $table_name = 'wp_shortlisted_candidates';
-    // Email Forwarding Form
-    if(isset($_POST['emailpm'])){
-        $to = 'nouman.wpbrigade@gmail.com'; // reciver
-        $subject = 'Check the short listed candidate list';
-        $message = 'Please check the short listed candidate list.';
-        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); // sender
-        $sent = wp_mail($to, $subject, $message, $headers);
-        if($sent){
-            echo '<p>Email sent successfully!</p>';
-        } else {
-            echo '<p>Failed to send email.</p>';
-        }
-    }
-    ?>
-    <?php
-
-    // Check if the table exists
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-        echo "<p>Table '$table_name' not found!</p>";
-        return;
-    }
-    // Retrieve data from the table
-    $shortlisted_candidates_data = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A); 
-    ob_start();
-    ?>
-<h1 style="font-size: 50px; font-weight: 100px;">Shortlisted Candidates</h1>
-<!-- Email Forwarding Form -->
-<form method="post">
-<button type="submit" style="background: #007bff; width: 158px; height: 60px; border: none; color: #fff; font-size: 16px; border-radius: 5px; cursor: pointer;">Email Forward to PM</button>
-</form>
-<?php
-global $wpdb;
-$table_name = 'wp_resumes';
-// Check if the table exists
-if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-    echo "<p>Table '$table_name' not found!</p>";
-    return;
-}
-// Check if search is initiated
-$search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
-// Retrieve data from the table with optional search filter
-$sql = "SELECT * FROM $table_name";
-if (!empty($search_query)) {
-    $sql = $wpdb->prepare("SELECT * FROM $table_name WHERE skills LIKE %s", '%' . $search_query . '%');
-}
-// Retrieve data from the table
-$resumes_data = $wpdb->get_results($sql, ARRAY_A);
-?>
-
-<?php
-// Delete selected records from the database
-if (isset($_POST['ids'])) {
-    global $wpdb;
-    $idsToDelete = $_POST['ids'];
-    foreach ($idsToDelete as $id) {
-        $id_to_delete = intval($id);
-        if ($id_to_delete > 0) {
-            $delete_result = $wpdb->delete(
-                'wp_resumes',
-                array('id' => $id_to_delete),
-                array('%d')
-            );
-            if ($delete_result === false) {
-                echo "Error deleting record with ID: $id";
-                exit;
+{
+    if (is_user_logged_in() && (current_user_can('administrator') || current_user_can('editor') || current_user_can('subscriber'))) {
+        get_header();
+        global $wpdb;
+        $table_name = 'wp_shortlisted_candidates';
+        // Email Forwarding Form
+        if (isset($_POST['emailpm'])) {
+            $to = 'nouman.wpbrigade@gmail.com'; // reciver
+            $subject = 'Check the short listed candidate list';
+            $message = 'Please check the short listed candidate list.';
+            $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); // sender
+            $sent = wp_mail($to, $subject, $message, $headers);
+            if ($sent) {
+                echo '<p>Email sent successfully!</p>';
+            } else {
+                echo '<p>Failed to send email.</p>';
             }
         }
-    }
-    echo "Records deleted successfully.";
-}
-?>
+        ?>
+        <?php
+        // Check if the table exists
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+            echo "<p>Table '$table_name' not found!</p>";
+            return;
+        }
+        // Retrieve data from the table
+        $shortlisted_candidates_data = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+        ob_start();
+        ?>
+        <h1 style="font-size: 50px; font-weight: 100px;">Shortlisted Candidates</h1>
+        <!-- Email Forwarding Form -->
+        <form method="post">
+            <button type="submit" name="emailpm" style="background: #007bff; width: 158px; height: 60px; border: none; color: #fff; font-size: 16px; border-radius: 5px; cursor: pointer;">Email Forward to PM</button>
+        </form>
+        <?php
+        global $wpdb;
+        $table_name = 'wp_resumes';
+        // Check if the table exists
+        if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
+            echo "<p>Table '$table_name' not found!</p>";
+            return;
+        }
+        // Check if search is initiated
+        $search_query = isset($_GET['search']) ? sanitize_text_field($_GET['search']) : '';
+        // Retrieve data from the table with optional search filter
+        $sql = "SELECT * FROM $table_name";
+        if (!empty($search_query)) {
+            $sql = $wpdb->prepare("SELECT * FROM $table_name WHERE skills LIKE %s", '%' . $search_query . '%');
+        }
+        // Retrieve data from the table
+        $resumes_data = $wpdb->get_results($sql, ARRAY_A);
+        ?>
 
-      </div>
-      <button id="deleteSelected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
-      <script>
-document.getElementById('deleteSelected').addEventListener('click', function() {
-    var checkboxes = document.querySelectorAll('.row-checkbox:checked');
-    var idsToDelete = [];
-    checkboxes.forEach(function(checkbox)
- {
-        idsToDelete.push(checkbox.value);
-        checkbox.closest('tr').remove();
-    });
+        <button id="deleteSelected" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
+        <script>
+            document.getElementById('deleteSelected').addEventListener('click', function () {
+                var checkboxes = document.querySelectorAll('.row-checkbox:checked');
+                var idsToDelete = [];
+                checkboxes.forEach(function (checkbox) {
+                    idsToDelete.push(checkbox.value);
+                    checkbox.closest('tr').remove(); // Remove the row from the UI
+                });
 
-    // Send idsToDelete to your server for deletion via form submission
-    var form = document.createElement('form');
-    form.method = 'POST';
-     form.action = ''; // Set the action attribute to your server-side script URL
-    idsToDelete.forEach(function(id)
- {
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'ids[]';
-        input.value = id;
-        form.appendChild(input);
-     });
-    document.body.appendChild(form);
-    form.submit();
-});
-</script>
+                // Send idsToDelete to your server for deletion via AJAX
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '<?php echo admin_url('admin-ajax.php'); ?>', true); // Use admin-ajax.php to handle AJAX requests in WordPress
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        // alert(xhr.responseText);
+                        alert('Record Deleted Successfully');
+                        // You can handle the response here
+                    } else {
+                        alert("Error deleting records. Please try again later.");
+                    }
+                };
+                var params = 'action=delete_rows&ids=' + JSON.stringify(idsToDelete);
+                xhr.send(params);
+            });
+        </script>
 
-<table style="width: 100%; border-collapse: collapse;">
+        <table style="width: 100%; border-collapse: collapse;">
             <!-- Table Header -->
             <thead>
-                <tr>
+            <tr>
                 <th style="padding: 10px; border: 1px solid #ddd;">Select</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Full Name</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Email</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">cgpa</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Degree</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Institution</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Duration</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Full Name</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Email</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">cgpa</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Degree</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">institution</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Duration</th>
 
-                    <th style="padding: 10px; border: 1px solid #ddd;">Job Title</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Company</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Experiance</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Skills</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">LinkedIn</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Phone Number</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Address</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">PDF URL</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Comments</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Status</th>
-                    <th style="padding: 10px; border: 1px solid #ddd;">Operations</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Job Title</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Company</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Experiance</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Skills</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">LinkedIn</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Phone Number</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Address</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">PDF URL</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Comments</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Status</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Operations</th>
             </tr>
             </thead>
             <tbody>
@@ -1851,31 +1872,31 @@ document.getElementById('deleteSelected').addEventListener('click', function() {
                     <input type="hidden" name="rejected" value="' . esc_html($candidate['id']) . '">
                     <input title="' . esc_html($candidate['id']) . '" type="submit" name="rejected" value="Selected" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">
                     </form>
-            </td>'; 
-// Process rejection button click
-if (isset($_POST['rejected'])) {
-    // Get the candidate's email from the respective row
-    $candidate_id = intval($_POST['rejected']);
-    $candidate_email = ''; // Set the variable to hold candidate's email
-    foreach ($shortlisted_candidates_data as $candidate) {
-        if ($candidate['id'] == $candidate_id) {
-            $candidate_email = $candidate['email'];
-            break;
-        }
-    }
-    // Send rejection email
-    $rejection_sent = send_rejection_email($candidate_email);
-    if ($rejection_sent) {
-        echo '<p>Rejection email sent successfully!</p>';
-    } else {
-        if ($candidate_email != '') {
-            echo '<p>Failed to send rejection email to ' . $candidate_email . '</p>';
-        } else {
-            echo '<p>Candidate email not found.</p>';
-        }
-    }
-}
-echo '<td style="padding: 10px; border: 1px solid #ddd;">
+            </td>';
+                // Process rejection button click
+                if (isset($_POST['rejected'])) {
+                    // Get the candidate's email from the respective row
+                    $candidate_id = intval($_POST['rejected']);
+                    $candidate_email = ''; // Set the variable to hold candidate's email
+                    foreach ($shortlisted_candidates_data as $candidate) {
+                        if ($candidate['id'] == $candidate_id) {
+                            $candidate_email = $candidate['email'];
+                            break;
+                        }
+                    }
+                    // Send rejection email
+                    $rejection_sent = send_rejection_email($candidate_email);
+                    if ($rejection_sent) {
+                        echo '<p>Rejection email sent successfully!</p>';
+                    } else {
+                        if ($candidate_email != '') {
+                            echo '<p>Failed to send rejection email to ' . $candidate_email . '</p>';
+                        } else {
+                            echo '<p>Candidate email not found.</p>';
+                        }
+                    }
+                }
+                echo '<td style="padding: 10px; border: 1px solid #ddd;">
                     <form action="" method="post">
                         <input type="hidden" name="idsl" value="' . esc_html($candidate['id']) . '">
                         <input title="' . esc_html($candidate['id']) . '" type="submit" name="deleteShortlisted" value="Delete" style="padding: 5px 10px; width: 80px; height: 45px; border-radius: 5px; border: none; background-color: red; color: #fff; cursor: pointer;">
@@ -1883,7 +1904,7 @@ echo '<td style="padding: 10px; border: 1px solid #ddd;">
                 </td>';
                 echo '</tr>';
             }
-            // Delete shortlisted candidate 
+            // Delete shortlisted candidate
             if (isset($_POST['deleteShortlisted'])) {
                 global $wpdb;
                 $id_to_deletee = isset($_POST['idsl']) ? intval($_POST['idsl']) : 0;
@@ -1895,48 +1916,84 @@ echo '<td style="padding: 10px; border: 1px solid #ddd;">
                     );
                     if ($delete_result !== false) {
                         echo "Record deleted successfully.";
-                        header("location: #"); 
+                        header("location: #");
                         exit; // Make sure to exit after redirecting
-                    }
-                    else {
+                    } else {
                         echo "Error deleting record.";
                     }
                 }
             }
             ?>
-        </tbody>
+            </tbody>
+            <?php
+            // Handle form submission
+            if (isset($_POST['download_pdf'])) {
+                // Get the PDF URL from the form submission
+                $pdf_url = $_POST['download_pdf'];
+                // Validate the PDF URL and extract the file name
+                $file_name = basename($pdf_url);
+                // Set headers for file download
+                header('Content-Type: application/pdf');
+                header('Content-Disposition: attachment; filename="' . $file_name . '"');
+                // Read the file and output its contents
+                readfile($pdf_url);
+                // Exit to prevent further output
+                exit;
+            }
+            ?>
+        </table>
+        <style>
+            .short {
+                overflow-x: auto; /* Change 'scroll' to 'auto' */
+                white-space: nowrap; /* Prevent table cells from wrapping */
+            }
+
+            th {
+                background-color: #2c3e50;
+                color: #FFF;
+            }
+        </style>
         <?php
-        // Handle form submission
-        if (isset($_POST['download_pdf'])) {
-            // Get the PDF URL from the form submission
-            $pdf_url = $_POST['download_pdf'];
-            // Validate the PDF URL and extract the file name
-            $file_name = basename($pdf_url);
-            // Set headers for file download
-            header('Content-Type: application/pdf');
-            header('Content-Disposition: attachment; filename="' . $file_name . '"');
-            // Read the file and output its contents
-            readfile($pdf_url);
-            // Exit to prevent further output
-            exit;
-        }
-        ?>
-    </table>
-    <style>
-    .short {
-        overflow-x: auto; /* Change 'scroll' to 'auto' */
-        white-space: nowrap; /* Prevent table cells from wrapping */
+        return ob_get_clean();
     }
-    th {
-        background-color: #2c3e50;
-        color: #FFF;
-    }
-</style>
-<?php
-return ob_get_clean();
-}}
+}
+
 add_shortcode('shortlisted_candidate', 'wpbcv_display_shortlisted_candidates');
+
+// AJAX handler for deleting rows
+add_action('wp_ajax_delete_rows', 'sdelete_rows_callback');
+
+function sdelete_rows_callback()
+{
+    global $wpdb;
+    // Check if the request is coming from a logged-in user
+    if (is_user_logged_in()) {
+        // Check for required parameters
+        if (isset($_POST['ids'])) {
+            $idsToDelete = json_decode(stripslashes($_POST['ids'])); // Decode the JSON data
+            foreach ($idsToDelete as $id) {
+                $id_to_delete = intval($id);
+                if ($id_to_delete > 0) {
+                    // Delete the row from the database
+                    $delete_result = $wpdb->delete('wp_shortlisted_candidates', array('id' => $id_to_delete), array('%d'));
+                    if ($delete_result === false) {
+                        echo "Error deleting record with ID: $id";
+                        exit;
+                    }
+                }
+            }
+            echo "Records deleted successfully.";
+        } else {
+            echo "No IDs provided for deletion.";
+        }
+    } else {
+        echo "You are not authorized to perform this action.";
+    }
+    wp_die(); // Always include this to terminate the script properly
+}
+
 ?>
+
 <!-- styling -->
 <style>
 h4 {

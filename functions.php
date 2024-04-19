@@ -618,12 +618,12 @@ function wpbcv_custom_shortcode_function() {
             <!-- Form fields -->
             <h5 style="text-align: center;"><strong>Personal Details</strong></h5>
             <label for="full_name" style="display: inline-block; width: 150px;">Full Name:</label>
-            <input type="text" name="full_name" placeholder="Enter full name" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+            <input type="text" name="full_name" placeholder="enter your full name" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
             <label for="email" style="display: inline-block; width: 150px;">Email:</label>
-            <input type="email" name="email" placeholder="Enter Email" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+            <input type="email" name="email" required placeholder="enter your email" style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
             <h5 style="text-align: center;"><strong>Educational Details</strong></h5>
             <label for="cgpa" style="display: inline-block; width: 150px;">CGPA</label>
-            <input type="text" name="cgpa" placeholder="Enter CGPA" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
+            <input type="text" name="cgpa" required placeholder="enter cgpa" style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;">
 
             <div class="accordion-education">
     <div class="accordion-item">
@@ -632,11 +632,11 @@ function wpbcv_custom_shortcode_function() {
             <!-- Education history form fields go here -->
             <!-- Inside the form -->
             <label for="degree">Degree:</label>
-            <input type="text" id="degree" placeholder="Enter Relevant Degree" name="degree[]"> <!-- Note the square brackets [] to indicate an array -->
+            <input type="text" id="degree" name="degree[]" placeholder="enter your relevent degree"> <!-- Note the square brackets [] to indicate an array -->
             <label for="institution">Institution:</label>
-            <input type="text" id="institution" placeholder="Enter respective instituation" name="institution[]">
+            <input type="text" id="institution" name="institution[]" placeholder="enter your respective institute">
             <label for="duration">Duration:</label>
-            <input type="text" id="duration" placeholder="Ex: (**** year - **** year)" name="duration[]"> <!-- Also with square brackets [] -->
+            <input type="text" id="duration" name="duration[]" placeholder="ex: (**** year - **** year)"> <!-- Also with square brackets [] -->
         </div>
     </div>
 </div>
@@ -650,11 +650,11 @@ function wpbcv_custom_shortcode_function() {
         <div class="accordion-content">
             <!-- Education history form fields go here -->
             <label for="job_title">Job Title</label>
-            <input type="text" id="job_title" placeholder="Enter job title" name="job_title[]">
+            <input type="text" id="job_title" placeholder="enter your job designation" name="job_title[]">
             <label for="company">Company:</label>
-            <input type="text" id="company" placeholder="Enter respective company" name="company[]">
+            <input type="text" id="company" name="company[]" placeholder="enter your company">
             <label for="experiance">Experiance</label>
-            <input type="text" id="experiance" placeholder="Enter Experience" name="experiance[]">
+            <input type="text" id="experiance" name="experiance[]" placeholder="enter your experience">
         </div>
     </div>
 </div>
@@ -671,11 +671,11 @@ function wpbcv_custom_shortcode_function() {
                 '<div class="accordion-header">Education History ' + itemCount + '</div>' +
                 '<div class="accordion-content">' +
                 '<label for="degree' + itemCount + '">Degree:</label>' +
-                '<input type="text" placeholder="Enter Relevant Degree" id="degree' + itemCount + '" name="degree[]">' +
+                '<input type="text" id="degree' + itemCount + '" name="degree[]" placeholder="enter your relevent degree">' +
                 '<label for="institution' + itemCount + '">Institution:</label>' +
-                '<input type="text" placeholder="Enter respective instituation" id="institution' + itemCount + '" name="institution[]">' +
+                '<input type="text" id="institution' + itemCount + '" name="institution[]" placeholder="enter your respective institute">' +
                 '<label for="duration' + itemCount + '">Duration:</label>' +
-                '<input type="text" placeholder="Ex: (**** year - **** year)" id="duration' + itemCount + '" name="duration[]">' +
+                '<input type="text" id="duration' + itemCount + '" name="duration[]" placeholder="ex: (**** year - **** year)">' +
                 '</div>' +
                 '</div>');
             $('.accordion-education').append(newItem);
@@ -696,11 +696,11 @@ function wpbcv_custom_shortcode_function() {
                 '<div class="accordion-header">Professional History ' + itemCount + '</div>' +
                 '<div class="accordion-content">' +
                 '<label for="job_title' + itemCount + '">Job Title:</label>' +
-                '<input type="text" placeholder="Enter job title" id="job_title' + itemCount + '" name="job_title[]">' +
+                '<input type="text" id="job_title' + itemCount + '" name="job_title[]" placeholder="enter your job designation">' +
                 '<label for="company' + itemCount + '">Company:</label>' +
-                '<input type="text" placeholder="Enter respective company" id="company' + itemCount + '" name="company[]">' +
+                '<input type="text" id="company' + itemCount + '" name="company[]" placeholder="enter your company">' +
                 '<label for="experiance' + itemCount + '">Experiance:</label>' +
-                '<input type="text" placeholder="Enter Experience" id="experiance' + itemCount + '" name="experiance[]">' +
+                '<input type="text" id="experiance' + itemCount + '" name="experiance[]" placeholder="enter your experience">' +
                 '</div>' +
                 '</div>');
             $('.accordion-professional').append(newItem);
@@ -722,23 +722,32 @@ function wpbcv_custom_shortcode_function() {
             <h5 style="text-align: center;"><strong>Skills</strong></h5>
             <div class="skills">
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="Theme Development">Theme Development</label>
+                <input type="checkbox" name="skills[]" value="Theme Development">Theme Development</label>
+
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
                     <input type="checkbox" name="skills[]" value="Plugin Development">Plugin Development</label>
+
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="PSD to Email">PSD to Email</label><br>
+                    <input type="checkbox" name="skills[]" value="PSD to Email">PSD to HTML, CSS</label>
+
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
                     <input type="checkbox" name="skills[]" value="PSD to Wordpress">PSD to Wordpress</label>
+
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
                     <input type="checkbox" name="skills[]" value="Python">Python</label>
+
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
                     <input type="checkbox" name="skills[]" value="Human Resources Skills">HR Skills</label>
+
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="Java">Java</label><br>
+                    <input type="checkbox" name="skills[]" value="Java">Java</label>
+
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="PSD to HTML&CSS">PSD to HTML&CSS </label><br>
+                    <input type="checkbox" name="skills[]" value="PSD to HTML&CSS">PSD to HTML&CSS </label>
+
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">Other :</label>
-                <input type="text" name="skills[]" value="" placeholder="add skills">
+                <input type="text" name="skills[]" value="" placeholder="enter skills">
+
             </div>
             <style>
                 .skills {
@@ -752,11 +761,11 @@ function wpbcv_custom_shortcode_function() {
             </style>
             <h5 style="text-align: center;"><strong>Contact Details</strong></h5>
             <label for="linkedin" style="display: inline-block; width: 150px;">Linkedin Profile:</label>
-            <input type="text" placeholder="Enter Linkedin URL" name="linkedin" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
-            <label for="phno" style="display: inline-block; width: 150px;" >Phone no:</label>
-            <input type="text" name="phno" placeholder="(****-*******)" required style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
-            <label for="address" style="display: inline-block; width: 150px;" >Address:</label>
-            <textarea name="address" placeholder="Enter detailed address" rows="4" cols="50"></textarea><br>
+            <input type="text" name="linkedin" required placeholder="linkedin URL" style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;" pattern="https?://(?:www\.)?linkedin\.com/.*">
+            <label for="phno" style="display: inline-block; width: 150px;">Phone no:</label>
+            <input type="text" name="phno" required placeholder="(+**-*********)" style="display: inline-block; width: calc(100% - 160px); margin-bottom: 10px;"><br>
+            <label for="address" style="display: inline-block; width: 150px;">Address:</label>
+            <textarea name="address" rows="4" cols="50" placeholder="enter address"></textarea><br>
             <h5 style="text-align: center;">Upload CV (PDF)</h5>
             <label for="cv_upload" style="display: inline-block; width: 150px;">Upload CV:</label>
             <input type="file" name="cv_upload" accept=".pdf" style="padding: 5px 10px; font-size: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;"><br>
@@ -1699,10 +1708,17 @@ add_shortcode('received_cvv', 'wpbcv_received_cvv_page');
                 foreach ($idsToDelete as $id) {
                     $id_to_delete = intval($id);
                     if ($id_to_delete > 0) {
-                        // Delete the row from the database
-                        $delete_result = $wpdb->delete('wp_resumes', array('id' => $id_to_delete), array('%d'));
-                        if ($delete_result === false) {
-                            echo "Error deleting record with ID: $id";
+                        // Delete the row from the wp_resumes table
+                        $delete_result_resumes = $wpdb->delete('wp_resumes', array('id' => $id_to_delete), array('%d'));
+                        if ($delete_result_resumes === false) {
+                            echo "Error deleting record with ID: $id from wp_resumes";
+                            exit;
+                        }
+    
+                        // Delete the row from the wp_shortlisted_candidates table
+                        $delete_result_shortlisted = $wpdb->delete('wp_shortlisted_candidates', array('id' => $id_to_delete), array('%d'));
+                        if ($delete_result_shortlisted === false) {
+                            echo "Error deleting record with ID: $id from wp_shortlisted_candidates";
                             exit;
                         }
                     }
@@ -1716,6 +1732,7 @@ add_shortcode('received_cvv', 'wpbcv_received_cvv_page');
         }
         wp_die(); // Always include this to terminate the script properly
     }
+    
 ?>
  <?php
   function send_rejection_email($candidate_email) {
@@ -1789,31 +1806,32 @@ function wpbcv_display_shortlisted_candidates()
 
         <button id="deleteSelected" style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
         <script>
-            document.getElementById('deleteSelected').addEventListener('click', function () {
-                var checkboxes = document.querySelectorAll('.row-checkbox:checked');
-                var idsToDelete = [];
-                checkboxes.forEach(function (checkbox) {
-                    idsToDelete.push(checkbox.value);
-                    checkbox.closest('tr').remove(); // Remove the row from the UI
-                });
+    document.getElementById('deleteSelected').addEventListener('click', function () {
+        var checkboxes = document.querySelectorAll('.row-checkbox:checked');
+        var idsToDelete = [];
+        checkboxes.forEach(function (checkbox) {
+            idsToDelete.push(checkbox.value);
+            checkbox.closest('tr').remove(); // Remove the row from the UI
+        });
 
-                // Send idsToDelete to your server for deletion via AJAX
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '<?php echo admin_url('admin-ajax.php'); ?>', true); // Use admin-ajax.php to handle AJAX requests in WordPress
-                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        // alert(xhr.responseText);
-                        alert('Record Deleted Successfully');
-                        // You can handle the response here
-                    } else {
-                        alert("Error deleting records. Please try again later.");
-                    }
-                };
-                var params = 'action=delete_rows&ids=' + JSON.stringify(idsToDelete);
-                xhr.send(params);
-            });
-        </script>
+        // Send idsToDelete to your server for deletion via AJAX
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '<?php echo admin_url('admin-ajax.php'); ?>', true); // Use admin-ajax.php to handle AJAX requests in WordPress
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                // alert(xhr.responseText);
+                alert('Record Deleted Successfully');
+                // You can handle the response here
+            } else {
+                alert("Error deleting records. Please try again later.");
+            }
+        };
+        var params = 'action=delete_rows&ids=' + JSON.stringify(idsToDelete);
+        xhr.send(params);
+    });
+</script>
+
 
         <table style="width: 100%; border-collapse: collapse;">
             <!-- Table Header -->
@@ -1959,39 +1977,6 @@ function wpbcv_display_shortlisted_candidates()
 }
 
 add_shortcode('shortlisted_candidate', 'wpbcv_display_shortlisted_candidates');
-
-// AJAX handler for deleting rows
-add_action('wp_ajax_delete_rows', 'sdelete_rows_callback');
-
-function sdelete_rows_callback()
-{
-    global $wpdb;
-    // Check if the request is coming from a logged-in user
-    if (is_user_logged_in()) {
-        // Check for required parameters
-        if (isset($_POST['ids'])) {
-            $idsToDelete = json_decode(stripslashes($_POST['ids'])); // Decode the JSON data
-            foreach ($idsToDelete as $id) {
-                $id_to_delete = intval($id);
-                if ($id_to_delete > 0) {
-                    // Delete the row from the database
-                    $delete_result = $wpdb->delete('wp_shortlisted_candidates', array('id' => $id_to_delete), array('%d'));
-                    if ($delete_result === false) {
-                        echo "Error deleting record with ID: $id";
-                        exit;
-                    }
-                }
-            }
-            echo "Records deleted successfully.";
-        } else {
-            echo "No IDs provided for deletion.";
-        }
-    } else {
-        echo "You are not authorized to perform this action.";
-    }
-    wp_die(); // Always include this to terminate the script properly
-}
-
 ?>
 
 <!-- styling -->

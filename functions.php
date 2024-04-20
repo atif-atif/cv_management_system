@@ -18,7 +18,7 @@ add_action( 'template_redirect', 'wpbcv_redirect_non_logged_in_users_to_login' )
 
 // Enqueue necessary scripts and styles
 function wpbcv_csv_management_enqueue_scripts() {
-    // wp_enqueue_style('csv-management-style', plugins_url('/css/style.css', __FILE__));
+    wp_enqueue_style('csv-management-style', plugins_url('/css/style.css', __FILE__));
     wp_enqueue_script('csv-management-script', plugins_url('/js/script.js', __FILE__), array('jquery'), null, true);
 }
 add_action('admin_enqueue_scripts', 'wpbcv_csv_management_enqueue_scripts');
@@ -612,6 +612,8 @@ function wpbcv_custom_shortcode_function() {
     get_header();
     ob_start(); // Start output buffering
     ?>
+    <div class="form-border">
+
     <div class="wrap">
         <h4>CV Submission Form</h4>
         <form method="post" enctype="multipart/form-data">
@@ -646,7 +648,7 @@ function wpbcv_custom_shortcode_function() {
 
 <div class="accordion-professional">
     <div class="accordion-item">
-        <div class="accordion-header" style="background-color: #f0f0f0; color: #333; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Professional History 0</div>
+        <div class="accordion-header" style="background-color: #f0f0f0; color: #333; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Professional History 1</div>
         <div class="accordion-content">
             <!-- Education history form fields go here -->
             <label for="job_title">Job Title</label>
@@ -668,7 +670,7 @@ function wpbcv_custom_shortcode_function() {
         function addEducationField() {
             var itemCount = $('.accordion-education .accordion-item').length + 1;
             var newItem = $('<div class="accordion-item">' +
-                '<div class="accordion-header">Education History ' + itemCount + '</div>' +
+                '<div class="accordion-header" style="background-color: #f0f0f0; color: #333; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Education History ' + itemCount + '</div>' +
                 '<div class="accordion-content">' +
                 '<label for="degree' + itemCount + '">Degree:</label>' +
                 '<input type="text" id="degree' + itemCount + '" name="degree[]" placeholder="enter your relevent degree">' +
@@ -693,7 +695,7 @@ function wpbcv_custom_shortcode_function() {
         function addProfessionalField() {
             var itemCount = $('.accordion-professional .accordion-item').length + 1;
             var newItem = $('<div class="accordion-item">' +
-                '<div class="accordion-header">Professional History ' + itemCount + '</div>' +
+                '<div class="accordion-header" style="background-color: #f0f0f0; color: #333; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">Professional History ' + itemCount + '</div>' +
                 '<div class="accordion-content">' +
                 '<label for="job_title' + itemCount + '">Job Title:</label>' +
                 '<input type="text" id="job_title' + itemCount + '" name="job_title[]" placeholder="enter your job designation">' +
@@ -743,7 +745,7 @@ function wpbcv_custom_shortcode_function() {
                     <input type="checkbox" name="skills[]" value="Java">Java</label>
 
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">
-                    <input type="checkbox" name="skills[]" value="PSD to HTML&CSS">PSD to HTML&CSS </label>
+                    <input type="checkbox" name="skills[]" value="PSD to HTML&CSS">PSD to HTML&CSS</label>
 
                 <label style="display: inline-block; width: 200px; margin-bottom: 10px; vertical-align: top;">Other :</label>
                 <input type="text" name="skills[]" value="" placeholder="enter skills">
@@ -758,6 +760,14 @@ function wpbcv_custom_shortcode_function() {
                     border-radius: 8px;
                     background-color: #fff;
                 }
+                .form-border {
+                 border: 2px solid #333;
+                 border-radius: 8px;
+                 padding: 20px;
+                 max-width: 800px; /* Adjust max-width as needed */
+                 margin: 20px auto; /* Centers the form horizontally */
+}
+
             </style>
             <h5 style="text-align: center;"><strong>Contact Details</strong></h5>
             <label for="linkedin" style="display: inline-block; width: 150px;">Linkedin Profile:</label>
@@ -769,18 +779,9 @@ function wpbcv_custom_shortcode_function() {
             <h5 style="text-align: center;">Upload CV (PDF)</h5>
             <label for="cv_upload" style="display: inline-block; width: 150px;">Upload CV:</label>
             <input type="file" name="cv_upload" accept=".pdf" style="padding: 5px 10px; font-size: 12px; background-color: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer;"><br>
-            <input type="submit" name="resume_submission_submit" value="Submit" style="background-color: #2c3e50; 
-                border: 20px;
-                color: white;
-                padding: 15px 32px;
-                text-align: center;
-                text-decoration: none;
-                display: inline-block;
-                font-size: 16px;
-                margin: 4px 2px;
-                cursor: pointer;
-                border-radius: 10px;">
+            <input type="submit" name="resume_submission_submit" value="Submit" style="background-color: #2c3e50; border: 20px; color: white;padding: 15px 32px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 10px;">
         </form>
+    </div>
     </div>
     <?php
     // Process Form Submission
@@ -1022,8 +1023,10 @@ function wpbcv_follow_us_link()
     $user_display_name = $current_user->display_name;
     ob_start();
     ?>
+    <div class="form-border">
+
     <div class="wrap">
-        <h1 style="margin: 0 0 50px; font-size: 50px;">HR Dashboard</h1>
+        <h1 style="margin: 0 0 50px; font-size: 50px;text-align: center;">HR Dashboard</h1>
         <div class="hr-dashboard-container" style="gap: 137px;display: flex; justify-content: space-around;">
             <!-- HR Dashboard Section 1 -->
             <div class="hr-dashboard-section">
@@ -1037,7 +1040,9 @@ function wpbcv_follow_us_link()
                 <a href="?page=hr_management_page&action=review_cvs">
                     <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
                 </a>
-                <h2  style="margin: 0 0 50px; font-size: 20px;">Received CVs</h2>
+                <a href="/received-cvs/">
+    <h2 style="margin: 0 0 50px; font-size: 20px; cursor: pointer;">Received CVs</h2>
+</a>
                 <h2><?php
                     global $wpdb;
                     $table_name = $wpdb->prefix . 'resumes';
@@ -1050,7 +1055,10 @@ function wpbcv_follow_us_link()
                 <a href="?page=hr_management_page&action=review_cvs">
                     <img src="<?php echo plugins_url('/assets/img/documents.png', __FILE__); ?>" width="70" height="52" alt="Icon 1">
                 </a>
+                <a href="/shortlisted-candidates/">
                 <h2 style="margin: 0 0 50px; font-size: 20px;">Shortlisted Candidates</h2>
+                </a>
+
                 <h2><?php
                     global $wpdb;
                     $table_sl = $wpdb->prefix . 'shortlisted_candidates';
@@ -1061,6 +1069,17 @@ function wpbcv_follow_us_link()
             </div>
         </div>
     </div>
+    </div>
+    <style>
+        .form-border {
+    border: 2px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 800px; /* Adjust max-width as needed */
+    margin: 20px auto; /* Centers the form horizontally */
+}
+
+        </style>
     <?php
     return ob_get_clean();
 }}
@@ -1165,8 +1184,7 @@ function wpbcv_received_cvv_page()
     </style>
 
     <div class='table-wrap'>
-    <h1 style="font-size: 50px; font-weight: bold;">Received CVs</h1>
-
+    <h1 style="margin: 0 0 50px; font-size: 50px;text-align: center;">Received CVs</h1>
         <!-- Search Form -->
     <form id="search-form" method="GET">
     <label for="search">Search by Skills:</label>
@@ -1181,7 +1199,8 @@ function wpbcv_received_cvv_page()
         <option value="Java">
         <option value="PSD to HTML&CSS">
     </datalist>
-    <input type="submit" value="Search"  style="background-color: #2c3e50;"/>
+    <input type="submit" value="Search"  style="background-color: #2c3e50 ;display: inline-block; height: 35px;"/>
+
 </form>
 
 <script>
@@ -1421,7 +1440,8 @@ echo '</table>';
      <form id="filterForm"  method="POST">
         <label for="full_name" style="display: inline-block; width: 150px;">Enter Name:</label>
         <input type="text" id="full_name" name="full_name" required style="display: inline-block; width: 200px;" value="<?php echo esc_attr($search_query); ?>">
-        <button type="submit"  class="filtername" style="display: inline-block;">Filter CVs</button>   
+        <button type="submit" style="display: inline-block; height: 35px;">Filter CVs</button>
+  
     </form>
      <?php
 global $wpdb;
@@ -1535,59 +1555,6 @@ if (isset($_POST['full_name'])) {
 }
 ?>
 </div>
-<?php
-// Delete selected records from the database
-// if (isset($_POST['ids'])) {
-//     global $wpdb;
-//     $idsToDelete = $_POST['ids'];
-//     foreach ($idsToDelete as $id) {
-//         $id_to_delete = intval($id);
-//         if ($id_to_delete > 0) {
-//             $delete_result = $wpdb->delete(
-//                 'wp_resumes',
-//                 array('id' => $id_to_delete),
-//                 array('%d')
-//             );
-//             if ($delete_result === false) {
-//                 echo "Error deleting record with ID: $id";
-//                 exit;
-//             }
-//         }
-//     }
-//     echo "Records deleted successfully.";
-// }
-?>
-
-      <!-- </div>
-      <button id="deleteSelected"  style="padding: 5px 10px; border-radius: 5px; border: none; background-color: #2c3e50; color: #fff; cursor: pointer;">Delete Selected</button>
-      <script>
-document.getElementById('deleteSelected').addEventListener('click', function() {
-    var checkboxes = document.querySelectorAll('.row-checkbox:checked');
-    var idsToDelete = [];
-    checkboxes.forEach(function(checkbox)
- {
-        idsToDelete.push(checkbox.value);
-        checkbox.closest('tr').remove();
-    });
-
-    // Send idsToDelete to your server for deletion via form submission
-    var form = document.createElement('form');
-    form.method = 'POST';
-     form.action = ''; // Set the action attribute to your server-side script URL
-    idsToDelete.forEach(function(id)
- {
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'ids[]';
-        input.value = id;
-        form.appendChild(input);
-     });
-    document.body.appendChild(form);
-    form.submit();
-});
-</script> -->
-
-
 
 <script>
 const firstdiv = document.getElementsByClassName ('firstdiv')[0];
@@ -1758,7 +1725,7 @@ function wpbcv_display_shortlisted_candidates()
         $table_name = 'wp_shortlisted_candidates';
         // Email Forwarding Form
         if (isset($_POST['emailpm'])) {
-            $to = 'nouman.wpbrigade@gmail.com'; // reciver
+            $to = 'imran@wpbrigade.com'; // reciver
             $subject = 'Check the short listed candidate list';
             $message = 'Please check the short listed candidate list.';
             $headers = array('Content-Type: text/html; charset=UTF-8', 'From: atifwpbrigade@gmail.com'); // sender
@@ -1780,7 +1747,7 @@ function wpbcv_display_shortlisted_candidates()
         $shortlisted_candidates_data = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
         ob_start();
         ?>
-        <h1 style="font-size: 50px; font-weight: 100px;">Shortlisted Candidates</h1>
+        <h1 style="margin: 0 0 50px; font-size: 50px;text-align: center;">Shortlisted Candidates</h1>
         <!-- Email Forwarding Form -->
         <form method="post">
             <button type="submit" name="emailpm" style="background: #007bff; width: 158px; height: 60px; border: none; color: #fff; font-size: 16px; border-radius: 5px; cursor: pointer;">Email Forward to PM</button>
